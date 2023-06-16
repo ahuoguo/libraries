@@ -2,7 +2,7 @@ use vstd::prelude::*;
 
 verus! {
 
-    pub open spec fn Min(a: int, b: int) -> int
+    pub open spec fn min(a: int, b: int) -> int
     {
       if a < b
       { a }
@@ -10,17 +10,17 @@ verus! {
       { b }
     }
 
-    pub open spec fn Max(a: int, b: int) -> int
+    pub open spec fn max(a: int, b: int) -> int
     {
       if a < b { b } else { a }
     }
 
-    pub open spec fn Max3(a: int, b: int, c: int) -> int
+    pub open spec fn max3(a: int, b: int, c: int) -> int
     {
-      if a < b { Max(b, c) } else { Max(a, c) }
+      if a < b { max(b, c) } else { max(a, c) }
     }
 
-    pub open spec fn Abs(a: int) -> (b: int)
+    pub open spec fn abs(a: int) -> (b: int)
     {
       if a >= 0 { a } else { -a }
     }
