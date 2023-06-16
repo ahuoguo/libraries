@@ -25,4 +25,14 @@ verus! {
       if a >= 0 { a } else { -a }
     }
 
+    pub open spec fn add (a: int, b: int) -> int
+    {
+        a + b
+    }
+
+    pub open spec fn sub (a: int, b: int) -> int
+    {
+        a - b
+    }
+
 }

@@ -35,18 +35,18 @@ use vstd::prelude::*;
 
 verus! {
 
-    spec fn add (a: int, b: int) -> int
+    pub open spec fn add (a: int, b: int) -> int
     {
         a + b
     }
 
-    spec fn sub (a: int, b: int) -> int
+    pub open spec fn sub (a: int, b: int) -> int
     {
         a - b
     }
 
     // ghost?
-    spec fn is_le(x: int, y: int) -> bool
+    pub open spec fn is_le(x: int, y: int) -> bool
     {
       x <= y
     }
@@ -123,9 +123,8 @@ verus! {
         }
     }
 
-    proof fn lemma_induction_helper(n: int, f: FnSpec(int) -> bool, x: int)
+    pub proof fn lemma_induction_helper(n: int, f: FnSpec(int) -> bool, x: int)
     requires 
-        x < 0,
         n > 0,
         forall |i : int| 0 <= i < n ==> #[trigger] f(i),
         forall |i : int| i >= 0 && #[trigger] f(i) ==> #[trigger] f (add(i, n)),
