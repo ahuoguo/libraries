@@ -15,7 +15,7 @@ proof fn lemma_mod_of_zero_is_zero(m:int)
 
 /* describes fundementals of the modulus operator */
 #[verifier(nonlinear)]
-proof fn lemma_fundemental_div_mod(x:int, d:int)
+pub proof fn lemma_fundemental_div_mod(x:int, d:int)
     requires d != 0
     ensures  x == d * (x / d) + (x % d)
 {}

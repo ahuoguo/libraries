@@ -8,10 +8,9 @@ use vstd::prelude::*;
 
 verus! {
 
-#[allow(unused_imports)]
 use crate::NonLinearArith::Internals::MulInternalsNonlinear as MulINL;
 
-use crate::NonLinearArith::Internals::MulInternal::*;
+use crate::NonLinearArith::Internals::MulInternals::*;
 
 use crate::NonLinearArith::Internals::GeneralInternals::is_le;
 
@@ -48,7 +47,7 @@ proof fn lemma_mul_is_mul_pos(x: int, y: int)
 }
 
 /// ensures that the basic properties of multiplication, including the identity and zero properties
-proof fn lemma_mul_basis(x: int)
+pub proof fn lemma_mul_basis(x: int)
     ensures 
         0 * x == 0,
         x * 0 == 0,
@@ -65,7 +64,7 @@ proof fn lemma_mul_basis(x: int)
 
 /// multiplying two nonzero integers will never result in 0 as the poduct
 // property of being an integral domain
-proof fn lemma_mul_nonzero(x: int, y: int)
+pub proof fn lemma_mul_nonzero(x: int, y: int)
     ensures x * y != 0 <==> x != 0 && y != 0
 {
     MulINL::lemma_mul_nonzero(x, y);
@@ -92,7 +91,7 @@ proof fn lemma_mul_nonzero(x: int, y: int)
 // }
 
 /// multiplication is associative
-proof fn lemma_mul_is_associative(x: int, y: int, z: int)
+pub proof fn lemma_mul_is_associative(x: int, y: int, z: int)
     ensures x * (y * z) == (x * y) * z
 {
     MulINL::lemma_mul_is_associative(x, y, z);
@@ -111,7 +110,7 @@ proof fn lemma_mul_is_associative(x: int, y: int, z: int)
 // }
 
 /// multiplication is commutative
-proof fn lemma_mul_is_commutative(x: int, y: int)
+pub proof fn lemma_mul_is_commutative(x: int, y: int)
     ensures x * y == y * x
 {}
 
@@ -122,7 +121,7 @@ proof fn lemma_mul_is_commutative(x: int, y: int)
 //   }
 
 /// the product of two integers is greater than the value of each individual integer
-proof fn lemma_mul_ordering(x: int, y: int)
+pub proof fn lemma_mul_ordering(x: int, y: int)
     requires 
         x != 0,
         y != 0,
@@ -145,7 +144,7 @@ proof fn lemma_mul_ordering(x: int, y: int)
 //     }
 // }
 
-proof fn lemma_mul_equality(x: int, y: int, z: int)
+pub proof fn lemma_mul_equality(x: int, y: int, z: int)
     requires x == y
     ensures x * z == y * z
 {}
@@ -161,7 +160,7 @@ proof fn lemma_mul_equality(x: int, y: int, z: int)
 // }
 
 /// two integers that are multiplied by a positive number will maintain their numerical order
-proof fn lemma_mul_inequality(x: int, y: int, z: int)
+pub proof fn lemma_mul_inequality(x: int, y: int, z: int)
     requires 
         x <= y,
         z >= 0
@@ -182,7 +181,7 @@ proof fn lemma_mul_inequality(x: int, y: int, z: int)
 // }
 
 /// multiplying by a positive integer preserves inequality
-proof fn lemma_mul_strict_inequality(x: int, y: int, z: int)
+pub proof fn lemma_mul_strict_inequality(x: int, y: int, z: int)
     requires 
         x < y,
         z > 0
@@ -204,7 +203,7 @@ proof fn lemma_mul_strict_inequality(x: int, y: int, z: int)
 // }
 
 /// the product of two bounded integers is less than or equal to the product of their upper bounds
-proof fn lemma_mul_upper_bound(x: int, XBound: int, y: int, YBound: int)
+pub proof fn lemma_mul_upper_bound(x: int, XBound: int, y: int, YBound: int)
     requires 
         x <= XBound,
         y <= YBound,
@@ -229,7 +228,7 @@ proof fn lemma_mul_upper_bound(x: int, XBound: int, y: int, YBound: int)
 // }
 
 /// the product of two strictly upper bounded integers is less than the product of their upper bounds */
-proof fn lemma_mul_strict_upper_bound(x: int, XBound: int, y: int, YBound: int)
+pub proof fn lemma_mul_strict_upper_bound(x: int, XBound: int, y: int, YBound: int)
     requires 
         x < XBound,
         y < YBound,
@@ -257,7 +256,7 @@ proof fn lemma_mul_strict_upper_bound(x: int, XBound: int, y: int, YBound: int)
 // }
 
 /// any two integers that are multiplied by a positive number will maintain their numerical order
-proof fn lemma_mul_left_inequality(x: int, y: int, z: int)
+pub proof fn lemma_mul_left_inequality(x: int, y: int, z: int)
     requires 0 < x
     ensures 
         y <= z ==> x * y <= x * z,
@@ -289,7 +288,7 @@ proof fn lemma_mul_left_inequality(x: int, y: int, z: int)
 
 /// if two seperate integers are each multiplied by a common integer and the products are equal, the 
 /// two original integers are equal */
-proof fn lemma_mul_equality_converse(m: int, x: int, y: int)
+pub proof fn lemma_mul_equality_converse(m: int, x: int, y: int)
     requires 
         m != 0,
         m * x == m * y
@@ -321,7 +320,7 @@ proof fn lemma_mul_equality_converse(m: int, x: int, y: int)
 // }
 
 /// when two integers, x and y, are each multiplied by a positive integer, z, if x <= z then the x*z <= y*z
-proof fn lemma_mul_inequality_converse(x: int, y: int, z: int)
+pub proof fn lemma_mul_inequality_converse(x: int, y: int, z: int)
     requires 
         x * z <= y * z,
         z > 0
@@ -343,7 +342,7 @@ proof fn lemma_mul_inequality_converse(x: int, y: int, z: int)
 // }
 
 /// when two integers, x and y, are each multiplied by a positive integer, z, if x < z then the x*z < y*z
-proof fn lemma_mul_strict_inequality_converse(x: int, y: int, z: int)
+pub proof fn lemma_mul_strict_inequality_converse(x: int, y: int, z: int)
     requires 
         x * z < y * z,
         z >= 0
@@ -366,10 +365,10 @@ proof fn lemma_mul_strict_inequality_converse(x: int, y: int, z: int)
 // }
 
 /// multiplication is distributive
-proof fn lemma_mul_is_distributive_add(x: int, y: int, z: int)
+pub proof fn lemma_mul_is_distributive_add(x: int, y: int, z: int)
     ensures x * (y + z) == x * y + x * z
 {
-    MulINL::lemma_mul_is_distributive_add(x, y, z);
+    // MulINL::lemma_mul_is_distributive_add(x, y, z);
 }
 
 // /// for all integers, multiplication is distributive with addition in the form x * (y + z)
@@ -384,10 +383,10 @@ proof fn lemma_mul_is_distributive_add(x: int, y: int, z: int)
 // }
 
 /// for all integers, multiplication is distributive with addition in the form (y + z) * x
-proof fn lemma_mul_is_distributive_add_other_way(x: int, y: int, z: int)
+pub proof fn lemma_mul_is_distributive_add_other_way(x: int, y: int, z: int)
     ensures (y + z) * x == y * x + z * x
 {
-    lemma_mul_auto();
+    // lemma_mul_auto();
 }
 
 // proof fn lemma_mul_is_distributive_add_other_way_auto()
@@ -401,10 +400,10 @@ proof fn lemma_mul_is_distributive_add_other_way(x: int, y: int, z: int)
 // }
 
 /// multiplication is distributive with subtraction
-proof fn lemma_mul_is_distributive_sub(x: int, y: int, z: int)
+pub proof fn lemma_mul_is_distributive_sub(x: int, y: int, z: int)
     ensures x * (y - z) == x * y - x * z
 {
-    lemma_mul_auto();
+    // lemma_mul_auto();
 }
 
 // /// for all integers, multiplication is distributive with subtraction
@@ -419,7 +418,7 @@ proof fn lemma_mul_is_distributive_sub(x: int, y: int, z: int)
 // }
 
 /// proves the overall distributive nature of multiplication
-proof fn lemma_mul_is_distributive(x: int, y: int, z: int)
+pub proof fn lemma_mul_is_distributive(x: int, y: int, z: int)
     ensures 
         x * (y + z) == x * y + x * z,
         x * (y - z) == x * y - x * z,
@@ -447,7 +446,7 @@ proof fn lemma_mul_is_distributive(x: int, y: int, z: int)
 // }
 
 /* multiplying two positive integers will result in a positive integer */
-proof fn lemma_mul_strictly_positive(x: int, y: int)
+pub proof fn lemma_mul_strictly_positive(x: int, y: int)
     ensures (0 < x && 0 < y) ==> (0 < x * y)
 {
     MulINL::lemma_mul_strictly_positive(x, y);
@@ -466,7 +465,7 @@ proof fn lemma_mul_strictly_positive(x: int, y: int)
 
 /// multiplying a positive integer by an integer greater than 1 will result in a product that 
 /// is greater than the original integer
-proof fn lemma_mul_strictly_increases(x: int, y: int)
+pub proof fn lemma_mul_strictly_increases(x: int, y: int)
     requires 
         1 < x,
         0 < y,
@@ -490,7 +489,7 @@ proof fn lemma_mul_strictly_increases(x: int, y: int)
 
 /// multiplying an integer by a positive integer will result in a product that is greater than or
 /// equal to the original integer
-proof fn lemma_mul_increases(x: int, y: int)
+pub proof fn lemma_mul_increases(x: int, y: int)
     requires 
         0 < x,
         0 < y
@@ -513,7 +512,7 @@ proof fn lemma_mul_increases(x: int, y: int)
 // }
 
 /* multiplying two positive numbers will result in a positive product */
-proof fn lemma_mul_nonnegative(x: int, y: int)
+pub proof fn lemma_mul_nonnegative(x: int, y: int)
     requires 
         0 <= x,
         0 <= y
@@ -535,7 +534,7 @@ proof fn lemma_mul_nonnegative(x: int, y: int)
 
 // TODO need trimming
 /// shows the equivalent forms of using the unary negation operator
-proof fn lemma_mul_unary_negation(x: int, y: int)
+pub proof fn lemma_mul_unary_negation(x: int, y: int)
     ensures 
         (-x) * y == -(x * y) && -(x * y) == x * (-y)
 {
@@ -581,7 +580,7 @@ proof fn lemma_mul_unary_negation(x: int, y: int)
 // }
 
 /// multiplying two negative integers, -x and -y, is equivalent to multiplying x and y
-proof fn lemma_mul_cancels_negatives(x: int, y: int)
+pub proof fn lemma_mul_cancels_negatives(x: int, y: int)
     ensures x * y == (-x) * (-y)
 {
     // you do not need any proof for this lemma

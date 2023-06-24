@@ -1,7 +1,7 @@
 use vstd::prelude::*;
 //use std::vec::Vec;
-mod relations;
-use relations::strict_total_ordering;
+// mod relations;
+use crate::Collections::relations::strict_total_ordering;
 use vstd::slice::slice_index_get;
 //--no-lifetime to skip moved errors (should shut up if you remove ampersands)
 

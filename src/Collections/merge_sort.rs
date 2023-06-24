@@ -1,7 +1,7 @@
 use vstd::prelude::*;
 use std::vec::Vec;
-mod relations;
-use relations::{total_ordering, sorted_by, lemma_new_first_element_still_sorted_by};
+// mod relations;
+use crate::Collections::relations::{total_ordering, sorted_by, lemma_new_first_element_still_sorted_by};
 
 verus! {
     //Splits a sequence in two, sorts the two subsequences using itself, and merge the two sorted sequences using `MergeSortedWith`
