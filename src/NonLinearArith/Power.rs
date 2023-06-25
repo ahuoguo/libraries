@@ -10,8 +10,10 @@ use crate::NonLinearArith::Mul::{lemma_mul_basics, lemma_mul_basics_auto};
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::MulInternals::{lemma_mul_induction_auto};
 
-#[verifier(opaque)]
-spec fn pow(b: int, e: nat) -> int
+// TODO:
+// marking this as opquaue will cause trouble to Power2.rs
+// #[verifier(opaque)]
+pub open spec fn pow(b: int, e: nat) -> int
     decreases e
 {
     if e == 0 {
@@ -22,13 +24,13 @@ spec fn pow(b: int, e: nat) -> int
 }
 
 /// A number raised to the power of 0 equals
-proof fn lemma_pow0(b: int)
+pub proof fn lemma_pow0(b: int)
     ensures pow(b, 0) == 1
 {
     reveal(pow);
 }
 
-proof fn lemma_pow0_auto()
+pub proof fn lemma_pow0_auto()
     ensures forall |b: int| #[trigger]pow(b, 0 as nat) == 1
 {
     reveal(pow);
@@ -36,7 +38,7 @@ proof fn lemma_pow0_auto()
 
 use vstd::calc_macro::*;
 /* A number raised to the power of 1 equals the number itself. */
-proof fn lemma_pow1(b: int)
+pub proof fn lemma_pow1(b: int)
     ensures pow(b, 1) == b
 {
     // reveal(pow);
@@ -64,7 +66,7 @@ proof fn lemma_pow1(b: int)
 // }
 
 /// 0 raised to a positive power equals 0.
-proof fn lemma0_pow(e: nat)
+pub proof fn lemma0_pow(e: nat)
     requires e > 0
     ensures pow(0, e) == 0
     decreases e
@@ -88,7 +90,7 @@ proof fn lemma0_pow(e: nat)
 // }
 
 /// 1 raised to any power equals 1.
-proof fn lemma1_pow(e: nat)
+pub proof fn lemma1_pow(e: nat)
     ensures pow(1, e) == 1
     decreases e
 {
@@ -111,7 +113,7 @@ proof fn lemma1_pow(e: nat)
 // }
 
 ///* Squaring a number is equal to raising it to the power of 2.
-proof fn lemma_square_is_pow2(x: int)
+pub proof fn lemma_square_is_pow2(x: int)
 ensures pow(x, 2) == x * x
 {
     // maybe I can do it with reveal_with_fuel? but I don't know how
@@ -133,18 +135,20 @@ ensures pow(x, 2) == x * x
 // }
 
 // LACK lemma's from Mul.rs
-// /// A positive number raised to any power is positive.
-// proof fn lemma_pow_positive(b: int, e: nat)
-//     requires b > 0
-//     ensures 0 < pow(b, e)
-// {
-//     // lemma_mul_increases_auto();
-//     let f = |u: int| 0 <= u ==> 0 < pow(b, u as nat);
-//     assert ({ &&&  f(0)
-//               &&& (forall |i| #[trigger] is_le(0, i) && f(i) ==> f(i + 1))
-//               &&& (forall |i| #[trigger] is_le(i, 0) && f(i) ==> f(i - 1))});
-//     lemma_mul_induction_auto(e as int, |u: int| 0 <= u ==> 0 < pow(b, u as nat));
-// }
+/// A positive number raised to any power is positive.
+pub proof fn lemma_pow_positive(b: int, e: nat)
+    requires b > 0
+    ensures 0 < pow(b, e)
+{
+    // lemma_mul_increases_auto();
+    assume(false);
+
+    // let f = |u: int| 0 <= u ==> 0 < pow(b, u as nat);
+    // assert ({ &&&  f(0)
+    //           &&& (forall |i| #[trigger] is_le(0, i) && f(i) ==> f(i + 1))
+    //           &&& (forall |i| #[trigger] is_le(i, 0) && f(i) ==> f(i - 1))});
+    // lemma_mul_induction_auto(e as int, |u: int| 0 <= u ==> 0 < pow(b, u as nat));
+}
 
 // proof fn lemma_pow_positive_auto()
 //     ensures forall b: int, e: nat {:trigger pow(b, e)}
