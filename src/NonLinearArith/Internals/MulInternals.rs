@@ -157,6 +157,15 @@ proof fn lemma_mul_distributes()
     // }
 }
 
+// experimental
+pub open spec fn mul_auto1() -> bool
+{
+    &&& forall_arith(|x:int, y:int| #[trigger](x * y) == y * x)
+    &&& forall_arith(|x:int, y:int, z:int| #[trigger]((x + y) * z) == x * z + y * z)
+    &&& forall_arith(|x:int, y:int, z:int| #[trigger]((x - y) * z) == x * z - y * z)
+}
+
+
 /// groups distributive and associative properties of multiplication
 pub open spec fn mul_auto() -> bool
 {
@@ -173,6 +182,7 @@ pub proof fn lemma_mul_auto()
     lemma_mul_distributes();
 }
 
+// TODO: why this mul_anto antecedent is necessary?
 /// performs auto induction on multiplication for all i s.t. f(i) exists */
 pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
     requires mul_auto() ==> { &&&  f(0)

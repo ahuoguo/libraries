@@ -47,7 +47,7 @@ proof fn lemma_mul_is_mul_pos(x: int, y: int)
 }
 
 /// ensures that the basic properties of multiplication, including the identity and zero properties
-pub proof fn lemma_mul_basis(x: int)
+pub proof fn lemma_mul_basics(x: int)
     ensures 
         0 * x == 0,
         x * 0 == 0,
@@ -55,12 +55,14 @@ pub proof fn lemma_mul_basis(x: int)
         1 * x == x,
 {}
 
-// proof fn lemma_mul_basics_auto()
-//     ensures forall x: int {:trigger 0 * x} :: 0 * x == 0
-//     ensures forall x: int {:trigger x * 0} :: x * 0 == 0
-//     ensures forall x: int {:trigger 1 * x} :: 1 * x == x
-//     ensures forall x: int {:trigger x * 1} :: x * 1 == x
-// {}
+// expreimental
+pub proof fn lemma_mul_basics_auto()
+    ensures 
+        forall_arith(|x: int| #[trigger](0 * x) == 0),
+        forall_arith(|x: int| #[trigger](x * 0) == 0),
+        forall_arith(|x: int| #[trigger](1 * x) == x),
+        forall_arith(|x: int| #[trigger](x * 1)  == x),
+{}
 
 /// multiplying two nonzero integers will never result in 0 as the poduct
 // property of being an integral domain
@@ -499,16 +501,27 @@ pub proof fn lemma_mul_increases(x: int, y: int)
     lemma_mul_induction_auto(x, |u: int| 0 < u ==> y <= u * y);
 }
 
+spec fn mul (x: int, y: int) -> int 
+{
+    x * y
+}
+
+//  experimental
 // /// multiplying any integer by any positive integer will result in a product that is greater than or
 // /// equal to the original integer
 // proof fn lemma_mul_increases_auto()
-//     ensures forall x: int, y: int {:trigger x * y} :: (0 < x && 0 < y) ==> (y <= x * y)
+//     ensures forall_arith(|x: int, y: int| (0 < x && 0 < y) ==> (y <= #[trigger](x * y)))
 // {
-//     forall (x: int, y: int | 0 < x && 0 < y)
-//     ensures y <= x * y
-//     {
-//     lemma_mul_increases(x, y);
+//     // assert(forall |x:int, y:int| mul(x, y) == x * y);
+//     // TODO/NEED TO ASK: it would be nice if there's a assert forall_arith ...
+//     assert forall |x: int, y: int| (0 < x && 0 < y) ==> (y <= #[trigger](mul(x, y))) by {
+//         lemma_mul_increases(x, y);
 //     }
+//     // forall (x: int, y: int | 0 < x && 0 < y)
+//     // ensures y <= x * y
+//     // {
+//     // lemma_mul_increases(x, y);
+//     // }
 // }
 
 /* multiplying two positive numbers will result in a positive product */

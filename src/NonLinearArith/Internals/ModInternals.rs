@@ -25,6 +25,7 @@ use crate::NonLinearArith::Internals::DivInternalsNonlinear;
 
 // TODO: similar to div_pos in DivInternals
 /// Performs modulus recursively
+#[verifier(opaque)]
 spec fn mod_recursive(x: int, d: int) -> int
     recommends d > 0
     // decreases (if x < 0 {(d - x)} else {x})
@@ -71,6 +72,17 @@ proof fn lemma_mod_induction_forall(n: int, f: FnSpec(int) -> bool)
     };
 }
 
+// experimental. failed
+// proof fn lemma_mod_induction_forall1(n: int, f: FnSpec(int) -> bool)
+//     requires 
+//         n > 0,
+//         forall |i: int| 0 <= i < n ==> #[trigger]f(i),
+//         forall_arith(|i: int| i >= 0 && #[trigger]f(i) ==> #[trigger]f(i + n)),
+//         forall_arith(|i: int| i < n  && #[trigger]f(i) ==> #[trigger]f(i - n)),
+//     ensures  
+//         forall |i| #[trigger]f(i)
+// {}
+
 // /// given an integer x and divisor n, the remainder of x%n is equivalent to the remainder of (x+m)%n
 // /// where m is a multiple of n
 // proof fn lemma_mod_induction_forall2(n: int, f:FnSpec(int, int)->bool)
@@ -86,21 +98,23 @@ proof fn lemma_mod_induction_forall(n: int, f: FnSpec(int) -> bool)
 //     assert forall |x: int, y: int| #[trigger]f(x, y) by {
 //         assert forall |i: int| 0 <= i < n ==> #[trigger]f(i, y) by {
 //             let fj = |j| f(i, j);
-//             assert(forall |i: int| 0 <= i < n ==> #[trigger]fj(i)) by {
-//                 assert(forall |i: int, j: int| 0 <= i < n && 0 <= j < n ==> #[trigger]f(i, j));
-//             };
-//             assert forall |i: int| i >= 0 && #[trigger]fj(i) ==> #[trigger]fj(crate::NonLinearArith::Internals::GeneralInternals::add(i, n)) by {
-//                 assert(fj(add(i, n)) == fj(i + n));
-//             };
-//             assert forall |i: int| i >= 0 && #[trigger]fj(i) ==> #[trigger]fj(add(i, n)) by {
-//                 assert(fj(add(i, n)) == fj(i + n));
+//             assert forall |i: int| 0 <= i < n ==> #[trigger]fj(i) by {
+//                 if (0 <= i < n) {
+//                     assert(fj(i))by {
+//                         assume(forall |j: int| #[trigger]f(i, j));
+//                     }
+//                 } else {
+//                     assert(!(0 <= i < n));
+//                     assert( 0 <= i < n ==> #[trigger]fj(i));
+//                 }
 //             };
 //             lemma_mod_induction_forall(n, fj);
 //             assert(fj(y));
 //         }
-
+//         let fi = |i| f(i, y);
+//         lemma_mod_induction_forall(n, fi);
+//         assert(fi(x));
 //     };
-
 //     // forall x, y
 //     // ensures f(x, y)
 //     // {

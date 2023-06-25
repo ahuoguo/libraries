@@ -16,7 +16,9 @@ use crate::NonLinearArith::Internals::DivInternalsNonlinear;
 use crate::NonLinearArith::Internals::MulInternals;
 
 // TODO: discuss decrases, and opaque (the original dafny code has {:opaque} attribute)
+// https://github.com/verus-lang/verus/blob/581d927b0cf8bafe4d00311eee7df1ac321d01c0/source/docs/manual/syntax.md?plain=1#L21
 /// Performs division recursively with positive denominator.
+#[verifier(opaque)]
 pub open spec fn div_pos(x: int, d: int) -> int
     recommends d > 0
     // original dafny termination looks like this:
@@ -41,7 +43,7 @@ pub open spec fn div_pos(x: int, d: int) -> int
 pub open spec fn div_recursive(x: int, d: int) -> int
     recommends d != 0
 {
-    // reveal div_pos();
+    // reveal(div_pos);
     if d > 0 {
         div_pos(x, d)
     } else {
