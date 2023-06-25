@@ -165,6 +165,13 @@ pub open spec fn mul_auto1() -> bool
     &&& forall_arith(|x:int, y:int, z:int| #[trigger]((x - y) * z) == x * z - y * z)
 }
 
+// cannot be proven
+// after I added this proof, some of the following proofs started to fail
+
+// pub proof fn lemma_mul_auto1()
+//     ensures  mul_auto1()
+// {
+// }
 
 /// groups distributive and associative properties of multiplication
 pub open spec fn mul_auto() -> bool
@@ -178,8 +185,8 @@ pub open spec fn mul_auto() -> bool
 pub proof fn lemma_mul_auto()
     ensures  mul_auto()
 {
-    lemma_mul_commutes();
-    lemma_mul_distributes();
+    // lemma_mul_commutes();
+    // lemma_mul_distributes();
 }
 
 // TODO: why this mul_anto antecedent is necessary?
@@ -192,12 +199,9 @@ pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
         mul_auto(),
         f(x),
 {
-    lemma_mul_commutes();
-    lemma_mul_distributes();
     assert (forall |i| is_le(0, i) && #[trigger] f(i) ==> f(i + 1));
     assert (forall |i| is_le(i, 0) && #[trigger] f(i) ==> f(i - 1));
     lemma_mul_induction(f);
-    assert (f(x));
 }
 
 }
