@@ -1,3 +1,5 @@
+// this module shows that separating proofs helps
+
 use vstd::prelude::*;
 
 verus! { 
@@ -5,15 +7,20 @@ verus! {
 // experimental
 pub open spec fn mul_auto1() -> bool
 {
-    &&& forall_arith(|x:int, y:int| #[trigger](x * y) == y * x)
-    &&& forall_arith(|x:int, y:int, z:int| #[trigger]((x + y) * z) == x * z + y * z)
-    &&& forall_arith(|x:int, y:int, z:int| #[trigger]((x - y) * z) == x * z - y * z)
+    &&& forall |x:int, y:int| #[trigger](x * y) == (y * x)
+    &&& forall |x:int, y:int, z:int| #[trigger]((x + y) * z) == (x * z + y * z)
+    &&& forall |x:int, y:int, z:int| #[trigger]((x - y) * z) == (x * z - y * z)
 }
 
 // cannot be proven
+// after I added this proof, some of the following proofs started to fail
+
 pub proof fn lemma_mul_auto1()
     ensures  mul_auto1()
 {
+    // VERY IMPORTANT
+    // lemma_mul_commutes(); // OBSERVE
+    // lemma_mul_distributes(); // OBSERVE
 }
 
 /// groups distributive and associative properties of multiplication
@@ -31,6 +38,7 @@ pub proof fn lemma_mul_auto()
     // lemma_mul_commutes();
     // lemma_mul_distributes();
 }
+
 pub open spec fn dist_left_add (a: int, b: int, c: int) -> int
 {
     (a + b) * c

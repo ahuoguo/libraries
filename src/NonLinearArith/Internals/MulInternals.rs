@@ -132,6 +132,7 @@ proof fn lemma_mul_successor()
     assert forall |x:int, y:int| #[trigger] dist_left_add(x, 1, y) == dist_base_add(x, y) by { lemma_mul_commutes() };
 }
 
+
 /// proves the distributive property of multiplication
 proof fn lemma_mul_distributes()
     ensures
@@ -160,18 +161,21 @@ proof fn lemma_mul_distributes()
 // experimental
 pub open spec fn mul_auto1() -> bool
 {
-    &&& forall_arith(|x:int, y:int| #[trigger](x * y) == y * x)
-    &&& forall_arith(|x:int, y:int, z:int| #[trigger]((x + y) * z) == x * z + y * z)
-    &&& forall_arith(|x:int, y:int, z:int| #[trigger]((x - y) * z) == x * z - y * z)
+    &&& forall |x:int, y:int| #[trigger](x * y) == (y * x)
+    &&& forall |x:int, y:int, z:int| #[trigger]((x + y) * z) == (x * z + y * z)
+    &&& forall |x:int, y:int, z:int| #[trigger]((x - y) * z) == (x * z - y * z)
 }
 
 // cannot be proven
 // after I added this proof, some of the following proofs started to fail
 
-// pub proof fn lemma_mul_auto1()
-//     ensures  mul_auto1()
-// {
-// }
+pub proof fn lemma_mul_auto1()
+    ensures  mul_auto1()
+{
+    // VERY IMPORTANT
+    lemma_mul_commutes(); // OBSERVE
+    lemma_mul_distributes(); // OBSERVE
+}
 
 /// groups distributive and associative properties of multiplication
 pub open spec fn mul_auto() -> bool
@@ -199,9 +203,14 @@ pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
         mul_auto(),
         f(x),
 {
+    // the commented out lemmas shuold be automatically inferred if I did not
+    // add the lemma_mul_auto1 proof
+    // lemma_mul_commutes();
+    // lemma_mul_distributes();
     assert (forall |i| is_le(0, i) && #[trigger] f(i) ==> f(i + 1));
     assert (forall |i| is_le(i, 0) && #[trigger] f(i) ==> f(i - 1));
     lemma_mul_induction(f);
+    // assert (f(x));
 }
 
 }

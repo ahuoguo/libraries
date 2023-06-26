@@ -22,10 +22,21 @@ pub proof fn lemma_mul_is_mul_recursive(x: int, y: int)
     if (x >= 0) { 
         lemma_mul_is_mul_pos(x, y);
         assert (x * y == mul_pos(x, y));
+        // assert((x * y) == mul_recursive(x, y));
     }
     else { 
         lemma_mul_is_mul_pos(-x, y);
+        // assert (-1 * -x * y == x * y);
+        // assert(x < 0);
+        // assert( mul_recursive(x, y) == -1 * mul_pos(-1 * x, y)); // it cannot run -x??
         assert (-x * y == mul_pos(-x, y));
+        // assert(-1 * mul_pos(-1 * x, y) == -1 * (-x * y));
+        // assert( -1 * (-1 * (x * y)) == (-1 * -1) * (x * y)) by { lemma_mul_is_associative(-1, -1, (x * y)) };
+        // assert (x * y == -1 * (-1 * (x * y)));
+        // assert (x * y == -1 * (-1 * (x * y)));
+        // assert (x * y == -1 * (-x * y)) by { lemma_mul_is_associative(-1, -x, y) };
+        // assert((x * y) == mul_recursive(x, y));
+
     }
 }
 
@@ -99,17 +110,21 @@ pub proof fn lemma_mul_is_associative(x: int, y: int, z: int)
     MulINL::lemma_mul_is_associative(x, y, z);
 }
 
-// /// multiplication is always associative for all integers
-// proof fn lemma_mul_is_associative_auto()
-//     ensures forall x: int, y: int, z: int {:trigger x * (y * z)} {:trigger (x * y) * z}
-//             :: x * (y * z) == (x * y) * z
-// {
-//     forall (x: int, y: int, z: int)
-//     ensures x * (y * z) == (x * y) * z
-//     {
-//     lemma_mul_is_associative(x, y, z);
-//     }
-// }
+// experimental
+/// multiplication is always associative for all integers
+proof fn lemma_mul_is_associative_auto()
+    ensures forall|x: int, y: int, z: int| #[trigger](x * (y * z)) == #[trigger]((x * y) * z)
+{
+    assert forall|x: int, y: int, z: int| #[trigger](x * (y * z)) == #[trigger]((x * y) * z)
+    by {
+        lemma_mul_is_associative(x, y, z);
+    }
+    // forall (x: int, y: int, z: int)
+    // ensures x * (y * z) == (x * y) * z
+    // {
+    // lemma_mul_is_associative(x, y, z);
+    // }
+}
 
 /// multiplication is commutative
 pub proof fn lemma_mul_is_commutative(x: int, y: int)
@@ -506,23 +521,23 @@ spec fn mul (x: int, y: int) -> int
     x * y
 }
 
-//  experimental
-// /// multiplying any integer by any positive integer will result in a product that is greater than or
-// /// equal to the original integer
-// proof fn lemma_mul_increases_auto()
-//     ensures forall_arith(|x: int, y: int| (0 < x && 0 < y) ==> (y <= #[trigger](x * y)))
-// {
-//     // assert(forall |x:int, y:int| mul(x, y) == x * y);
-//     // TODO/NEED TO ASK: it would be nice if there's a assert forall_arith ...
-//     assert forall |x: int, y: int| (0 < x && 0 < y) ==> (y <= #[trigger](mul(x, y))) by {
-//         lemma_mul_increases(x, y);
-//     }
-//     // forall (x: int, y: int | 0 < x && 0 < y)
-//     // ensures y <= x * y
-//     // {
-//     // lemma_mul_increases(x, y);
-//     // }
-// }
+// experimental
+/// multiplying any integer by any positive integer will result in a product that is greater than or
+/// equal to the original integer
+proof fn lemma_mul_increases_auto()
+    ensures forall |x: int, y: int| (0 < x && 0 < y) ==> (y <= #[trigger](x * y))
+{
+    // assert(forall |x:int, y:int| mul(x, y) == x * y);
+    // TODO/NEED TO ASK: it would be nice if there's a assert forall_arith ...
+    assert forall |x: int, y: int| (0 < x && 0 < y) ==> (y <= #[trigger](x * y)) by {
+        if (0 < x && 0 < y) {
+            lemma_mul_increases(x, y);
+        } else {
+            // assert(!(0 < x && 0 < y));
+            // assert ( (0 < x && 0 < y) ==> (y <= #[trigger](x * y)));
+        }
+    }
+}
 
 /* multiplying two positive numbers will result in a positive product */
 pub proof fn lemma_mul_nonnegative(x: int, y: int)

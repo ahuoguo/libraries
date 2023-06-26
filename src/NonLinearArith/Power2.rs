@@ -9,7 +9,7 @@ use crate::NonLinearArith::Internals::MulInternals;
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::GeneralInternals; 
 
-#[verifier(opaque)]
+// #[verifier(opaque)]
 spec fn pow2(e: nat) -> nat
     decreases e
     // ensures pow2(e) > 0  // cannot have ensurs clause in spec functions
@@ -74,7 +74,14 @@ fn lemma2_4()
     };
 }
 
-// TODO: ill-typed AIR
+// fn lemma2_5()
+// {
+//     assert(pow2(1) == 0x2) by {
+//         reveal_with_fuel(pow2, 3);
+//     };
+// }
+
+// // TODO: ill-typed AIR
 // proof fn lemma2_to64()
 //     ensures 
 //         pow2(0) == 0x1,
