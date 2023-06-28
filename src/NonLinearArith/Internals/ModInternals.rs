@@ -66,6 +66,7 @@ pub proof fn lemma_mod_induction_forall(n: int, f: FnSpec(int) -> bool)
 }
 
 // experimental. failed
+// See wiki page for more explanation, also see the last induction lemma
 // proof fn lemma_mod_induction_forall1(n: int, f: FnSpec(int) -> bool)
 //     requires 
 //         n > 0,

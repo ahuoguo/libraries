@@ -74,10 +74,10 @@ pub proof fn lemma_mul_basics(x: int)
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_basics_auto()
     ensures 
-        forall_arith(|x: int| #[trigger](0 * x) == 0),
-        forall_arith(|x: int| #[trigger](x * 0) == 0),
-        forall_arith(|x: int| #[trigger](1 * x) == x),
-        forall_arith(|x: int| #[trigger](x * 1)  == x),
+        forall |x: int| #[trigger](0 * x) == 0,
+        forall |x: int| #[trigger](x * 0) == 0,
+        forall |x: int| #[trigger](1 * x) == x,
+        forall |x: int| #[trigger](x * 1)  == x,
 {}
 
 /// multiplying two nonzero integers will never result in 0 as the poduct
