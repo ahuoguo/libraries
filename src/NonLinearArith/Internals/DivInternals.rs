@@ -40,6 +40,7 @@ pub open spec fn div_pos(x: int, d: int) -> int
 
 // TODO: original dafny code has {:opaque} attribute
 /// Performs division recursively.
+#[verifier(opaque)]
 pub open spec fn div_recursive(x: int, d: int) -> int
     recommends d != 0
 {
@@ -82,8 +83,9 @@ pub open spec fn div_recursive(x: int, d: int) -> int
 // }
 
 // instantiated version of lemma_div_basics
+// TODO: TO BE DISCUSSED: might want to change the order of n and x
 #[verifier(spinoff_prover)]
-proof fn lemma_div_basics(n: int, x: int)
+pub proof fn lemma_div_basics(n: int, x: int)
     requires n > 0
     ensures
         (n / n) == 1 &&  -((-n) / n) == 1,

@@ -11,7 +11,7 @@ verus! {
 
 /* zero divided by an integer besides 0 is 0 */
 #[verifier(nonlinear)]
-proof fn lemma_div_of0(d: int)
+pub proof fn lemma_div_of0(d: int)
     requires d != 0 as int
     ensures 0 as int / d == 0 as int
 {}
