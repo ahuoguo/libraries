@@ -20,6 +20,7 @@ pub open spec fn is_le(x: int, y: int) -> bool
 }
 
 /* aids in the process of induction for modulus */
+#[verifier(spinoff_prover)]
 proof fn lemma_induction_helper_pos(n: int, f: FnSpec(int) -> bool, x: int)
     requires 
         x >= 0,
@@ -40,6 +41,7 @@ proof fn lemma_induction_helper_pos(n: int, f: FnSpec(int) -> bool, x: int)
     }
 }
 
+#[verifier(spinoff_prover)]
 proof fn lemma_induction_helper_neg(n: int, f: FnSpec(int) -> bool, x: int)
     requires 
         x < 0,
@@ -63,6 +65,7 @@ proof fn lemma_induction_helper_neg(n: int, f: FnSpec(int) -> bool, x: int)
     }
 }
 
+#[verifier(spinoff_prover)]
 pub proof fn lemma_induction_helper(n: int, f: FnSpec(int) -> bool, x: int)
 requires 
     n > 0,

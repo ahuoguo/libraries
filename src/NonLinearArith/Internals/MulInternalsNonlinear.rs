@@ -31,6 +31,7 @@ pub proof fn lemma_mul_is_associative(x: int, y: int, z: int)
 /* multiplication is distributive */
 // #[verifier(nonlinear)]
 // DISCUSS
+#[verifier(spinoff_prover)]
 pub proof fn lemma_mul_is_distributive_add(x: int, y: int, z: int)
     ensures x * (y + z) == x * y + x * z
 {}

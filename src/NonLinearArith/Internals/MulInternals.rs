@@ -63,7 +63,7 @@ proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     requires 
         f(0),
         forall |i: int| i >= 0 && #[trigger] f(i) ==> #[trigger] f(add(i, 1)),
-        forall |i: int, j:int| i>=0 && j == i+1 && #[trigger] f(i) ==> #[trigger] f(j),
+        // forall |i: int, j:int| i>=0 && j == i+1 && #[trigger] f(i) ==> #[trigger] f(j),
         forall |i: int| i <= 0 && #[trigger] f(i) ==> #[trigger] f(sub(i, 1)),
     ensures
         forall |i: int| #[trigger] f(i)
@@ -166,7 +166,6 @@ pub open spec fn mul_auto1() -> bool
 
 // cannot be proven
 // after I added this proof, some of the following proofs started to fail
-
 pub proof fn lemma_mul_auto1()
     ensures  mul_auto1()
 {
@@ -179,7 +178,7 @@ pub proof fn lemma_mul_auto1()
 /// groups distributive and associative properties of multiplication
 pub open spec fn mul_auto() -> bool
 {
-    &&& (forall |x:int, y:int| #[trigger]mul(x, y) == mul(y, x))
+    &&& (forall |x:int, y:int| #[trigger](x * y) == (y * x))
     &&& (forall |x:int, y:int, z:int| #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z))
     &&& (forall |x:int, y:int, z:int| #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z))
 }

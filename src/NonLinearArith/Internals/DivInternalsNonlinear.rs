@@ -4,35 +4,35 @@ use vstd::prelude::*;
 
 verus! {
 
-spec fn div (x: int, y: int) -> int
-{
-    x / y
-}
+// pub spec fn div (x: int, y: int) -> int
+// {
+//     x / y
+// }
 
 /* zero divided by an integer besides 0 is 0 */
 #[verifier(nonlinear)]
-proof fn LemmaDivOf0(d: int)
+proof fn lemma_div_of0(d: int)
     requires d != 0 as int
     ensures 0 as int / d == 0 as int
 {}
 
 /* the quotient of an integer divided by itself is 1 */
-proof fn LemmaDivBySelf(d: int)
+pub proof fn lemma_div_by_self(d: int)
     requires d != 0
     ensures d / d == 1
 {}
 
 /* dividing a smaller integer by a larger integer results in a quotient of 0  */
 #[verifier(nonlinear)]
-proof fn LemmaSmallDiv()
-    ensures forall |x: int, d: int| 0 <= x < d && d > 0 ==> #[trigger] div(x, d) == 0
+pub proof fn lemma_small_div()
+    ensures forall |x: int, d: int| 0 <= x < d && d > 0 ==> #[trigger](x / d) == 0
 {}
 
 // TODO: how to translate the `real` type? 
 //       seems to be only used here
 
 /* the quotient of dividing a positive real number (not 0) by a smaller positive real number*/
-// proof fn LemmaRealDivGt(x:real, y:real)
+// proof fn lemma_real_div_gt(x:real, y:real)
 //     requires 
 //         x > y,
 //         x >= 0.0,
