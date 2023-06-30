@@ -11,11 +11,11 @@ verus! {
 
 /// performs multiplication for positive integers using recursive addition
 /// change x to nat?
-
 // NEED TO ASK, here, we either change x into nat or return 0 when x < 0
 // This is because we do not have partial functions
 // and the recommend clause is too weak so that we actually need to consider
 // the x < 0 case
+#[verifier(opaque)]
 pub open spec fn mul_pos(x: int, y: int) -> int
     recommends x >= 0
     decreases x
@@ -63,13 +63,16 @@ proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     requires 
         f(0),
         forall |i: int| i >= 0 && #[trigger] f(i) ==> #[trigger] f(add(i, 1)),
-        // forall |i: int, j:int| i>=0 && j == i+1 && #[trigger] f(i) ==> #[trigger] f(j),
         forall |i: int| i <= 0 && #[trigger] f(i) ==> #[trigger] f(sub(i, 1)),
+        // TODO how about this proof style? seems to distablize one or two proofs
+        // forall |i: int, j:int| i >= 0 && j == i + 1 && #[trigger] f(i) ==> #[trigger] f(j),
+        // forall |i: int, j:int| i <= 0 && j == i - 1 && #[trigger] f(i) ==> #[trigger] f(j),
     ensures
         forall |i: int| #[trigger] f(i)
 {
     assert (forall |i: int| f(add(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::add(i, 1)));  // OBSERVE
     assert (forall |i: int| f(sub(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::sub(i, 1)));   // OBSERVE
+    // assert forall |i : int| i < n  && #[trigger] f(i) ==> #[trigger] f (crate::NonLinearArith::Internals::GeneralInternals::sub(i, 1)) by {};
 
     assert forall |i: int| #[trigger] f(i) by { lemma_induction_helper(1, f, i) };
 }
@@ -115,20 +118,12 @@ pub open spec fn dist_right_sub (a: int, b: int, c: int) -> int
 
 /// proves the distributive property of multiplication when multiplying an interger
 /// by (x +/- 1)
-
-// TODO: confirm the use of `forall_arith`, otherwise we need a wrapper function
-// for every arithmetic expressions
-
 proof fn lemma_mul_successor()
-// forall_arith(|x:int, y:int| #[trigger]((x + 1) * y) == x * y + y),
-// forall_arith(|x:int, y:int| #[trigger]((x - 1) * y) == x * y - y)
-// LATER: forall_arith seems to be trivially verified
     ensures 
         forall |x:int, y:int| #[trigger] dist_left_add(x, 1, y) == dist_base_add(x, y),
         forall |x:int, y:int| #[trigger] dist_left_sub(x, 1, y) == dist_base_sub(x, y),
 {
     // very different from the dafny proof, seems like the solver can figure out the sub case by itself
-    lemma_mul_commutes();
     assert forall |x:int, y:int| #[trigger] dist_left_add(x, 1, y) == dist_base_add(x, y) by { lemma_mul_commutes() };
 }
 
@@ -140,13 +135,14 @@ proof fn lemma_mul_successor()
 // {
 // }
 
-// // adding the original distributes lemma start causing trouble
-// proof fn lemma_mul_distributes()
-//     ensures
-//         forall |x, y, z| #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z),
-//         forall |x, y, z| #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z)
-// {
-// }
+proof fn lemma_mul_distributes()
+    ensures
+        forall |x, y, z| #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z),
+        forall |x, y, z| #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z)
+{
+    // assume(false);
+    reveal(mul_pos); // suprisingly this needs a mul_pos
+}
 
 proof fn lemma_mul_distributes1()
     ensures
@@ -210,5 +206,21 @@ pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
     lemma_mul_induction(f);
     // assert (f(x));
 }
+
+// not called anywhere else
+// /// performs auto induction on multiplication for all i s.t. f(i) exists
+// lemma LemmaMulInductionAutoForall(f: int -> bool)
+//     requires MulAuto() ==> f(0)
+//                         && (forall i {:trigger IsLe(0, i)} :: IsLe(0, i) && f(i) ==> f(i + 1))
+//                         && (forall i {:trigger IsLe(i, 0)} :: IsLe(i, 0) && f(i) ==> f(i - 1))
+//     ensures  MulAuto()
+//     ensures  forall i {:trigger f(i)} :: f(i)
+// {
+//     LemmaMulCommutes();
+//     LemmaMulDistributes();
+//     assert forall i {:trigger f(i)} :: IsLe(0, i) && f(i) ==> f(i + 1);
+//     assert forall i {:trigger f(i)} :: IsLe(i, 0) && f(i) ==> f(i - 1);
+//     LemmaMulInduction(f);
+// }
 
 }

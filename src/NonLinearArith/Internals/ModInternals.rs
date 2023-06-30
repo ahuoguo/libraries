@@ -20,8 +20,7 @@ use crate::NonLinearArith::Internals::DivInternalsNonlinear;
 #[verifier(opaque)]
 pub open spec fn mod_recursive(x: int, d: int) -> int
     recommends d > 0
-    // decreases (if x < 0 {(d - x)} else {x})
-    decreases d - x when x < 0 && d > 0
+    decreases (if x < 0 {(d - x)} else {x}) when d > 0
 {
     if x < 0 {
         mod_recursive(d + x, d)
@@ -54,7 +53,7 @@ pub proof fn lemma_mod_induction_forall(n: int, f: FnSpec(int) -> bool)
         forall |i| #[trigger]f(i)
 {
     assert forall |i: int| #[trigger]f(i) by {
-        // TODO: communicating between the `add` functions are hard (and unecessary)
+        // TODO: communicating between the `add` functions are hard (and unecessary?)
         assert forall |i : int| i >= 0 && #[trigger] f(i) ==> #[trigger] f (crate::NonLinearArith::Internals::GeneralInternals::add(i, n)) by {
             assert(crate::NonLinearArith::Internals::GeneralInternals::add(i, n) == add(i, n));
         };
@@ -65,20 +64,8 @@ pub proof fn lemma_mod_induction_forall(n: int, f: FnSpec(int) -> bool)
     };
 }
 
-// experimental. failed
-// See wiki page for more explanation, also see the last induction lemma
-// proof fn lemma_mod_induction_forall1(n: int, f: FnSpec(int) -> bool)
-//     requires 
-//         n > 0,
-//         forall |i: int| 0 <= i < n ==> #[trigger]f(i),
-//         forall_arith(|i: int| i >= 0 && #[trigger]f(i) ==> #[trigger]f(i + n)),
-//         forall_arith(|i: int| i < n  && #[trigger]f(i) ==> #[trigger]f(i - n)),
-//     ensures  
-//         forall |i| #[trigger]f(i)
-// {}
-
-// /// given an integer x and divisor n, the remainder of x%n is equivalent to the remainder of (x+m)%n
-// /// where m is a multiple of n
+/// given an integer x and divisor n, the remainder of x%n is equivalent to the remainder of (x+m)%n
+/// where m is a multiple of n
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mod_induction_forall2(n: int, f:FnSpec(int, int)->bool)
     requires
@@ -92,14 +79,11 @@ pub proof fn lemma_mod_induction_forall2(n: int, f:FnSpec(int, int)->bool)
         forall |i: int, j: int| #[trigger]f(i, j)
 {
     assert forall |x: int, y: int| #[trigger]f(x, y) by {
-        // you need to name it as a, otherwise the renaming of variable kind of sucks
-        assert forall |a: int| 0 <= a < n ==> #[trigger]f(a, y) by {
-            if 0 <= a < n {
-            let fj = |j| f(a, j);
+        assert forall |i: int| 0 <= i < n implies #[trigger]f(i, y) by {
+            let fj = |j| f(i, j);
             lemma_mod_induction_forall(n, fj);
             assert(fj(y));
-        }
-    };
+        };
         let fi = |i| f(i, y);
         lemma_mod_induction_forall(n, fi);
         assert(fi(x));
@@ -112,24 +96,24 @@ pub proof fn lemma_div_add_denominator(n: int, x: int)
     ensures (x + n) / n == x / n + 1
 {
     lemma_fundamental_div_mod(x, n);
-    assert(x == n * (x / n) + (x % n));
+    // assert(x == n * (x / n) + (x % n));
     lemma_fundamental_div_mod(x + n, n);
     // assert(x + n == n * ((x + n) / n) + ((x + n) % n));
     let zp = (x + n) / n - x / n - 1;
     assert(n * zp == ((x + n) / n) * n - (x / n) * n - n) by { 
-        assert(n * zp == n * ((x + n) / n - x / n - 1));
-        lemma_mul_is_distributive_auto();
-        assert(n * zp == n * ((x + n) / n - x / n) - n);
-        lemma_mul_is_distributive_auto();
-        assert (n * zp == n * ((x + n) / n) - n * (x / n) - n);
-        lemma_mul_auto();
+        // lemma_mul_auto();
+        lemma_mul_is_distributive_auto(); // OBSERVE
+        assert(n * zp == n * ((x + n) / n - x / n - 1)); // OBSERVE
+        assert(n * zp == n * ((x + n) / n - x / n) - n); // OBSERVE
+        assert (n * zp == n * ((x + n) / n) - n * (x / n) - n); // OBSERVE
     };
-    // assert(n * zp == ((x + n) / n) * n - (x / n) * n - n);
+
     assert (0 == n * zp + ((x + n) % n) - (x % n)) by {
-        assert((x + n) - n * ((x + n) / n)== (x + n) % n) by { 
-            lemma_fundamental_div_mod(x + n, n); 
-            assert(x + n == n * ((x + n) / n) + ((x + n) % n)); 
-        };
+
+        // assert((x + n) - n * ((x + n) / n)== (x + n) % n) by { 
+        //     lemma_fundamental_div_mod(x + n, n); 
+        // };
+
         assert(n * zp == ((x + n) / n) * n - (x / n) * n - n);
 
         assert(x - n * (x / n) == x % n) by { 
@@ -162,9 +146,9 @@ pub proof fn lemma_div_sub_denominator(n: int, x: int)
     ensures (x - n) / n == x / n - 1
 {
     lemma_fundamental_div_mod(x, n);
-    assert(x == n * (x / n) + (x % n));
     lemma_fundamental_div_mod(x - n, n);
     let zm = (x - n) / n - x / n + 1;
+
     assert (0 == n * zm + ((x - n) % n) - (x % n)) by { 
         assert (n * zm == n * (((x - n) / n - x / n) + 1));
         lemma_mul_is_distributive_auto();
@@ -173,7 +157,6 @@ pub proof fn lemma_div_sub_denominator(n: int, x: int)
                 lemma_mul_is_distributive_add(n, ((x - n) / n - x / n), 1);
             };
         };
-        // lemma_mul_is_distributive_auto();
         assert (n * zm == n * ((x - n) / n) - n * (x / n) + n);
         lemma_mul_auto(); 
     }
@@ -190,7 +173,7 @@ pub proof fn lemma_mod_add_denominator(n: int, x: int)
     lemma_fundamental_div_mod(x + n, n);
     let zp = (x + n) / n - x / n - 1;
     // DISCUSS: VERY UNSTABLE
-    assert (n * zp == n * (((x + n) / n - x / n) - 1));
+    // assert (n * zp == n * (((x + n) / n - x / n) - 1));
     assert (n * zp == n * ((x + n) / n - x / n) - n) by {
         assert( n * (((x + n) / n - x / n) - 1) == n * ((x + n) / n - x / n) - n) by {
             lemma_mul_is_distributive_auto();
@@ -284,49 +267,51 @@ pub proof fn lemma_mod_basics(n: int, x: int)
 
 // Hayley and Jay L chose to make the forall x be a formal parameter
 // /// proves the basics of the modulus operation
-// #[verifier(spinoff_prover)]
-// proof fn lemma_mod_basics(n: int)
-//     requires n > 0
-//     ensures  
-//         (forall |x: int| #[trigger]((x + n) % n) == x % n),
-//         forall |x: int| #[trigger]((x - n) % n) == x % n,
-// //         // forall |x: int| #[trigger]((x + n) / n) == x / n + 1,
-// //         // forall |x: int| #[trigger]((x - n) / n) == x / n - 1,
-// //         // forall |x: int| 0 <= x < n <==> #[trigger](x % n) == x,
-// {
-//     assert forall |x: int| #[trigger]((x + n) % n) == x % n by {
-//         lemma_mod_add_denominator(n, x);
-//     };
+#[verifier(spinoff_prover)]
+proof fn lemma_mod_basics_auto(n: int)
+    requires n > 0
+    ensures  
+        (forall |x: int| #[trigger]((x + n) % n) == x % n),
+        forall |x: int| #[trigger]((x - n) % n) == x % n,
+        // forall |x: int| #[trigger]((x + n) / n) == x / n + 1,
+        // forall |x: int| #[trigger]((x - n) / n) == x / n - 1,
+        // forall |x: int| 0 <= x < n <==> #[trigger](x % n) == x,
+{
+    assert forall |x: int| #[trigger]((x + n) % n) == x % n by {
+        lemma_mod_add_denominator(n, x);
+    };
 
-//     assert forall |x: int| #[trigger]((x - n) % n) == x % n by {
-//         lemma_mod_sub_denominator(n, x);
-//         assert((x - n) % n == x % n);
-//     };
+    assert forall |x: int| #[trigger]((x - n) % n) == x % n by {
+        lemma_mod_sub_denominator(n, x);
+        assert((x - n) % n == x % n);
+    };
 
-// //     // assert forall |x: int| #[trigger]((x + n) / n) == x / n + 1 by
-// //     // {
-// //     //     lemma_div_add_denominator(n, x);
-// //     // };
+    // assume(forall |x: int| #[trigger]((x + n) / n) == x / n + 1);
+    // assert forall |x: int| #[trigger]((x + n) / n) == x / n + 1 by
+    // {
+    //     lemma_div_add_denominator(n, x);
+    //     // assume(false);
+    // };
+    
+    // assume(forall |x: int| #[trigger]((x - n) % n) == x % n);
+    // assert forall |x: int| #[trigger]((x - n) / n) == x / n - 1 by {
+    //     lemma_div_sub_denominator(n, x);
+    // };
 
-// //     // assert forall |x: int| #[trigger]((x - n) / n) == x / n - 1 by {
-// //     //     lemma_div_sub_denominator(n, x);
-// //     // };
-
-// //     // assume(forall |x: int| #[trigger]((x - n) % n) == x % n);
-// //     // assert forall |x: int|  (#[trigger]((x + n) % n) == x % n &&
-// //     //                         #[trigger]((x - n) % n) == x % n &&
-// //     //                         #[trigger]((x + n) / n) == x / n + 1 &&
-// //     //                         #[trigger]((x - n) / n) == x / n - 1 &&
-// //     //                         0 <= x < n <==> #[trigger](x % n) == x)
-// //     // by
-// //     // {
-// //     // lemma_mod_below_denominator(n, x);
-// //     // lemma_mod_add_denominator(n, x);
-// //     // lemma_mod_sub_denominator(n, x);
-// //     // lemma_div_add_denominator(n, x);
-// //     // lemma_div_sub_denominator(n, x);
-// //     // }
-// }
+//     // assert forall |x: int|  (#[trigger]((x + n) % n) == x % n &&
+//     //                         #[trigger]((x - n) % n) == x % n &&
+//     //                         #[trigger]((x + n) / n) == x / n + 1 &&
+//     //                         #[trigger]((x - n) / n) == x / n - 1 &&
+//     //                         0 <= x < n <==> #[trigger](x % n) == x)
+//     // by
+//     // {
+//     // lemma_mod_below_denominator(n, x);
+//     // lemma_mod_add_denominator(n, x);
+//     // lemma_mod_sub_denominator(n, x);
+//     // lemma_div_add_denominator(n, x);
+//     // lemma_div_sub_denominator(n, x);
+//     // }
+}
 
 /// proves the quotient remainder theorem
 // dafny has vcs_split_on_every_assert
@@ -369,14 +354,14 @@ pub open spec fn mod_auto(n: int) -> bool
     &&& (n % n == 0 && (-n) % n == 0)
     &&& (forall |x: int| #[trigger]((x % n) % n) == x % n)
     &&& (forall |x: int| 0 <= x < n <==> #[trigger](x % n) == x)
-    // &&& (forall |x: int, y: int|
-    //      {let z = (x % n) + (y % n);
-    //      (  (0 <= z < n && #[trigger]((x + y) % n) == z)
-    //          || (n <= z < n + n && #[trigger]((x + y) % n) == z - n))})
-    // &&& (forall |x: int, y: int|
-    //     {let z = (x % n) - (y % n);
-    //     (  (0 <= z < n && #[trigger]((x - y) % n) == z)
-    //         || (-n <= z < 0  && #[trigger]((x - y) % n) == z + n))})
+    &&& (forall |x: int, y: int|
+         {let z = (x % n) + (y % n);
+         (  (0 <= z < n && #[trigger]((x + y) % n) == z)
+             || (n <= z < n + n && #[trigger]((x + y) % n) == z - n))})
+    &&& (forall |x: int, y: int|
+        {let z = (x % n) - (y % n);
+        (  (0 <= z < n && #[trigger]((x - y) % n) == z)
+            || (-n <= z < 0  && #[trigger]((x - y) % n) == z + n))})
 }
 
 /// ensures that mod_auto is true

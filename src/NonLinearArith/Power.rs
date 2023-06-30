@@ -6,13 +6,13 @@ use crate::NonLinearArith::DivMod;
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::GeneralInternals::{is_le};
 #[allow(unused_imports)]
-use crate::NonLinearArith::Mul::{lemma_mul_basics, lemma_mul_basics_auto};
+use crate::NonLinearArith::Mul::{lemma_mul_basics, lemma_mul_basics_auto, lemma_mul_increases_auto, lemma_mul_is_associative_auto};
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::MulInternals::{lemma_mul_induction_auto};
 
 // TODO:
 // marking this as opquaue will cause trouble to Power2.rs
-// #[verifier(opaque)]
+#[verifier(opaque)]
 pub open spec fn pow(b: int, e: nat) -> int
     decreases e
 {
@@ -78,16 +78,16 @@ pub proof fn lemma0_pow(e: nat)
     }
 }
 
-// proof fn lemma0_pow_auto()
-//     ensures forall e: nat {:trigger pow(0, e)} :: e > 0 ==> pow(0, e) == 0
-// {
-//     reveal pow();
-//     forall e: nat {:trigger pow(0, e)} | e > 0
-//     ensures pow(0, e) == 0
-//     {
-//     lemma0_pow(e);
-//     }
-// }
+proof fn lemma0_pow_auto()
+    ensures forall |e: nat| e > 0 ==> #[trigger]pow(0, e) == 0
+{
+    reveal(pow);
+    assert forall |e: nat| e > 0 implies
+        #[trigger]pow(0, e) == 0 by
+    {
+        lemma0_pow(e);
+    }
+}
 
 /// 1 raised to any power equals 1.
 pub proof fn lemma1_pow(e: nat)
@@ -101,21 +101,22 @@ pub proof fn lemma1_pow(e: nat)
     }
 }
 
-// proof fn lemma1_pow_auto()
-//     ensures forall e: nat {:trigger pow(1, e)} :: pow(1, e) == 1
-// {
-//     reveal pow();
-//     forall e: nat {:trigger pow(1, e)}
-//     ensures pow(1, e) == 1
-//     {
-//     lemma1_pow(e);
-//     }
-// }
+proof fn lemma1_pow_auto()
+    ensures forall |e: nat| e > 0 ==> #[trigger]pow(1, e) == 1
+{
+    reveal(pow);
+    assert forall |e: nat| e > 0 implies
+        #[trigger]pow(1, e) == 1 by
+    {
+        lemma1_pow(e);
+    }
+}
 
-///* Squaring a number is equal to raising it to the power of 2.
+/// Squaring a number is equal to raising it to the power of 2.
 pub proof fn lemma_square_is_pow2(x: int)
 ensures pow(x, 2) == x * x
 {
+    // the original dafny is just a reveal clause
     // maybe I can do it with reveal_with_fuel? but I don't know how
     // the following doesn't work
     // assert(pow(x, 2) == x * x) by { 
@@ -125,29 +126,45 @@ ensures pow(x, 2) == x * x
     assert(x as int * pow(x as int, 1) == x * (x as int * pow(x as int, 0)));
 }
 
-// proof fn lemma_square_is_pow2_auto()
-//     ensures forall x: nat {:trigger pow(x, 2)} :: pow(x, 2) == x * x
-// {
-//     reveal pow();
-//     forall x: nat {:trigger pow(x, 2)}
-//     ensures pow(x, 2) == x * x
-//     {}
-// }
+proof fn lemma_square_is_pow2_auto()
+    ensures forall |x: int| x > 0 ==> #[trigger]pow(x, 2) == x * x,
+{
+    reveal(pow);
+    assert forall |x: int| x > 0 implies
+        #[trigger]pow(x, 2) == x * x by
+    {
+        lemma_square_is_pow2(x);
+    }
+}
 
-// LACK lemma's from Mul.rs
 /// A positive number raised to any power is positive.
+#[verifier(spinoff_prover)]
 pub proof fn lemma_pow_positive(b: int, e: nat)
     requires b > 0
     ensures 0 < pow(b, e)
 {
-    // lemma_mul_increases_auto();
-    assume(false);
-
+    // dafny does not need to reveal
+    reveal(pow);
+    lemma_mul_increases_auto();
+    lemma_pow0_auto();
+    
     // let f = |u: int| 0 <= u ==> 0 < pow(b, u as nat);
-    // assert ({ &&&  f(0)
-    //           &&& (forall |i| #[trigger] is_le(0, i) && f(i) ==> f(i + 1))
-    //           &&& (forall |i| #[trigger] is_le(i, 0) && f(i) ==> f(i - 1))});
-    // lemma_mul_induction_auto(e as int, |u: int| 0 <= u ==> 0 < pow(b, u as nat));
+    // assert (f(0)) by {
+    //     lemma_pow0_auto();
+    // };
+    // assert forall |i| #[trigger] is_le(0, i) && f(i) implies f(i + 1) by {
+    //     assert (f(i + 1)) by {
+    //         assert(f(i));
+    //         assert (0 < pow(b, (i + 1) as nat)) by {
+    //             reveal(pow);
+    //             lemma_mul_increases_auto();
+    //         };
+    //     };
+    // };
+
+    // assert(forall |i| #[trigger] is_le(i, 0) && f(i) ==> f(i - 1));
+
+    lemma_mul_induction_auto(e as int, |u: int| 0 <= u ==> 0 < pow(b, u as nat));
 }
 
 // proof fn lemma_pow_positive_auto()
@@ -162,34 +179,36 @@ pub proof fn lemma_pow_positive(b: int, e: nat)
 //     }
 // }
 
-// /* Add exponents when multiplying powers with the same base. */
-// proof fn lemma_pow_adds(b: int, e1: nat, e2: nat)
-//     decreases e1
-//     ensures pow(b, e1 + e2) == pow(b, e1) * pow(b, e2)
-// {
-//     if e1 == 0 {
-//     calc {
-//         pow(b, e1) * pow(b, e2);
-//         { lemma_pow0(b); }
-//         1 * pow(b, e2);
-//         { lemma_mul_basics_auto(); }
-//         pow(b, 0 + e2);
-//     }
-//     }
-//     else {
-//     calc {
-//         pow(b, e1) * pow(b, e2);
-//         { reveal pow(); }
-//         (b * pow(b, e1 - 1)) * pow(b, e2);
-//         { lemma_mul_is_associative_auto(); }
-//         b * (pow(b, e1 - 1) * pow(b, e2));
-//         { lemma_pow_adds(b, e1 - 1, e2); }
-//         b * pow(b, e1 - 1 + e2);
-//         { reveal pow(); }
-//         pow(b, e1 + e2);
-//     }
-//     }
-// }
+/// Add exponents when multiplying powers with the same base.
+proof fn lemma_pow_adds(b: int, e1: nat, e2: nat)
+    ensures pow(b, e1 + e2) == pow(b, e1) * pow(b, e2),
+    decreases e1
+{
+    if e1 == 0 {
+    calc! {
+        (==)
+        pow(b, e1) * pow(b, e2);
+        { lemma_pow0(b); }
+        1 * pow(b, e2);
+        { lemma_mul_basics_auto(); }
+        pow(b, 0 + e2);
+    }
+    }
+    else {
+    calc! {
+        (==)
+        pow(b, e1) * pow(b, e2);
+        { reveal(pow); }
+        (b * pow(b, (e1 - 1) as nat)) * pow(b, e2);
+        { lemma_mul_is_associative_auto(); }
+        b * (pow(b, (e1 - 1) as nat) * pow(b, e2));
+        { lemma_pow_adds(b, (e1 - 1) as nat, e2); }
+        b * pow(b, (e1 - 1 + e2) as nat);
+        { reveal(pow); }
+        pow(b, e1 + e2);
+    }
+    }
+}
 
 // proof fn lemma_pow_adds_auto()
 //     ensures forall b: int, e1: nat, e2: nat {:trigger pow(b, e1 + e2)}
@@ -203,13 +222,13 @@ pub proof fn lemma_pow_positive(b: int, e: nat)
 //     }
 // }
 
-// proof fn lemma_pow_sub_add_cancel(b: int, e1: nat, e2: nat)
-//     decreases e1
-//     requires e1 >= e2
-//     ensures pow(b, e1 - e2) * pow(b, e2) == pow(b, e1)
-// {
-//     lemma_pow_adds(b, e1 - e2, e2);
-// }
+proof fn lemma_pow_sub_add_cancel(b: int, e1: nat, e2: nat)
+    requires e1 >= e2
+    ensures pow(b, (e1 - e2) as nat) * pow(b, e2) == pow(b, e1)
+    decreases e1
+{
+    lemma_pow_adds(b, (e1 - e2) as nat, e2);
+}
 
 // proof fn lemma_pow_sub_add_cancel_auto()
 //     ensures forall b: int, e1: nat, e2: nat {:trigger pow(b, e1 - e2)} | e1 >= e2
@@ -222,20 +241,24 @@ pub proof fn lemma_pow_positive(b: int, e: nat)
 //     }
 // }
 
-// /* Subtract exponents when dividing powers. */
+// TODO: NEED PROGRESS ON DIVMOD
+/* Subtract exponents when dividing powers. */
 // proof fn lemma_pow_subtracts(b: nat, e1: nat, e2: nat)
-//     requires b > 0
-//     requires e1 <= e2
-//     ensures pow(b, e1) > 0
-//     ensures pow(b, e2 - e1) == pow(b, e2) / pow(b, e1) > 0
+//     requires 
+//         b > 0,
+//         e1 <= e2
+//     ensures 
+//         pow(b, e1) > 0,
+//         pow(b, (e2 - e1) as nat) == pow(b, e2) / pow(b, e1) > 0
 // {
 //     lemma_pow_positive_auto();
-//     calc {
-//     pow(b, e2) / pow(b, e1);
-//     { lemma_pow_sub_add_cancel(b, e2, e1); }
-//     pow(b, e2 - e1) * pow(b, e1) / pow(b, e1);
-//     { lemma_div_by_multiple(pow(b, e2 - e1), pow(b, e1)); }
-//     pow(b, e2 - e1);
+//     calc! {
+//         (==)
+//         pow(b, e2) / pow(b, e1);
+//         { lemma_pow_sub_add_cancel(b, e2, e1); }
+//         pow(b, e2 - e1) * pow(b, e1) / pow(b, e1);
+//         { lemma_div_by_multiple(pow(b, e2 - e1), pow(b, e1)); }
+//         pow(b, e2 - e1);
 //     }
 // }
 

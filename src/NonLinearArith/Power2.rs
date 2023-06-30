@@ -13,16 +13,29 @@ use crate::NonLinearArith::Internals::GeneralInternals;
 spec fn pow2(e: nat) -> nat
     decreases e
     // ensures pow2(e) > 0  // cannot have ensurs clause in spec functions
+    // a work around is the lemma below
 {
+    // you cannot reveal in a spec function, which cause more reveals clauses
+    // for the proof
     // reveal(pow);
     pow(2, e) as nat
 }
 
-proof fn pow2_pos(e: nat)
+proof fn lemma_pow2_pos(e: nat)
     ensures pow2(e) > 0
 {
     reveal(pow2);
     lemma_pow_positive(2, e);
+}
+
+proof fn lemma_pow2_pos_auto()
+    ensures forall |e: nat| #[trigger]pow2(e) > 0
+{
+    reveal(pow2);
+    assert forall |e: nat| #[trigger]pow2(e) > 0 by
+    {
+        lemma_pow2_pos(e);
+    }
 }
 
 /// pow2() is equivalent to Pow() with base 2.
@@ -77,6 +90,7 @@ proof fn lemma_pow2_auto()
 proof fn lemma2_4()
 {
     assert(pow2(0) == 0x1) by {
+        reveal(pow);
         reveal_with_fuel(pow2, 1);
     };
 }

@@ -16,6 +16,7 @@ proof fn lemma_mod_of_zero_is_zero(m:int)
 
 /* describes fundamentals of the modulus operator */
 #[verifier(nonlinear)]
+// #[verifier(integer_ring)]
 pub proof fn lemma_fundamental_div_mod(x:int, d:int)
     requires d != 0
     ensures  x == d * (x / d) + (x % d)

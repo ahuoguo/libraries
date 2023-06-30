@@ -13,7 +13,7 @@ use crate::NonLinearArith::Internals::ModInternals;
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::ModInternalsNonlinear;
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::MulInternals;
+use crate::NonLinearArith::Internals::MulInternals::{lemma_mul_induction_auto};
 #[allow(unused_imports)]
 use crate::NonLinearArith::Mul;
 #[allow(unused_imports)]
@@ -67,16 +67,15 @@ proof fn lemma_div_is_div_recursive(x: int, d: int)
     lemma_div_is_div_pos(x, d);
 }
 
-// proof fn lemma_div_is_div_recursive_auto()
-//     ensures forall x: int, d: int {:trigger x / d} :: d > 0 ==> div_recursive(x, d) == x / d
-// {
-//     reveal div_recursive();
-//     forall x: int, d: int | d > 0
-//     ensures div_recursive(x, d) == x / d
-//     {
-//     lemma_div_is_div_recursive(x, d);
-//     }
-// }
+proof fn lemma_div_is_div_recursive_auto()
+    ensures forall |x: int, d: int| d > 0 ==> div_recursive(x, d) == #[trigger](x / d)
+{
+    reveal(div_recursive);
+    assert forall |x: int, d: int| d > 0 implies div_recursive(x, d) == #[trigger](x / d) by
+    {
+    lemma_div_is_div_recursive(x, d);
+    }
+}
 
 /// the quotient of an integer divided by itself is 1
 proof fn lemma_div_by_self(d: int)
@@ -108,6 +107,7 @@ pub proof fn lemma_div_basics(x: int)
     }
 }
 
+// TODO: depends on way latter lemmas in line 200-3000
 // proof fn lemma_div_basics_auto()
 //     ensures forall x {:trigger 0 / x} :: x != 0 ==> 0 / x == 0
 //     ensures forall x {:trigger x / 1} :: x / 1 == x
@@ -157,9 +157,9 @@ proof fn lemma_small_div_converse_auto()
 //     forall x, d | x >= d > 0 { lemma_div_non_zero(x, d); }
 // }
 
-/// given two fractions with the same numerator, the order of numbers is determined by 
-/// the denominators. However, if the numerator is 0, the fractions are equal regardless of 
-/// the denominators' values
+// /// given two fractions with the same numerator, the order of numbers is determined by 
+// /// the denominators. However, if the numerator is 0, the fractions are equal regardless of 
+// /// the denominators' values
 // proof fn lemma_div_is_ordered_by_denominator(x: int, y: int, z: int)
 //     requires 
 //         0 <= x,
@@ -245,15 +245,27 @@ proof fn lemma_small_div_converse_auto()
 //     }
 // }
 
-// /* dividing a whole number by a natural number will result in a quotient that is 
-// greater than or equal to 0 */
-// proof fn lemma_div_pos_is_pos(x: int, d: int)
-//     requires 0 <= x
-//     requires 0 < d
-//     ensures 0 <= x / d
-// {
-//     lemma_div_induction_auto(d, x, u => 0 <= u ==> u / d >= 0);
-// }
+/* dividing a whole number by a natural number will result in a quotient that is 
+greater than or equal to 0 */
+proof fn lemma_div_pos_is_pos(x: int, d: int)
+    requires 
+        0 <= x,
+        0 < d
+    ensures 
+        0 <= x / d
+{
+    // assert(  )
+    lemma_div_auto(d);
+    assert(div_auto(d));
+    let f = |u: int| 0 <= u ==> u / d >= 0;
+
+    assert forall |i: int| #[trigger]is_le(0, i) && f(i) implies f(i + d) by {
+        assert(i / d >= 0);
+        assert((i + d) / d >= 0) by { lem_div_basics(d, i + d) };
+    };
+
+    lemma_div_induction_auto(d, x, |u: int| 0 <= u ==> u / d >= 0);
+}
 
 // proof fn lemma_div_pos_is_pos_auto()
 //     ensures forall x: int, d: int {:trigger x / d} :: 0 <= x && 0 < d ==> 0 <= x / d
@@ -321,40 +333,39 @@ proof fn lemma_small_div_converse_auto()
 //     }
 // }
 
-/// numerical order is preserved when dividing two seperate integers by a common positive divisor
-proof fn lemma_div_is_ordered(x: int, y: int, z: int)
-    requires 
-        x <= y,
-        0 < z,
-    ensures x / z <= y / z
-{
-    lemma_div_auto(z);
-    let f = |xy: int| xy <= 0 ==> (xy + y) / z <= y / z;
-    // assert forall |i: int| #[trigger]is_le(0, i) && i < y ==> f(i) by {
-    //     if (is_le(0, i) && i < y) {
-    //         assume(false);
-    //         assert((i + y) / z <= y / z);
-    //     }
-    // };
+// /// numerical order is preserved when dividing two seperate integers by a common positive divisor
+// pub proof fn lemma_div_is_ordered(x: int, y: int, z: int)
+//     requires 
+//         x <= y,
+//         0 < z,
+//     ensures x / z <= y / z
+// {
+//     lemma_div_auto(z);
+//     let f = |xy: int| xy <= 0 ==> (xy + y) / z <= y / z;
 
-    // assert forall |i: int| #[trigger]is_le(0, i) && f(i) ==> f(i + y) by {
-    //     if (is_le(0, i) && f(i)) {
-    //         assume(false);
-    //     }
-    // };
+//     assert forall |i: int| #[trigger]is_le(i + 1, z) && f(i) implies f(i - z) by {
+//         if (i - z <= 0) {
+//             assert( f(i) );
+//             assert( i <= 0 ==> (i + y) / z <= y / z );
+//             if (i > 0) {
+//                 assert ( z > 0 );
+//                 assert( i <= z );
+                
+//                 assume ( (i + y) / z - 1 <= y / z ); // NEED TO PROVE
+                
+//                 assert ( ((i + y) - z) / z == (i + y) / z - 1 ) by { lem_div_basics(z, i + y) };
+//                 assert ( ((i + y) - z) / z <= y / z );
+//                 assert( (i - z + y) / z <= y / z ) by { lem_div_basics(z, i) };
+//             } else {
+//                 assert( (i + y) / z <= y / z );
+//                 assert( (i - z + y) / z <= y / z ) by { lem_div_basics(z, i + y) };
+//             }
+//             assert( (i - z + y) / z <= y / z );
+//         }
+//     };
 
-    // assert forall |i: int| #[trigger]is_le(i + 1, y) && f(i) ==> f(i - y) by {
-    //     if (is_le(i + 1, y) && f(i)) {
-    //         assume(false);
-    //     }
-    // };
-
-    // assume(div_auto(y) ==> ((forall |i: int| #[trigger]is_le(0, i) && i < y ==> f(i))
-    //         && (forall |i: int| f(i) && #[trigger]is_le(0, i) && f(i) ==> f(i + y))
-    //         && (forall |i: int| #[trigger]is_le(i + 1, y) && f(i) ==> f(i - y))));
-
-    // lemma_div_induction_auto(z, x - y, |xy: int| xy <= 0 ==> (xy + y) / z <= y / z);
-}
+//     lemma_div_induction_auto(z, x - y, |xy: int| xy <= 0 ==> (xy + y) / z <= y / z);
+// }
 
 // proof fn lemma_div_is_ordered_auto()
 //     ensures forall x: int, y: int, z: int {:trigger x / z, y / z} :: x <= y && 0 < z ==> x / z <= y / z
@@ -809,16 +820,18 @@ proof fn lemma_div_is_ordered(x: int, y: int, z: int)
 //     }
 // }
 
-// /* this is the same as writing x + (b/d) == x when b is less than d; this is true because (b/d) == 0 */
+// /// this is the same as writing x + (b/d) == x when b is less than d; this is true because (b/d) == 0
 // proof fn lemma_div_multiples_vanish_fancy(x: int, b: int, d: int)
-//     requires 0 < d
-//     requires 0 <= b < d
-//     ensures (d * x + b) / d == x
+//     requires 
+//         0 < d,
+//         0 <= b < d,
+//     ensures 
+//         (d * x + b) / d == x
 // {
 //     lemma_div_auto(d);
-//     var f := u => (d * u + b) / d == u;
+//     let f = |u: int| (d * u + b) / d == u;
 //     lemma_mul_induction_auto(x, f);
-//     assert f(x);
+//     assert(f(x));
 // }
 
 // proof fn lemma_div_multiples_vanish_fancy_auto()
