@@ -1,11 +1,6 @@
 use vstd::prelude::*;
 
-#[allow(unused_imports)]
-use crate::NonLinearArith::Internals::ModInternalsNonlinear::*;
-#[allow(unused_imports)]
-use crate::NonLinearArith::Internals::DivInternalsNonlinear::*;
-
-use crate::NonLinearArith::Internals::GeneralInternals::*;
+use crate::NonLinearArith::Internals::GeneralInternals::{is_le, lemma_induction_helper};
 
 verus! {
 
@@ -149,7 +144,6 @@ proof fn lemma_mul_distributes1()
         forall |x: int, y: int, z: int| #[trigger] ((x + y) * z) == (x * z + y * z),
         forall |x: int, y: int, z: int| #[trigger] ((x - y) * z) == (x * z - y * z),
 {
-
 }
 
 // experimental
@@ -166,8 +160,8 @@ pub proof fn lemma_mul_auto1()
     ensures  mul_auto1()
 {
     // VERY IMPORTANT
-    lemma_mul_commutes(); // OBSERVE
-    lemma_mul_distributes1(); // OBSERVE
+    // lemma_mul_commutes();
+    // lemma_mul_distributes1();
 }
 
 // this mul_auto seems to be pretty stable, do not switch to auto1

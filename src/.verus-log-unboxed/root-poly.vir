@@ -1,0 +1,1330 @@
+(@ "no location" (Datatype :path "tuple%0." :proxy None :owning_module None :visibility (Visibility :restricted_to None) :transparency
+  (DatatypeTransparency WhenVisible (Visibility :restricted_to None)) :typ_params () :variants (
+   (-> tuple%0 ())
+  ) :mode Exec :ext_equal false))
+
+(@ "NonLinearArith/dist_unboxed.rs:146:1: 146:10 (#0)" (Function
+  :name (Fun :path "dist_unboxed!main.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to "dist_unboxed!.")
+  :owning_module "dist_unboxed!." :mode Exec :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:146:1: 146:10 (#0)" (Param :name "no%param" :typ (Typ Int (IntRange Int)) :mode Spec :is_mut
+     false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:146:11: 146:11 (#0)" (Param :name "%return" :typ (Typ Datatype "tuple%0." ()) :mode
+    Exec :is_mut false :unwrapped_info None)
+  ) :require () :ensure () :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec)
+  :is_const false :publish None :attrs (FunctionAttrs :uses_ghost_blocks false :inline false :hidden () :broadcast_forall false
+   :no_auto_trigger false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by
+   false :check_recommends false :nonlinear false :spinoff_prover false :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:146:11: 146:13 (#0)" (> Block () None) (Typ Datatype "tuple%0." ())) :extra_dependencies
+  ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:5:1: 5:63 (#0)" (Function
+  :name (Fun :path "dist_unboxed!dist_left_add.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to
+   None
+  ) :owning_module "dist_unboxed!." :mode Spec :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:5:33: 5:39 (#0)" (Param :name "a~2" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:5:41: 5:47 (#0)" (Param :name "b~4" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:5:49: 5:55 (#0)" (Param :name "c~6" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:5:60: 5:63 (#0)" (Param :name "%return" :typ (Typ Int (IntRange Int)) :mode Spec
+    :is_mut false :unwrapped_info None)
+  ) :require () :ensure () :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec)
+  :is_const false :publish true :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false
+   :no_auto_trigger false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by
+   false :check_recommends false :nonlinear false :spinoff_prover false :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:6:1: 8:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:7:5: 7:12 (#0)" (
+      > Binary (BinaryOp Arith (ArithOp Mul) None) (@@ "NonLinearArith/dist_unboxed.rs:7:5: 7:12 (#0)" (> Binary (BinaryOp Arith (
+          ArithOp Add
+         ) None
+        ) (@@ "NonLinearArith/dist_unboxed.rs:7:6: 7:7 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:7:6: 7:7 (#0)"
+           (> Var "a~2") (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:7:10: 7:11 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:7:10: 7:11 (#0)"
+           (> Var "b~4") (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int)))
+       ) (Typ Int (IntRange Int))
+      ) (@@ "NonLinearArith/dist_unboxed.rs:7:15: 7:16 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:7:15: 7:16 (#0)"
+         (> Var "c~6") (Typ Boxed (Typ Int (IntRange Int))))
+       ) (Typ Int (IntRange Int)))
+     ) (Typ Int (IntRange Int)))
+   ) (Typ Int (IntRange Int))
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:10:1: 10:64 (#0)" (Function
+  :name (Fun :path "dist_unboxed!dist_right_add.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to
+   None
+  ) :owning_module "dist_unboxed!." :mode Spec :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:10:34: 10:40 (#0)" (Param :name "a~2" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:10:42: 10:48 (#0)" (Param :name "b~4" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:10:50: 10:56 (#0)" (Param :name "c~6" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:10:61: 10:64 (#0)" (Param :name "%return" :typ (Typ Int (IntRange Int)) :mode Spec
+    :is_mut false :unwrapped_info None)
+  ) :require () :ensure () :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec)
+  :is_const false :publish true :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false
+   :no_auto_trigger false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by
+   false :check_recommends false :nonlinear false :spinoff_prover false :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:11:1: 13:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:12:5: 12:6 (#0)"
+     (> Binary (BinaryOp Arith (ArithOp Add) None) (@@ "NonLinearArith/dist_unboxed.rs:12:5: 12:6 (#0)" (> Binary (BinaryOp Arith
+         (ArithOp Mul) None
+        ) (@@ "NonLinearArith/dist_unboxed.rs:12:5: 12:6 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:12:5: 12:6 (#0)"
+           (> Var "a~2") (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:12:9: 12:10 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:12:9: 12:10 (#0)"
+           (> Var "c~6") (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int)))
+       ) (Typ Int (IntRange Int))
+      ) (@@ "NonLinearArith/dist_unboxed.rs:12:13: 12:14 (#0)" (> Binary (BinaryOp Arith (ArithOp Mul) None) (@@ "NonLinearArith/dist_unboxed.rs:12:13: 12:14 (#0)"
+         (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:12:13: 12:14 (#0)" (> Var "b~4")
+           (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:12:17: 12:18 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:12:17: 12:18 (#0)"
+           (> Var "c~6") (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int)))
+       ) (Typ Int (IntRange Int)))
+     ) (Typ Int (IntRange Int)))
+   ) (Typ Int (IntRange Int))
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:15:1: 15:63 (#0)" (Function
+  :name (Fun :path "dist_unboxed!dist_left_sub.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to
+   None
+  ) :owning_module "dist_unboxed!." :mode Spec :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:15:33: 15:39 (#0)" (Param :name "a~2" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:15:41: 15:47 (#0)" (Param :name "b~4" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:15:49: 15:55 (#0)" (Param :name "c~6" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:15:60: 15:63 (#0)" (Param :name "%return" :typ (Typ Int (IntRange Int)) :mode Spec
+    :is_mut false :unwrapped_info None)
+  ) :require () :ensure () :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec)
+  :is_const false :publish true :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false
+   :no_auto_trigger false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by
+   false :check_recommends false :nonlinear false :spinoff_prover false :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:16:1: 18:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:17:5: 17:12 (#0)"
+     (> Binary (BinaryOp Arith (ArithOp Mul) None) (@@ "NonLinearArith/dist_unboxed.rs:17:5: 17:12 (#0)" (> Binary (BinaryOp Arith
+         (ArithOp Sub) None
+        ) (@@ "NonLinearArith/dist_unboxed.rs:17:6: 17:7 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:17:6: 17:7 (#0)"
+           (> Var "a~2") (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:17:10: 17:11 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:17:10: 17:11 (#0)"
+           (> Var "b~4") (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int)))
+       ) (Typ Int (IntRange Int))
+      ) (@@ "NonLinearArith/dist_unboxed.rs:17:15: 17:16 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:17:15: 17:16 (#0)"
+         (> Var "c~6") (Typ Boxed (Typ Int (IntRange Int))))
+       ) (Typ Int (IntRange Int)))
+     ) (Typ Int (IntRange Int)))
+   ) (Typ Int (IntRange Int))
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:20:1: 20:64 (#0)" (Function
+  :name (Fun :path "dist_unboxed!dist_right_sub.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to
+   None
+  ) :owning_module "dist_unboxed!." :mode Spec :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:20:34: 20:40 (#0)" (Param :name "a~2" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:20:42: 20:48 (#0)" (Param :name "b~4" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:20:50: 20:56 (#0)" (Param :name "c~6" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:20:61: 20:64 (#0)" (Param :name "%return" :typ (Typ Int (IntRange Int)) :mode Spec
+    :is_mut false :unwrapped_info None)
+  ) :require () :ensure () :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec)
+  :is_const false :publish true :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false
+   :no_auto_trigger false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by
+   false :check_recommends false :nonlinear false :spinoff_prover false :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:21:1: 23:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:22:5: 22:6 (#0)"
+     (> Binary (BinaryOp Arith (ArithOp Sub) None) (@@ "NonLinearArith/dist_unboxed.rs:22:5: 22:6 (#0)" (> Binary (BinaryOp Arith
+         (ArithOp Mul) None
+        ) (@@ "NonLinearArith/dist_unboxed.rs:22:5: 22:6 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:22:5: 22:6 (#0)"
+           (> Var "a~2") (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:22:9: 22:10 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:22:9: 22:10 (#0)"
+           (> Var "c~6") (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int)))
+       ) (Typ Int (IntRange Int))
+      ) (@@ "NonLinearArith/dist_unboxed.rs:22:13: 22:14 (#0)" (> Binary (BinaryOp Arith (ArithOp Mul) None) (@@ "NonLinearArith/dist_unboxed.rs:22:13: 22:14 (#0)"
+         (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:22:13: 22:14 (#0)" (> Var "b~4")
+           (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:22:17: 22:18 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:22:17: 22:18 (#0)"
+           (> Var "c~6") (Typ Boxed (Typ Int (IntRange Int))))
+         ) (Typ Int (IntRange Int)))
+       ) (Typ Int (IntRange Int)))
+     ) (Typ Int (IntRange Int)))
+   ) (Typ Int (IntRange Int))
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:25:1: 25:45 (#0)" (Function
+  :name (Fun :path "dist_unboxed!mul.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to None)
+  :owning_module "dist_unboxed!." :mode Spec :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:25:23: 25:29 (#0)" (Param :name "a~2" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:25:31: 25:37 (#0)" (Param :name "b~4" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:25:42: 25:45 (#0)" (Param :name "%return" :typ (Typ Int (IntRange Int)) :mode Spec
+    :is_mut false :unwrapped_info None)
+  ) :require () :ensure () :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec)
+  :is_const false :publish true :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false
+   :no_auto_trigger false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by
+   false :check_recommends false :nonlinear false :spinoff_prover false :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:26:1: 28:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:27:5: 27:6 (#0)"
+     (> Binary (BinaryOp Arith (ArithOp Mul) None) (@@ "NonLinearArith/dist_unboxed.rs:27:5: 27:6 (#0)" (> UnaryOpr (UnaryOpr Unbox
+         (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:27:5: 27:6 (#0)" (> Var "a~2") (Typ Boxed (Typ Int (IntRange Int))))
+       ) (Typ Int (IntRange Int))
+      ) (@@ "NonLinearArith/dist_unboxed.rs:27:9: 27:10 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:27:9: 27:10 (#0)"
+         (> Var "b~4") (Typ Boxed (Typ Int (IntRange Int))))
+       ) (Typ Int (IntRange Int)))
+     ) (Typ Int (IntRange Int)))
+   ) (Typ Int (IntRange Int))
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:31:1: 31:45 (#0)" (Function
+  :name (Fun :path "dist_unboxed!add.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to None)
+  :owning_module "dist_unboxed!." :mode Spec :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:31:23: 31:29 (#0)" (Param :name "a~2" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:31:31: 31:37 (#0)" (Param :name "b~4" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:31:42: 31:45 (#0)" (Param :name "%return" :typ (Typ Int (IntRange Int)) :mode Spec
+    :is_mut false :unwrapped_info None)
+  ) :require () :ensure () :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec)
+  :is_const false :publish true :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false
+   :no_auto_trigger false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by
+   false :check_recommends false :nonlinear false :spinoff_prover false :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:32:1: 34:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:33:5: 33:6 (#0)"
+     (> Binary (BinaryOp Arith (ArithOp Add) None) (@@ "NonLinearArith/dist_unboxed.rs:33:5: 33:6 (#0)" (> UnaryOpr (UnaryOpr Unbox
+         (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:33:5: 33:6 (#0)" (> Var "a~2") (Typ Boxed (Typ Int (IntRange Int))))
+       ) (Typ Int (IntRange Int))
+      ) (@@ "NonLinearArith/dist_unboxed.rs:33:9: 33:10 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:33:9: 33:10 (#0)"
+         (> Var "b~4") (Typ Boxed (Typ Int (IntRange Int))))
+       ) (Typ Int (IntRange Int)))
+     ) (Typ Int (IntRange Int)))
+   ) (Typ Int (IntRange Int))
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:36:1: 36:45 (#0)" (Function
+  :name (Fun :path "dist_unboxed!sub.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to None)
+  :owning_module "dist_unboxed!." :mode Spec :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:36:23: 36:29 (#0)" (Param :name "a~2" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:36:31: 36:37 (#0)" (Param :name "b~4" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:36:42: 36:45 (#0)" (Param :name "%return" :typ (Typ Int (IntRange Int)) :mode Spec
+    :is_mut false :unwrapped_info None)
+  ) :require () :ensure () :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec)
+  :is_const false :publish true :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false
+   :no_auto_trigger false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by
+   false :check_recommends false :nonlinear false :spinoff_prover false :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:37:1: 39:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:38:5: 38:6 (#0)"
+     (> Binary (BinaryOp Arith (ArithOp Sub) None) (@@ "NonLinearArith/dist_unboxed.rs:38:5: 38:6 (#0)" (> UnaryOpr (UnaryOpr Unbox
+         (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:38:5: 38:6 (#0)" (> Var "a~2") (Typ Boxed (Typ Int (IntRange Int))))
+       ) (Typ Int (IntRange Int))
+      ) (@@ "NonLinearArith/dist_unboxed.rs:38:9: 38:10 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:38:9: 38:10 (#0)"
+         (> Var "b~4") (Typ Boxed (Typ Int (IntRange Int))))
+       ) (Typ Int (IntRange Int)))
+     ) (Typ Int (IntRange Int)))
+   ) (Typ Int (IntRange Int))
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:41:1: 41:47 (#0)" (Function
+  :name (Fun :path "dist_unboxed!is_le.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to None)
+  :owning_module "dist_unboxed!." :mode Spec :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:41:24: 41:30 (#0)" (Param :name "x~2" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:41:32: 41:38 (#0)" (Param :name "y~4" :typ (Typ Boxed (Typ Int (IntRange Int))) :mode Spec
+     :is_mut false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:41:43: 41:47 (#0)" (Param :name "%return" :typ (Typ Bool) :mode Spec :is_mut false
+    :unwrapped_info None)
+  ) :require () :ensure () :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec)
+  :is_const false :publish true :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false
+   :no_auto_trigger false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by
+   false :check_recommends false :nonlinear false :spinoff_prover false :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:42:1: 44:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:43:5: 43:6 (#0)"
+     (> Binary (BinaryOp Inequality (InequalityOp Le)) (@@ "NonLinearArith/dist_unboxed.rs:43:5: 43:6 (#0)" (> UnaryOpr (UnaryOpr
+         Unbox (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:43:5: 43:6 (#0)" (> Var "x~2") (Typ Boxed (Typ Int (IntRange Int))))
+       ) (Typ Int (IntRange Int))
+      ) (@@ "NonLinearArith/dist_unboxed.rs:43:10: 43:11 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:43:10: 43:11 (#0)"
+         (> Var "y~4") (Typ Boxed (Typ Int (IntRange Int))))
+       ) (Typ Int (IntRange Int)))
+     ) (Typ Bool))
+   ) (Typ Bool)
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:48:7: 48:76 (#0)" (Function
+  :name (Fun :path "dist_unboxed!lemma_induction_helper_pos.") :proxy None :kind (FunctionKind Static) :visibility (Visibility
+   :restricted_to "dist_unboxed!."
+  ) :owning_module "dist_unboxed!." :mode Proof :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:48:37: 48:43 (#0)" (Param :name "n~2" :typ (Typ Int (IntRange Int)) :mode Spec :is_mut false
+     :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:48:45: 48:54 (#0)" (Param :name "f~4" :typ (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+     :mode Spec :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:48:69: 48:75 (#0)" (Param :name "x~6" :typ (Typ Int (IntRange Int)) :mode Spec :is_mut false
+     :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:58:1: 58:1 (#0)" (Param :name "%return" :typ (Typ Datatype "tuple%0." ()) :mode Proof
+    :is_mut false :unwrapped_info None)
+  ) :require (
+   (@@ "NonLinearArith/dist_unboxed.rs:50:9: 50:10 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Ge)) (@@ "NonLinearArith/dist_unboxed.rs:50:9: 50:10 (#0)"
+      (> Var "x~6") (Typ Int (IntRange Int))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:50:14: 50:15 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:51:9: 51:10 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Gt)) (@@ "NonLinearArith/dist_unboxed.rs:51:9: 51:10 (#0)"
+      (> Var "n~2") (Typ Int (IntRange Int))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:51:13: 51:14 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:52:9: 52:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~40 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:52:26: 52:27 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:52:31: 52:32 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:52:26: 52:27 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Le))
+           (@@ "NonLinearArith/dist_unboxed.rs:52:26: 52:27 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat))) (@@ "NonLinearArith/dist_unboxed.rs:52:31: 52:32 (#0)"
+            (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:52:31: 52:32 (#0)" (> Var "i~40")
+              (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:52:31: 52:32 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Lt)) (@@ "NonLinearArith/dist_unboxed.rs:52:31: 52:32 (#0)"
+            (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:52:31: 52:32 (#0)" (> Var "i~40")
+              (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:52:35: 52:36 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:52:52: 52:56 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:52:52: 52:56 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:52:52: 52:56 (#0)" (> Call (
+              CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:52:52: 52:53 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:52:54: 52:55 (#0)" (> Var "i~40") (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:53:9: 53:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~90 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:53:26: 53:27 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:53:26: 53:51 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:53:26: 53:27 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Ge))
+           (@@ "NonLinearArith/dist_unboxed.rs:53:26: 53:27 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:53:26: 53:27 (#0)"
+              (> Var "i~90") (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:53:31: 53:32 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:53:47: 53:51 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:53:47: 53:51 (#0)"
+            (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:53:47: 53:51 (#0)" (> Call (
+                CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:53:47: 53:48 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                  (Typ Bool)))
+               ) ((@@ "NonLinearArith/dist_unboxed.rs:53:49: 53:50 (#0)" (> Var "i~90") (Typ Boxed (Typ Int (IntRange Int)))))
+              ) (Typ Boxed (Typ Bool)))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:53:67: 53:80 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:53:67: 53:80 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:53:67: 53:80 (#0)" (> Call (
+              CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:53:67: 53:68 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:53:70: 53:79 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:53:70: 53:79 (#0)"
+                 (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!add.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:53:74: 53:75 (#0)"
+                    (> Var "i~90") (Typ Boxed (Typ Int (IntRange Int)))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:53:77: 53:78 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:53:77: 53:78 (#0)"
+                      (> Var "n~2") (Typ Int (IntRange Int)))
+                    ) (Typ Boxed (Typ Int (IntRange Int)))))
+                 ) (Typ Int (IntRange Int)))
+               ) (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:54:9: 54:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~131 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:54:26: 54:27 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:54:26: 54:51 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:54:26: 54:27 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Lt))
+           (@@ "NonLinearArith/dist_unboxed.rs:54:26: 54:27 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:54:26: 54:27 (#0)"
+              (> Var "i~131") (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:54:30: 54:31 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:54:47: 54:51 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:54:47: 54:51 (#0)"
+            (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:54:47: 54:51 (#0)" (> Call (
+                CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:54:47: 54:48 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                  (Typ Bool)))
+               ) ((@@ "NonLinearArith/dist_unboxed.rs:54:49: 54:50 (#0)" (> Var "i~131") (Typ Boxed (Typ Int (IntRange Int)))))
+              ) (Typ Boxed (Typ Bool)))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:54:67: 54:80 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:54:67: 54:80 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:54:67: 54:80 (#0)" (> Call (
+              CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:54:67: 54:68 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:54:70: 54:79 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:54:70: 54:79 (#0)"
+                 (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!sub.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:54:74: 54:75 (#0)"
+                    (> Var "i~131") (Typ Boxed (Typ Int (IntRange Int)))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:54:77: 54:78 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:54:77: 54:78 (#0)"
+                      (> Var "n~2") (Typ Int (IntRange Int)))
+                    ) (Typ Boxed (Typ Int (IntRange Int)))))
+                 ) (Typ Int (IntRange Int)))
+               ) (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+  ) :ensure (
+   (@@ "NonLinearArith/dist_unboxed.rs:56:9: 56:13 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:56:9: 56:13 (#0)"
+      (> Call (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:56:9: 56:10 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+          (Typ Bool)))
+       ) ((@@ "NonLinearArith/dist_unboxed.rs:56:11: 56:12 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:56:11: 56:12 (#0)"
+           (> Var "x~6") (Typ Int (IntRange Int)))
+         ) (Typ Boxed (Typ Int (IntRange Int)))))
+      ) (Typ Boxed (Typ Bool)))
+    ) (Typ Bool))
+  ) :decrease ((@@ "NonLinearArith/dist_unboxed.rs:57:15: 57:16 (#0)" (> Var "x~6") (Typ Int (IntRange Int)))) :decrease_when
+  None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec) :is_const false :publish None :attrs (FunctionAttrs
+   :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false :no_auto_trigger false :custom_req_err None :autospec
+   None :bit_vector false :atomic false :integer_ring false :is_decrease_by false :check_recommends false :nonlinear false :spinoff_prover
+   true :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:58:1: 65:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:59:5: 64:6 (#0)"
+     (> If (@@ "NonLinearArith/dist_unboxed.rs:59:8: 59:16 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Ge)) (@@ "NonLinearArith/dist_unboxed.rs:59:9: 59:10 (#0)"
+         (> Var "x~6") (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:59:14: 59:15 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+       ) (Typ Bool)
+      ) (@@ "NonLinearArith/dist_unboxed.rs:60:5: 64:6 (#0)" (> Block (
+         (@ "NonLinearArith/dist_unboxed.rs:61:9: 61:15 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:61:9: 61:15 (#0)" (> AssertAssume
+             :is_assume false :expr (@@ "NonLinearArith/dist_unboxed.rs:61:16: 61:17 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Lt))
+               (@@ "NonLinearArith/dist_unboxed.rs:61:16: 61:17 (#0)" (> Binary (BinaryOp Arith (ArithOp Sub) None) (@@ "NonLinearArith/dist_unboxed.rs:61:16: 61:17 (#0)"
+                  (> Var "x~6") (Typ Int (IntRange Int))
+                 ) (@@ "NonLinearArith/dist_unboxed.rs:61:20: 61:21 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+                ) (Typ Int (IntRange Int))
+               ) (@@ "NonLinearArith/dist_unboxed.rs:61:24: 61:25 (#0)" (> Var "x~6") (Typ Int (IntRange Int)))
+              ) (Typ Bool))
+            ) (Typ Datatype "tuple%0." ()))))
+         (@ "NonLinearArith/dist_unboxed.rs:62:9: 62:48 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:62:9: 62:48 (#0)" (> Call
+             (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!lemma_induction_helper_pos.") () () (AutospecUsage Final))
+             ((@@ "NonLinearArith/dist_unboxed.rs:62:36: 62:37 (#0)" (> Var "n~2") (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:62:39: 62:40 (#0)"
+               (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+              ) (@@ "NonLinearArith/dist_unboxed.rs:62:42: 62:43 (#0)" (> Binary (BinaryOp Arith (ArithOp Sub) None) (@@ "NonLinearArith/dist_unboxed.rs:62:42: 62:43 (#0)"
+                 (> Var "x~6") (Typ Int (IntRange Int))
+                ) (@@ "NonLinearArith/dist_unboxed.rs:62:46: 62:47 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+               ) (Typ Int (IntRange Int))))
+            ) (Typ Datatype "tuple%0." ()))))
+         (@ "NonLinearArith/dist_unboxed.rs:63:9: 63:15 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:63:9: 63:15 (#0)" (> AssertAssume
+             :is_assume false :expr (@@ "NonLinearArith/dist_unboxed.rs:63:17: 63:34 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:63:17: 63:34 (#0)"
+                (> Call (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:63:17: 63:18 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange
+                       Int))
+                    ) (Typ Bool)))
+                 ) ((@@ "NonLinearArith/dist_unboxed.rs:63:20: 63:33 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:63:20: 63:33 (#0)"
+                     (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!add.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:63:24: 63:25 (#0)"
+                        (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:63:24: 63:25 (#0)" (> Binary (BinaryOp
+                            Arith (ArithOp Sub) None
+                           ) (@@ "NonLinearArith/dist_unboxed.rs:63:24: 63:25 (#0)" (> Var "x~6") (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:63:28: 63:29 (#0)"
+                            (> Var "n~2") (Typ Int (IntRange Int)))
+                          ) (Typ Int (IntRange Int)))
+                        ) (Typ Boxed (Typ Int (IntRange Int)))
+                       ) (@@ "NonLinearArith/dist_unboxed.rs:63:31: 63:32 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:63:31: 63:32 (#0)"
+                          (> Var "n~2") (Typ Int (IntRange Int)))
+                        ) (Typ Boxed (Typ Int (IntRange Int)))))
+                     ) (Typ Int (IntRange Int)))
+                   ) (Typ Boxed (Typ Int (IntRange Int)))))
+                ) (Typ Boxed (Typ Bool)))
+              ) (Typ Bool))
+            ) (Typ Datatype "tuple%0." ()))))
+        ) None
+       ) (Typ Datatype "tuple%0." ())
+      ) None
+     ) (Typ Datatype "tuple%0." ()))
+   ) (Typ Datatype "tuple%0." ())
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:68:7: 68:76 (#0)" (Function
+  :name (Fun :path "dist_unboxed!lemma_induction_helper_neg.") :proxy None :kind (FunctionKind Static) :visibility (Visibility
+   :restricted_to "dist_unboxed!."
+  ) :owning_module "dist_unboxed!." :mode Proof :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:68:37: 68:43 (#0)" (Param :name "n~2" :typ (Typ Int (IntRange Int)) :mode Spec :is_mut false
+     :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:68:45: 68:54 (#0)" (Param :name "f~4" :typ (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+     :mode Spec :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:68:69: 68:75 (#0)" (Param :name "x~6" :typ (Typ Int (IntRange Int)) :mode Spec :is_mut false
+     :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:78:1: 78:1 (#0)" (Param :name "%return" :typ (Typ Datatype "tuple%0." ()) :mode Proof
+    :is_mut false :unwrapped_info None)
+  ) :require (
+   (@@ "NonLinearArith/dist_unboxed.rs:70:9: 70:10 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Lt)) (@@ "NonLinearArith/dist_unboxed.rs:70:9: 70:10 (#0)"
+      (> Var "x~6") (Typ Int (IntRange Int))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:70:13: 70:14 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:71:9: 71:10 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Gt)) (@@ "NonLinearArith/dist_unboxed.rs:71:9: 71:10 (#0)"
+      (> Var "n~2") (Typ Int (IntRange Int))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:71:13: 71:14 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:72:9: 72:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~40 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:72:26: 72:27 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:72:31: 72:32 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:72:26: 72:27 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Le))
+           (@@ "NonLinearArith/dist_unboxed.rs:72:26: 72:27 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat))) (@@ "NonLinearArith/dist_unboxed.rs:72:31: 72:32 (#0)"
+            (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:72:31: 72:32 (#0)" (> Var "i~40")
+              (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:72:31: 72:32 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Lt)) (@@ "NonLinearArith/dist_unboxed.rs:72:31: 72:32 (#0)"
+            (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:72:31: 72:32 (#0)" (> Var "i~40")
+              (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:72:35: 72:36 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:72:52: 72:56 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:72:52: 72:56 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:72:52: 72:56 (#0)" (> Call (
+              CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:72:52: 72:53 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:72:54: 72:55 (#0)" (> Var "i~40") (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:73:9: 73:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~90 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:73:26: 73:27 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:73:26: 73:51 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:73:26: 73:27 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Ge))
+           (@@ "NonLinearArith/dist_unboxed.rs:73:26: 73:27 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:73:26: 73:27 (#0)"
+              (> Var "i~90") (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:73:31: 73:32 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:73:47: 73:51 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:73:47: 73:51 (#0)"
+            (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:73:47: 73:51 (#0)" (> Call (
+                CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:73:47: 73:48 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                  (Typ Bool)))
+               ) ((@@ "NonLinearArith/dist_unboxed.rs:73:49: 73:50 (#0)" (> Var "i~90") (Typ Boxed (Typ Int (IntRange Int)))))
+              ) (Typ Boxed (Typ Bool)))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:73:67: 73:80 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:73:67: 73:80 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:73:67: 73:80 (#0)" (> Call (
+              CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:73:67: 73:68 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:73:70: 73:79 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:73:70: 73:79 (#0)"
+                 (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!add.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:73:74: 73:75 (#0)"
+                    (> Var "i~90") (Typ Boxed (Typ Int (IntRange Int)))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:73:77: 73:78 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:73:77: 73:78 (#0)"
+                      (> Var "n~2") (Typ Int (IntRange Int)))
+                    ) (Typ Boxed (Typ Int (IntRange Int)))))
+                 ) (Typ Int (IntRange Int)))
+               ) (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:74:9: 74:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~131 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:74:26: 74:27 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:74:26: 74:51 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:74:26: 74:27 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Lt))
+           (@@ "NonLinearArith/dist_unboxed.rs:74:26: 74:27 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:74:26: 74:27 (#0)"
+              (> Var "i~131") (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:74:30: 74:31 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:74:47: 74:51 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:74:47: 74:51 (#0)"
+            (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:74:47: 74:51 (#0)" (> Call (
+                CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:74:47: 74:48 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                  (Typ Bool)))
+               ) ((@@ "NonLinearArith/dist_unboxed.rs:74:49: 74:50 (#0)" (> Var "i~131") (Typ Boxed (Typ Int (IntRange Int)))))
+              ) (Typ Boxed (Typ Bool)))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:74:67: 74:80 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:74:67: 74:80 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:74:67: 74:80 (#0)" (> Call (
+              CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:74:67: 74:68 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:74:70: 74:79 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:74:70: 74:79 (#0)"
+                 (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!sub.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:74:74: 74:75 (#0)"
+                    (> Var "i~131") (Typ Boxed (Typ Int (IntRange Int)))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:74:77: 74:78 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:74:77: 74:78 (#0)"
+                      (> Var "n~2") (Typ Int (IntRange Int)))
+                    ) (Typ Boxed (Typ Int (IntRange Int)))))
+                 ) (Typ Int (IntRange Int)))
+               ) (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+  ) :ensure (
+   (@@ "NonLinearArith/dist_unboxed.rs:76:9: 76:13 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:76:9: 76:13 (#0)"
+      (> Call (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:76:9: 76:10 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+          (Typ Bool)))
+       ) ((@@ "NonLinearArith/dist_unboxed.rs:76:11: 76:12 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:76:11: 76:12 (#0)"
+           (> Var "x~6") (Typ Int (IntRange Int)))
+         ) (Typ Boxed (Typ Int (IntRange Int)))))
+      ) (Typ Boxed (Typ Bool)))
+    ) (Typ Bool))
+  ) :decrease ((@@ "NonLinearArith/dist_unboxed.rs:77:15: 77:16 (#0)" (> Binary (BinaryOp Arith (ArithOp Sub) None) (@@ "NonLinearArith/dist_unboxed.rs:77:15: 77:16 (#0)"
+      (> Const (Constant Int 0)) (Typ Int (IntRange Int))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:77:16: 77:17 (#0)" (> Var "x~6") (Typ Int (IntRange Int)))
+    ) (Typ Int (IntRange Int)))
+  ) :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec) :is_const false :publish None
+  :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false :no_auto_trigger false :custom_req_err
+   None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by false :check_recommends false :nonlinear
+   false :spinoff_prover true :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:78:1: 87:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:79:5: 86:6 (#0)"
+     (> If (@@ "NonLinearArith/dist_unboxed.rs:79:8: 79:17 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Le)) (@@ "NonLinearArith/dist_unboxed.rs:79:9: 79:10 (#0)"
+         (> Binary (BinaryOp Arith (ArithOp Sub) None) (@@ "NonLinearArith/dist_unboxed.rs:79:9: 79:10 (#0)" (> Const (Constant Int 0))
+           (Typ Int (IntRange Int))
+          ) (@@ "NonLinearArith/dist_unboxed.rs:79:10: 79:11 (#0)" (> Var "x~6") (Typ Int (IntRange Int)))
+         ) (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:79:15: 79:16 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+       ) (Typ Bool)
+      ) (@@ "NonLinearArith/dist_unboxed.rs:79:18: 82:6 (#0)" (> Block (
+         (@ "NonLinearArith/dist_unboxed.rs:80:9: 80:48 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:80:9: 80:48 (#0)" (> Call
+             (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!lemma_induction_helper_pos.") () () (AutospecUsage Final))
+             ((@@ "NonLinearArith/dist_unboxed.rs:80:36: 80:37 (#0)" (> Var "n~2") (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:80:39: 80:40 (#0)"
+               (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+              ) (@@ "NonLinearArith/dist_unboxed.rs:80:42: 80:43 (#0)" (> Binary (BinaryOp Arith (ArithOp Add) None) (@@ "NonLinearArith/dist_unboxed.rs:80:42: 80:43 (#0)"
+                 (> Var "x~6") (Typ Int (IntRange Int))
+                ) (@@ "NonLinearArith/dist_unboxed.rs:80:46: 80:47 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+               ) (Typ Int (IntRange Int))))
+            ) (Typ Datatype "tuple%0." ()))))
+         (@ "NonLinearArith/dist_unboxed.rs:81:9: 81:15 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:81:9: 81:15 (#0)" (> AssertAssume
+             :is_assume false :expr (@@ "NonLinearArith/dist_unboxed.rs:81:17: 81:34 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:81:17: 81:34 (#0)"
+                (> Call (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:81:17: 81:18 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange
+                       Int))
+                    ) (Typ Bool)))
+                 ) ((@@ "NonLinearArith/dist_unboxed.rs:81:20: 81:33 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:81:20: 81:33 (#0)"
+                     (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!sub.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:81:24: 81:25 (#0)"
+                        (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:81:24: 81:25 (#0)" (> Binary (BinaryOp
+                            Arith (ArithOp Add) None
+                           ) (@@ "NonLinearArith/dist_unboxed.rs:81:24: 81:25 (#0)" (> Var "x~6") (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:81:28: 81:29 (#0)"
+                            (> Var "n~2") (Typ Int (IntRange Int)))
+                          ) (Typ Int (IntRange Int)))
+                        ) (Typ Boxed (Typ Int (IntRange Int)))
+                       ) (@@ "NonLinearArith/dist_unboxed.rs:81:31: 81:32 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:81:31: 81:32 (#0)"
+                          (> Var "n~2") (Typ Int (IntRange Int)))
+                        ) (Typ Boxed (Typ Int (IntRange Int)))))
+                     ) (Typ Int (IntRange Int)))
+                   ) (Typ Boxed (Typ Int (IntRange Int)))))
+                ) (Typ Boxed (Typ Bool)))
+              ) (Typ Bool))
+            ) (Typ Datatype "tuple%0." ()))))
+        ) None
+       ) (Typ Datatype "tuple%0." ())
+      ) (@@ "NonLinearArith/dist_unboxed.rs:83:10: 86:6 (#0)" (> Block (
+         (@ "NonLinearArith/dist_unboxed.rs:84:9: 84:48 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:84:9: 84:48 (#0)" (> Call
+             (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!lemma_induction_helper_neg.") () () (AutospecUsage Final))
+             ((@@ "NonLinearArith/dist_unboxed.rs:84:36: 84:37 (#0)" (> Var "n~2") (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:84:39: 84:40 (#0)"
+               (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+              ) (@@ "NonLinearArith/dist_unboxed.rs:84:42: 84:43 (#0)" (> Binary (BinaryOp Arith (ArithOp Add) None) (@@ "NonLinearArith/dist_unboxed.rs:84:42: 84:43 (#0)"
+                 (> Var "x~6") (Typ Int (IntRange Int))
+                ) (@@ "NonLinearArith/dist_unboxed.rs:84:46: 84:47 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+               ) (Typ Int (IntRange Int))))
+            ) (Typ Datatype "tuple%0." ()))))
+         (@ "NonLinearArith/dist_unboxed.rs:85:9: 85:15 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:85:9: 85:15 (#0)" (> AssertAssume
+             :is_assume false :expr (@@ "NonLinearArith/dist_unboxed.rs:85:17: 85:34 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:85:17: 85:34 (#0)"
+                (> Call (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:85:17: 85:18 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange
+                       Int))
+                    ) (Typ Bool)))
+                 ) ((@@ "NonLinearArith/dist_unboxed.rs:85:20: 85:33 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:85:20: 85:33 (#0)"
+                     (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!sub.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:85:24: 85:25 (#0)"
+                        (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:85:24: 85:25 (#0)" (> Binary (BinaryOp
+                            Arith (ArithOp Add) None
+                           ) (@@ "NonLinearArith/dist_unboxed.rs:85:24: 85:25 (#0)" (> Var "x~6") (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:85:28: 85:29 (#0)"
+                            (> Var "n~2") (Typ Int (IntRange Int)))
+                          ) (Typ Int (IntRange Int)))
+                        ) (Typ Boxed (Typ Int (IntRange Int)))
+                       ) (@@ "NonLinearArith/dist_unboxed.rs:85:31: 85:32 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:85:31: 85:32 (#0)"
+                          (> Var "n~2") (Typ Int (IntRange Int)))
+                        ) (Typ Boxed (Typ Int (IntRange Int)))))
+                     ) (Typ Int (IntRange Int)))
+                   ) (Typ Boxed (Typ Int (IntRange Int)))))
+                ) (Typ Boxed (Typ Bool)))
+              ) (Typ Bool))
+            ) (Typ Datatype "tuple%0." ()))))
+        ) None
+       ) (Typ Datatype "tuple%0." ()))
+     ) (Typ Datatype "tuple%0." ()))
+   ) (Typ Datatype "tuple%0." ())
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:90:1: 90:76 (#0)" (Function
+  :name (Fun :path "dist_unboxed!lemma_induction_helper.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to
+   None
+  ) :owning_module "dist_unboxed!." :mode Proof :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:90:37: 90:43 (#0)" (Param :name "n~2" :typ (Typ Int (IntRange Int)) :mode Spec :is_mut false
+     :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:90:45: 90:54 (#0)" (Param :name "f~4" :typ (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+     :mode Spec :is_mut false :unwrapped_info None))
+   (@ "NonLinearArith/dist_unboxed.rs:90:69: 90:75 (#0)" (Param :name "x~6" :typ (Typ Int (IntRange Int)) :mode Spec :is_mut false
+     :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:98:1: 98:1 (#0)" (Param :name "%return" :typ (Typ Datatype "tuple%0." ()) :mode Proof
+    :is_mut false :unwrapped_info None)
+  ) :require (
+   (@@ "NonLinearArith/dist_unboxed.rs:92:9: 92:10 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Gt)) (@@ "NonLinearArith/dist_unboxed.rs:92:9: 92:10 (#0)"
+      (> Var "n~2") (Typ Int (IntRange Int))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:92:13: 92:14 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:93:9: 93:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~30 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:93:26: 93:27 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:93:31: 93:32 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:93:26: 93:27 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Le))
+           (@@ "NonLinearArith/dist_unboxed.rs:93:26: 93:27 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat))) (@@ "NonLinearArith/dist_unboxed.rs:93:31: 93:32 (#0)"
+            (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:93:31: 93:32 (#0)" (> Var "i~30")
+              (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:93:31: 93:32 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Lt)) (@@ "NonLinearArith/dist_unboxed.rs:93:31: 93:32 (#0)"
+            (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:93:31: 93:32 (#0)" (> Var "i~30")
+              (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:93:35: 93:36 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:93:52: 93:56 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:93:52: 93:56 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:93:52: 93:56 (#0)" (> Call (
+              CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:93:52: 93:53 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:93:54: 93:55 (#0)" (> Var "i~30") (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:94:9: 94:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~80 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:94:26: 94:27 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:94:26: 94:51 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:94:26: 94:27 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Ge))
+           (@@ "NonLinearArith/dist_unboxed.rs:94:26: 94:27 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:94:26: 94:27 (#0)"
+              (> Var "i~80") (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:94:31: 94:32 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:94:47: 94:51 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:94:47: 94:51 (#0)"
+            (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:94:47: 94:51 (#0)" (> Call (
+                CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:94:47: 94:48 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                  (Typ Bool)))
+               ) ((@@ "NonLinearArith/dist_unboxed.rs:94:49: 94:50 (#0)" (> Var "i~80") (Typ Boxed (Typ Int (IntRange Int)))))
+              ) (Typ Boxed (Typ Bool)))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:94:67: 94:80 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:94:67: 94:80 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:94:67: 94:80 (#0)" (> Call (
+              CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:94:67: 94:68 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:94:70: 94:79 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:94:70: 94:79 (#0)"
+                 (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!add.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:94:74: 94:75 (#0)"
+                    (> Var "i~80") (Typ Boxed (Typ Int (IntRange Int)))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:94:77: 94:78 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:94:77: 94:78 (#0)"
+                      (> Var "n~2") (Typ Int (IntRange Int)))
+                    ) (Typ Boxed (Typ Int (IntRange Int)))))
+                 ) (Typ Int (IntRange Int)))
+               ) (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:95:9: 95:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~121 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:95:26: 95:27 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:95:26: 95:51 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:95:26: 95:27 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Lt))
+           (@@ "NonLinearArith/dist_unboxed.rs:95:26: 95:27 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:95:26: 95:27 (#0)"
+              (> Var "i~121") (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:95:30: 95:31 (#0)" (> Var "n~2") (Typ Int (IntRange Int)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:95:47: 95:51 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:95:47: 95:51 (#0)"
+            (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:95:47: 95:51 (#0)" (> Call (
+                CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:95:47: 95:48 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                  (Typ Bool)))
+               ) ((@@ "NonLinearArith/dist_unboxed.rs:95:49: 95:50 (#0)" (> Var "i~121") (Typ Boxed (Typ Int (IntRange Int)))))
+              ) (Typ Boxed (Typ Bool)))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:95:67: 95:80 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:95:67: 95:80 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:95:67: 95:80 (#0)" (> Call (
+              CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:95:67: 95:68 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:95:70: 95:79 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:95:70: 95:79 (#0)"
+                 (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!sub.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:95:74: 95:75 (#0)"
+                    (> Var "i~121") (Typ Boxed (Typ Int (IntRange Int)))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:95:77: 95:78 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:95:77: 95:78 (#0)"
+                      (> Var "n~2") (Typ Int (IntRange Int)))
+                    ) (Typ Boxed (Typ Int (IntRange Int)))))
+                 ) (Typ Int (IntRange Int)))
+               ) (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+  ) :ensure (
+   (@@ "NonLinearArith/dist_unboxed.rs:97:9: 97:13 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:97:9: 97:13 (#0)"
+      (> Call (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:97:9: 97:10 (#0)" (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int)))
+          (Typ Bool)))
+       ) ((@@ "NonLinearArith/dist_unboxed.rs:97:11: 97:12 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:97:11: 97:12 (#0)"
+           (> Var "x~6") (Typ Int (IntRange Int)))
+         ) (Typ Boxed (Typ Int (IntRange Int)))))
+      ) (Typ Boxed (Typ Bool)))
+    ) (Typ Bool))
+  ) :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec) :is_const false
+  :publish None :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false :no_auto_trigger
+   false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by false :check_recommends
+   false :nonlinear false :spinoff_prover true :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:98:1: 105:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:99:5: 104:6 (#0)"
+     (> If (@@ "NonLinearArith/dist_unboxed.rs:99:8: 99:16 (#0)" (> Binary (BinaryOp Inequality (InequalityOp Ge)) (@@ "NonLinearArith/dist_unboxed.rs:99:9: 99:10 (#0)"
+         (> Var "x~6") (Typ Int (IntRange Int))
+        ) (@@ "NonLinearArith/dist_unboxed.rs:99:14: 99:15 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+       ) (Typ Bool)
+      ) (@@ "NonLinearArith/dist_unboxed.rs:99:17: 101:6 (#0)" (> Block (
+         (@ "NonLinearArith/dist_unboxed.rs:100:9: 100:44 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:100:9: 100:44 (#0)" (>
+             Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!lemma_induction_helper_pos.") () () (AutospecUsage Final))
+             ((@@ "NonLinearArith/dist_unboxed.rs:100:36: 100:37 (#0)" (> Var "n~2") (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:100:39: 100:40 (#0)"
+               (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+              ) (@@ "NonLinearArith/dist_unboxed.rs:100:42: 100:43 (#0)" (> Var "x~6") (Typ Int (IntRange Int))))
+            ) (Typ Datatype "tuple%0." ()))))
+        ) None
+       ) (Typ Datatype "tuple%0." ())
+      ) (@@ "NonLinearArith/dist_unboxed.rs:102:10: 104:6 (#0)" (> Block (
+         (@ "NonLinearArith/dist_unboxed.rs:103:9: 103:44 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:103:9: 103:44 (#0)" (>
+             Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!lemma_induction_helper_neg.") () () (AutospecUsage Final))
+             ((@@ "NonLinearArith/dist_unboxed.rs:103:36: 103:37 (#0)" (> Var "n~2") (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:103:39: 103:40 (#0)"
+               (> Var "f~4") (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+              ) (@@ "NonLinearArith/dist_unboxed.rs:103:42: 103:43 (#0)" (> Var "x~6") (Typ Int (IntRange Int))))
+            ) (Typ Datatype "tuple%0." ()))))
+        ) None
+       ) (Typ Datatype "tuple%0." ()))
+     ) (Typ Datatype "tuple%0." ()))
+   ) (Typ Datatype "tuple%0." ())
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:107:7: 107:53 (#0)" (Function
+  :name (Fun :path "dist_unboxed!lemma_mul_induction.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to
+   "dist_unboxed!."
+  ) :owning_module "dist_unboxed!." :mode Proof :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:107:30: 107:39 (#0)" (Param :name "f~2" :typ (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+     :mode Spec :is_mut false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:117:1: 117:1 (#0)" (Param :name "%return" :typ (Typ Datatype "tuple%0." ()) :mode
+    Proof :is_mut false :unwrapped_info None)
+  ) :require (
+   (@@ "NonLinearArith/dist_unboxed.rs:109:9: 109:13 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:109:9: 109:13 (#0)"
+      (> Call (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:109:9: 109:10 (#0)" (> Var "f~2") (Typ Lambda ((Typ Int (IntRange
+             Int))
+          ) (Typ Bool)))
+       ) ((@@ "NonLinearArith/dist_unboxed.rs:109:11: 109:12 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:109:11: 109:12 (#0)"
+           (> Const (Constant Int 0)) (Typ Int (IntRange Int)))
+         ) (Typ Boxed (Typ Int (IntRange Int)))))
+      ) (Typ Boxed (Typ Bool)))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:110:9: 110:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~25 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:110:25: 110:26 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:110:25: 110:50 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:110:25: 110:26 (#0)" (> Binary (BinaryOp Inequality (InequalityOp
+             Ge)
+           ) (@@ "NonLinearArith/dist_unboxed.rs:110:25: 110:26 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:110:25: 110:26 (#0)"
+              (> Var "i~25") (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:110:30: 110:31 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:110:46: 110:50 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:110:46: 110:50 (#0)"
+            (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:110:46: 110:50 (#0)" (> Call
+               (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:110:46: 110:47 (#0)" (> Var "f~2") (Typ Lambda ((Typ Int (IntRange Int)))
+                  (Typ Bool)))
+               ) ((@@ "NonLinearArith/dist_unboxed.rs:110:48: 110:49 (#0)" (> Var "i~25") (Typ Boxed (Typ Int (IntRange Int)))))
+              ) (Typ Boxed (Typ Bool)))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:110:66: 110:78 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:110:66: 110:78 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:110:66: 110:78 (#0)" (> Call
+             (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:110:66: 110:67 (#0)" (> Var "f~2") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:110:68: 110:77 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:110:68: 110:77 (#0)"
+                 (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!add.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:110:72: 110:73 (#0)"
+                    (> Var "i~25") (Typ Boxed (Typ Int (IntRange Int)))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:110:75: 110:76 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:110:75: 110:76 (#0)"
+                      (> Const (Constant Int 1)) (Typ Int (IntRange Int)))
+                    ) (Typ Boxed (Typ Int (IntRange Int)))))
+                 ) (Typ Int (IntRange Int)))
+               ) (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:111:9: 111:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~70 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:111:25: 111:26 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:111:25: 111:50 (#0)"
+        (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:111:25: 111:26 (#0)" (> Binary (BinaryOp Inequality (InequalityOp
+             Le)
+           ) (@@ "NonLinearArith/dist_unboxed.rs:111:25: 111:26 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:111:25: 111:26 (#0)"
+              (> Var "i~70") (Typ Boxed (Typ Int (IntRange Int))))
+            ) (Typ Int (IntRange Int))
+           ) (@@ "NonLinearArith/dist_unboxed.rs:111:30: 111:31 (#0)" (> Const (Constant Int 0)) (Typ Int (IntRange Nat)))
+          ) (Typ Bool)
+         ) (@@ "NonLinearArith/dist_unboxed.rs:111:46: 111:50 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:111:46: 111:50 (#0)"
+            (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:111:46: 111:50 (#0)" (> Call
+               (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:111:46: 111:47 (#0)" (> Var "f~2") (Typ Lambda ((Typ Int (IntRange Int)))
+                  (Typ Bool)))
+               ) ((@@ "NonLinearArith/dist_unboxed.rs:111:48: 111:49 (#0)" (> Var "i~70") (Typ Boxed (Typ Int (IntRange Int)))))
+              ) (Typ Boxed (Typ Bool)))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Bool))
+        ) (Typ Bool)
+       ) (@@ "NonLinearArith/dist_unboxed.rs:111:66: 111:78 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:111:66: 111:78 (#0)"
+          (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:111:66: 111:78 (#0)" (> Call
+             (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:111:66: 111:67 (#0)" (> Var "f~2") (Typ Lambda ((Typ Int (IntRange Int)))
+                (Typ Bool)))
+             ) ((@@ "NonLinearArith/dist_unboxed.rs:111:68: 111:77 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:111:68: 111:77 (#0)"
+                 (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!sub.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:111:72: 111:73 (#0)"
+                    (> Var "i~70") (Typ Boxed (Typ Int (IntRange Int)))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:111:75: 111:76 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:111:75: 111:76 (#0)"
+                      (> Const (Constant Int 1)) (Typ Int (IntRange Int)))
+                    ) (Typ Boxed (Typ Int (IntRange Int)))))
+                 ) (Typ Int (IntRange Int)))
+               ) (Typ Boxed (Typ Int (IntRange Int)))))
+            ) (Typ Boxed (Typ Bool)))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Bool))
+      ) (Typ Bool))
+    ) (Typ Bool))
+  ) :ensure (
+   (@@ "NonLinearArith/dist_unboxed.rs:116:9: 116:15 (#0)" (> Quant (Forall :boxed_params true) ((-> i~122 (Typ Boxed (Typ Int (IntRange
+          Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:116:36: 116:40 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:116:36: 116:40 (#0)"
+        (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:116:36: 116:40 (#0)" (> Call
+           (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:116:36: 116:37 (#0)" (> Var "f~2") (Typ Lambda ((Typ Int (IntRange Int)))
+              (Typ Bool)))
+           ) ((@@ "NonLinearArith/dist_unboxed.rs:116:38: 116:39 (#0)" (> Var "i~122") (Typ Boxed (Typ Int (IntRange Int)))))
+          ) (Typ Boxed (Typ Bool)))
+        ) (Typ Boxed (Typ Bool)))
+      ) (Typ Bool))
+    ) (Typ Bool))
+  ) :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec) :is_const false
+  :publish None :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false :no_auto_trigger
+   false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by false :check_recommends
+   false :nonlinear false :spinoff_prover false :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:117:1: 119:2 (#0)" (> Block (
+     (@ "NonLinearArith/dist_unboxed.rs:118:5: 118:11 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:118:5: 118:11 (#0)" (>
+         Block (
+          (@ "NonLinearArith/dist_unboxed.rs:118:5: 118:11 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:118:5: 118:11 (#0)" (>
+              AssertBy :vars ((-> i~139 (Typ Boxed (Typ Int (IntRange Int))))) :require (
+               @@
+               "NonLinearArith/dist_unboxed.rs:118:5: 118:11 (#0)"
+               (> Const (Constant Bool true))
+               (Typ Bool)
+              ) :ensure (
+               @@
+               "NonLinearArith/dist_unboxed.rs:118:39: 118:43 (#0)"
+               (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:118:39: 118:43 (#0)" (> Unary (UnaryOp Trigger (TriggerAnnotation
+                    Trigger None)
+                  ) (@@ "NonLinearArith/dist_unboxed.rs:118:39: 118:43 (#0)" (> Call (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:118:39: 118:40 (#0)"
+                      (> Var "f~2") (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool)))
+                    ) ((@@ "NonLinearArith/dist_unboxed.rs:118:41: 118:42 (#0)" (> Var "i~139") (Typ Boxed (Typ Int (IntRange Int)))))
+                   ) (Typ Boxed (Typ Bool)))
+                 ) (Typ Boxed (Typ Bool))))
+               (Typ Bool)
+              ) :proof (@@ "NonLinearArith/dist_unboxed.rs:118:47: 118:82 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:118:49: 118:80 (#0)"
+                 (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!lemma_induction_helper.") () () (AutospecUsage Final))
+                  ((@@ "NonLinearArith/dist_unboxed.rs:118:72: 118:73 (#0)" (> Const (Constant Int 1)) (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:118:75: 118:76 (#0)"
+                    (> Var "f~2") (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:118:78: 118:79 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Int (IntRange Int))) (@@ "NonLinearArith/dist_unboxed.rs:118:78: 118:79 (#0)"
+                      (> Var "i~139") (Typ Boxed (Typ Int (IntRange Int))))
+                    ) (Typ Int (IntRange Int))))
+                 ) (Typ Datatype "tuple%0." ()))
+               ) (Typ Datatype "tuple%0." ())
+              ) :assumption (@@ "NonLinearArith/dist_unboxed.rs:118:5: 118:11 (#0)" (> Quant (Forall :boxed_params true) ((-> i~139 (Typ Boxed
+                   (Typ Int (IntRange Int))))
+                ) (@@ "NonLinearArith/dist_unboxed.rs:118:5: 118:11 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:118:5: 118:11 (#0)"
+                   (> Const (Constant Bool true)) (Typ Bool)
+                  ) (@@ "NonLinearArith/dist_unboxed.rs:118:39: 118:43 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:118:39: 118:43 (#0)"
+                     (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:118:39: 118:43 (#0)" (> Call
+                        (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:118:39: 118:40 (#0)" (> Var "f~2") (Typ Lambda ((Typ Int (IntRange Int)))
+                           (Typ Bool)))
+                        ) ((@@ "NonLinearArith/dist_unboxed.rs:118:41: 118:42 (#0)" (> Var "i~139") (Typ Boxed (Typ Int (IntRange Int)))))
+                       ) (Typ Boxed (Typ Bool)))
+                     ) (Typ Boxed (Typ Bool)))
+                   ) (Typ Bool))
+                 ) (Typ Bool))
+               ) (Typ Bool))
+             ) (Typ Datatype "tuple%0." ()))))
+         ) None
+        ) (Typ Datatype "tuple%0." ()))))
+    ) None
+   ) (Typ Datatype "tuple%0." ())
+  ) :extra_dependencies ()))
+
+(@ "NonLinearArith/dist_unboxed.rs:124:7: 124:33 (#0)" (Function
+  :name (Fun :path "dist_unboxed!lemma_mul_distributes.") :proxy None :kind (FunctionKind Static) :visibility (Visibility :restricted_to
+   "dist_unboxed!."
+  ) :owning_module "dist_unboxed!." :mode Proof :fuel 1 :typ_bounds () :params (
+   (@ "NonLinearArith/dist_unboxed.rs:124:7: 124:33 (#0)" (Param :name "no%param" :typ (Typ Int (IntRange Int)) :mode Spec :is_mut
+     false :unwrapped_info None))
+  ) :ret (@ "NonLinearArith/dist_unboxed.rs:128:1: 128:1 (#0)" (Param :name "%return" :typ (Typ Datatype "tuple%0." ()) :mode
+    Proof :is_mut false :unwrapped_info None)
+  ) :require () :ensure (
+   (@@ "NonLinearArith/dist_unboxed.rs:126:9: 126:15 (#0)" (> Quant (Forall :boxed_params true) ((-> x~14 (Typ Boxed (Typ Int (IntRange
+          Int)))
+      ) (-> y~16 (Typ Boxed (Typ Int (IntRange Int)))) (-> z~18 (Typ Boxed (Typ Int (IntRange Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:126:26: 126:27 (#0)" (> Binary (BinaryOp Eq Spec) (@@ "NonLinearArith/dist_unboxed.rs:126:37: 126:59 (#0)"
+        (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:126:37: 126:59 (#0)" (> Call
+           (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_left_add.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:126:51: 126:52 (#0)"
+             (> Var "x~14") (Typ Boxed (Typ Int (IntRange Int)))
+            ) (@@ "NonLinearArith/dist_unboxed.rs:126:54: 126:55 (#0)" (> Var "y~16") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:126:57: 126:58 (#0)"
+             (> Var "z~18") (Typ Boxed (Typ Int (IntRange Int)))))
+          ) (Typ Int (IntRange Int)))
+        ) (Typ Int (IntRange Int))
+       ) (@@ "NonLinearArith/dist_unboxed.rs:126:63: 126:86 (#0)" (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_right_add.")
+          () () (AutospecUsage Final)
+         ) ((@@ "NonLinearArith/dist_unboxed.rs:126:78: 126:79 (#0)" (> Var "x~14") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:126:81: 126:82 (#0)"
+           (> Var "y~16") (Typ Boxed (Typ Int (IntRange Int)))
+          ) (@@ "NonLinearArith/dist_unboxed.rs:126:84: 126:85 (#0)" (> Var "z~18") (Typ Boxed (Typ Int (IntRange Int)))))
+        ) (Typ Int (IntRange Int)))
+      ) (Typ Bool))
+    ) (Typ Bool))
+   (@@ "NonLinearArith/dist_unboxed.rs:127:9: 127:15 (#0)" (> Quant (Forall :boxed_params true) ((-> x~52 (Typ Boxed (Typ Int (IntRange
+          Int)))
+      ) (-> y~54 (Typ Boxed (Typ Int (IntRange Int)))) (-> z~56 (Typ Boxed (Typ Int (IntRange Int))))
+     ) (@@ "NonLinearArith/dist_unboxed.rs:127:26: 127:27 (#0)" (> Binary (BinaryOp Eq Spec) (@@ "NonLinearArith/dist_unboxed.rs:127:37: 127:59 (#0)"
+        (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:127:37: 127:59 (#0)" (> Call
+           (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_left_sub.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:127:51: 127:52 (#0)"
+             (> Var "x~52") (Typ Boxed (Typ Int (IntRange Int)))
+            ) (@@ "NonLinearArith/dist_unboxed.rs:127:54: 127:55 (#0)" (> Var "y~54") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:127:57: 127:58 (#0)"
+             (> Var "z~56") (Typ Boxed (Typ Int (IntRange Int)))))
+          ) (Typ Int (IntRange Int)))
+        ) (Typ Int (IntRange Int))
+       ) (@@ "NonLinearArith/dist_unboxed.rs:127:63: 127:86 (#0)" (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_right_sub.")
+          () () (AutospecUsage Final)
+         ) ((@@ "NonLinearArith/dist_unboxed.rs:127:78: 127:79 (#0)" (> Var "x~52") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:127:81: 127:82 (#0)"
+           (> Var "y~54") (Typ Boxed (Typ Int (IntRange Int)))
+          ) (@@ "NonLinearArith/dist_unboxed.rs:127:84: 127:85 (#0)" (> Var "z~56") (Typ Boxed (Typ Int (IntRange Int)))))
+        ) (Typ Int (IntRange Int)))
+      ) (Typ Bool))
+    ) (Typ Bool))
+  ) :decrease () :decrease_when None :decrease_by None :broadcast_forall None :mask_spec (MaskSpec NoSpec) :is_const false
+  :publish None :attrs (FunctionAttrs :uses_ghost_blocks true :inline false :hidden () :broadcast_forall false :no_auto_trigger
+   false :custom_req_err None :autospec None :bit_vector false :atomic false :integer_ring false :is_decrease_by false :check_recommends
+   false :nonlinear false :spinoff_prover true :memoize false
+  ) :body (@@ "NonLinearArith/dist_unboxed.rs:128:1: 142:2 (#0)" (> Block () (@@ "NonLinearArith/dist_unboxed.rs:129:5: 129:11 (#0)"
+     (> Block (
+       (@ "NonLinearArith/dist_unboxed.rs:129:5: 129:11 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:129:5: 129:11 (#0)" (>
+           AssertBy :vars ((-> x~92 (Typ Boxed (Typ Int (IntRange Int)))) (-> y~94 (Typ Boxed (Typ Int (IntRange Int)))) (-> z~96 (Typ
+              Boxed (Typ Int (IntRange Int))))
+           ) :require (
+            @@
+            "NonLinearArith/dist_unboxed.rs:129:5: 129:11 (#0)"
+            (> Const (Constant Bool true))
+            (Typ Bool)
+           ) :ensure (
+            @@
+            "NonLinearArith/dist_unboxed.rs:130:9: 131:10 (#0)"
+            (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:130:9: 130:10 (#0)" (> Binary (BinaryOp Eq Spec) (@@ "NonLinearArith/dist_unboxed.rs:130:20: 130:42 (#0)"
+                (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:130:20: 130:42 (#0)" (> Call
+                   (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_left_add.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:130:34: 130:35 (#0)"
+                     (> Var "x~92") (Typ Boxed (Typ Int (IntRange Int)))
+                    ) (@@ "NonLinearArith/dist_unboxed.rs:130:37: 130:38 (#0)" (> Var "y~94") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:130:40: 130:41 (#0)"
+                     (> Var "z~96") (Typ Boxed (Typ Int (IntRange Int)))))
+                  ) (Typ Int (IntRange Int)))
+                ) (Typ Int (IntRange Int))
+               ) (@@ "NonLinearArith/dist_unboxed.rs:130:46: 130:69 (#0)" (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_right_add.")
+                  () () (AutospecUsage Final)
+                 ) ((@@ "NonLinearArith/dist_unboxed.rs:130:61: 130:62 (#0)" (> Var "x~92") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:130:64: 130:65 (#0)"
+                   (> Var "y~94") (Typ Boxed (Typ Int (IntRange Int)))
+                  ) (@@ "NonLinearArith/dist_unboxed.rs:130:67: 130:68 (#0)" (> Var "z~96") (Typ Boxed (Typ Int (IntRange Int)))))
+                ) (Typ Int (IntRange Int)))
+              ) (Typ Bool)
+             ) (@@ "NonLinearArith/dist_unboxed.rs:131:9: 131:10 (#0)" (> Binary (BinaryOp Eq Spec) (@@ "NonLinearArith/dist_unboxed.rs:131:20: 131:42 (#0)"
+                (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:131:20: 131:42 (#0)" (> Call
+                   (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_left_sub.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:131:34: 131:35 (#0)"
+                     (> Var "x~92") (Typ Boxed (Typ Int (IntRange Int)))
+                    ) (@@ "NonLinearArith/dist_unboxed.rs:131:37: 131:38 (#0)" (> Var "y~94") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:131:40: 131:41 (#0)"
+                     (> Var "z~96") (Typ Boxed (Typ Int (IntRange Int)))))
+                  ) (Typ Int (IntRange Int)))
+                ) (Typ Int (IntRange Int))
+               ) (@@ "NonLinearArith/dist_unboxed.rs:131:46: 131:69 (#0)" (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_right_sub.")
+                  () () (AutospecUsage Final)
+                 ) ((@@ "NonLinearArith/dist_unboxed.rs:131:61: 131:62 (#0)" (> Var "x~92") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:131:64: 131:65 (#0)"
+                   (> Var "y~94") (Typ Boxed (Typ Int (IntRange Int)))
+                  ) (@@ "NonLinearArith/dist_unboxed.rs:131:67: 131:68 (#0)" (> Var "z~96") (Typ Boxed (Typ Int (IntRange Int)))))
+                ) (Typ Int (IntRange Int)))
+              ) (Typ Bool)))
+            (Typ Bool)
+           ) :proof (@@ "NonLinearArith/dist_unboxed.rs:132:5: 141:6 (#0)" (> Block (
+              (@ "NonLinearArith/dist_unboxed.rs:134:13: 134:15 (#0)" (Stmt Decl :pattern (@@ "NonLinearArith/dist_unboxed.rs:134:13: 134:15 (#0)"
+                 (Pattern Var :name "f2~186" :mutable false) (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))
+                ) :mode Spec :init (@@ "NonLinearArith/dist_unboxed.rs:134:18: 134:41 (#0)" (> Closure ((-> i~159 (Typ Boxed (Typ Int (IntRange
+                       Int))))
+                  ) (@@ "NonLinearArith/dist_unboxed.rs:134:28: 134:41 (#0)" (> UnaryOpr (UnaryOpr Box (Typ Bool)) (@@ "NonLinearArith/dist_unboxed.rs:134:28: 134:41 (#0)"
+                     (> Binary (BinaryOp Eq Spec) (@@ "NonLinearArith/dist_unboxed.rs:134:28: 134:50 (#0)" (> Call (CallTarget Fun (CallTargetKind
+                          Static
+                         ) (Fun :path "dist_unboxed!dist_left_sub.") () () (AutospecUsage Final)
+                        ) ((@@ "NonLinearArith/dist_unboxed.rs:134:42: 134:43 (#0)" (> Var "x~92") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:134:45: 134:46 (#0)"
+                          (> Var "i~159") (Typ Boxed (Typ Int (IntRange Int)))
+                         ) (@@ "NonLinearArith/dist_unboxed.rs:134:48: 134:49 (#0)" (> Var "z~96") (Typ Boxed (Typ Int (IntRange Int)))))
+                       ) (Typ Int (IntRange Int))
+                      ) (@@ "NonLinearArith/dist_unboxed.rs:134:54: 134:77 (#0)" (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_right_sub.")
+                         () () (AutospecUsage Final)
+                        ) ((@@ "NonLinearArith/dist_unboxed.rs:134:69: 134:70 (#0)" (> Var "x~92") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:134:72: 134:73 (#0)"
+                          (> Var "i~159") (Typ Boxed (Typ Int (IntRange Int)))
+                         ) (@@ "NonLinearArith/dist_unboxed.rs:134:75: 134:76 (#0)" (> Var "z~96") (Typ Boxed (Typ Int (IntRange Int)))))
+                       ) (Typ Int (IntRange Int)))
+                     ) (Typ Bool))
+                   ) (Typ Boxed (Typ Bool)))
+                 ) (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool)))))
+              (@ "NonLinearArith/dist_unboxed.rs:135:9: 135:32 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:135:9: 135:32 (#0)" (>
+                  Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!lemma_mul_induction.") () () (AutospecUsage Final))
+                  ((@@ "NonLinearArith/dist_unboxed.rs:135:29: 135:31 (#0)" (> Var "f2~186") (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool))))
+                 ) (Typ Datatype "tuple%0." ()))))
+              (@ "NonLinearArith/dist_unboxed.rs:136:9: 136:15 (#0)" (Stmt Expr (@@ "NonLinearArith/dist_unboxed.rs:136:9: 136:15 (#0)" (>
+                  AssertAssume :is_assume false :expr (@@ "NonLinearArith/dist_unboxed.rs:136:16: 136:21 (#0)" (> UnaryOpr (UnaryOpr Unbox (Typ
+                      Bool)
+                    ) (@@ "NonLinearArith/dist_unboxed.rs:136:16: 136:21 (#0)" (> Call (CallTarget FnSpec (@@ "NonLinearArith/dist_unboxed.rs:136:16: 136:18 (#0)"
+                        (> Var "f2~186") (Typ Lambda ((Typ Int (IntRange Int))) (Typ Bool)))
+                      ) ((@@ "NonLinearArith/dist_unboxed.rs:136:19: 136:20 (#0)" (> Var "y~94") (Typ Boxed (Typ Int (IntRange Int)))))
+                     ) (Typ Boxed (Typ Bool)))
+                   ) (Typ Bool))
+                 ) (Typ Datatype "tuple%0." ()))))
+             ) None
+            ) (Typ Datatype "tuple%0." ())
+           ) :assumption (@@ "NonLinearArith/dist_unboxed.rs:129:5: 129:11 (#0)" (> Quant (Forall :boxed_params true) ((-> x~92 (Typ Boxed
+                (Typ Int (IntRange Int)))
+              ) (-> y~94 (Typ Boxed (Typ Int (IntRange Int)))) (-> z~96 (Typ Boxed (Typ Int (IntRange Int))))
+             ) (@@ "NonLinearArith/dist_unboxed.rs:129:5: 129:11 (#0)" (> Binary (BinaryOp Implies) (@@ "NonLinearArith/dist_unboxed.rs:129:5: 129:11 (#0)"
+                (> Const (Constant Bool true)) (Typ Bool)
+               ) (@@ "NonLinearArith/dist_unboxed.rs:130:9: 131:10 (#0)" (> Binary (BinaryOp And) (@@ "NonLinearArith/dist_unboxed.rs:130:9: 130:10 (#0)"
+                  (> Binary (BinaryOp Eq Spec) (@@ "NonLinearArith/dist_unboxed.rs:130:20: 130:42 (#0)" (> Unary (UnaryOp Trigger (TriggerAnnotation
+                       Trigger None)
+                     ) (@@ "NonLinearArith/dist_unboxed.rs:130:20: 130:42 (#0)" (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_left_add.")
+                        () () (AutospecUsage Final)
+                       ) ((@@ "NonLinearArith/dist_unboxed.rs:130:34: 130:35 (#0)" (> Var "x~92") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:130:37: 130:38 (#0)"
+                         (> Var "y~94") (Typ Boxed (Typ Int (IntRange Int)))
+                        ) (@@ "NonLinearArith/dist_unboxed.rs:130:40: 130:41 (#0)" (> Var "z~96") (Typ Boxed (Typ Int (IntRange Int)))))
+                      ) (Typ Int (IntRange Int)))
+                    ) (Typ Int (IntRange Int))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:130:46: 130:69 (#0)" (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_right_add.")
+                      () () (AutospecUsage Final)
+                     ) ((@@ "NonLinearArith/dist_unboxed.rs:130:61: 130:62 (#0)" (> Var "x~92") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:130:64: 130:65 (#0)"
+                       (> Var "y~94") (Typ Boxed (Typ Int (IntRange Int)))
+                      ) (@@ "NonLinearArith/dist_unboxed.rs:130:67: 130:68 (#0)" (> Var "z~96") (Typ Boxed (Typ Int (IntRange Int)))))
+                    ) (Typ Int (IntRange Int)))
+                  ) (Typ Bool)
+                 ) (@@ "NonLinearArith/dist_unboxed.rs:131:9: 131:10 (#0)" (> Binary (BinaryOp Eq Spec) (@@ "NonLinearArith/dist_unboxed.rs:131:20: 131:42 (#0)"
+                    (> Unary (UnaryOp Trigger (TriggerAnnotation Trigger None)) (@@ "NonLinearArith/dist_unboxed.rs:131:20: 131:42 (#0)" (> Call
+                       (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_left_sub.") () () (AutospecUsage Final)) ((@@ "NonLinearArith/dist_unboxed.rs:131:34: 131:35 (#0)"
+                         (> Var "x~92") (Typ Boxed (Typ Int (IntRange Int)))
+                        ) (@@ "NonLinearArith/dist_unboxed.rs:131:37: 131:38 (#0)" (> Var "y~94") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:131:40: 131:41 (#0)"
+                         (> Var "z~96") (Typ Boxed (Typ Int (IntRange Int)))))
+                      ) (Typ Int (IntRange Int)))
+                    ) (Typ Int (IntRange Int))
+                   ) (@@ "NonLinearArith/dist_unboxed.rs:131:46: 131:69 (#0)" (> Call (CallTarget Fun (CallTargetKind Static) (Fun :path "dist_unboxed!dist_right_sub.")
+                      () () (AutospecUsage Final)
+                     ) ((@@ "NonLinearArith/dist_unboxed.rs:131:61: 131:62 (#0)" (> Var "x~92") (Typ Boxed (Typ Int (IntRange Int)))) (@@ "NonLinearArith/dist_unboxed.rs:131:64: 131:65 (#0)"
+                       (> Var "y~94") (Typ Boxed (Typ Int (IntRange Int)))
+                      ) (@@ "NonLinearArith/dist_unboxed.rs:131:67: 131:68 (#0)" (> Var "z~96") (Typ Boxed (Typ Int (IntRange Int)))))
+                    ) (Typ Int (IntRange Int)))
+                  ) (Typ Bool))
+                ) (Typ Bool))
+              ) (Typ Bool))
+            ) (Typ Bool))
+          ) (Typ Datatype "tuple%0." ()))))
+      ) None
+     ) (Typ Datatype "tuple%0." ()))
+   ) (Typ Datatype "tuple%0." ())
+  ) :extra_dependencies ()))
+
+(trait "vstd!slice.SliceAdditionalSpecFns.")
+
+(trait "vstd!invariant.InvariantPredicate.")
+
+(trait "vstd!atomic_ghost.AtomicInvariantPredicate.")
+
+(trait "vstd!view.View.")
+
+(trait "vstd!std_specs.result.ResultAdditionalSpecFns.")
+
+(trait "vstd!std_specs.option.OptionAdditionalFns.")
+
+(trait "vstd!std_specs.vec.VecAdditionalSpecFns.")
+
+(trait_impl "vstd!option.impl&%0." "core!marker.Copy.")
+
+(trait_impl "vstd!slice.impl&%0." "vstd!slice.SliceAdditionalSpecFns.")
+
+(trait_impl "vstd!cell.impl&%3." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%0." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%2." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%4." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%6." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%8." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%10." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%12." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%14." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%16." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%18." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!atomic_ghost.impl&%20." "vstd!invariant.InvariantPredicate.")
+
+(trait_impl "vstd!thread.impl&%1." "core!marker.Sync.")
+
+(trait_impl "vstd!thread.impl&%2." "core!marker.Send.")
+
+(trait_impl "vstd!thread.impl&%4." "core!marker.Copy.")
+
+(trait_impl "vstd!vec.impl&%0." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%0." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%1." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%2." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%3." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%4." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%5." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%6." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%7." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%8." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%9." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%10." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%11." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%12." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%13." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%14." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%15." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%16." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%17." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%18." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%19." "vstd!view.View.")
+
+(trait_impl "vstd!view.impl&%20." "vstd!view.View.")
+
+(trait_impl "vstd!std_specs.result.impl&%0." "vstd!std_specs.result.ResultAdditionalSpecFns.")
+
+(trait_impl "vstd!std_specs.option.impl&%0." "vstd!std_specs.option.OptionAdditionalFns.")
+
+(trait_impl "vstd!std_specs.vec.impl&%0." "vstd!std_specs.vec.VecAdditionalSpecFns.")
+
+(trait_impl "vstd!std_specs.vec.impl&%1." "vstd!std_specs.vec.VecAdditionalExecFns.")
+
+(module_id "vstd!std_specs.result.getters.")
+
+(module_id "vstd!std_specs.option.getters.")
+
+(module_id "vstd!std_specs.core.")
+
+(module_id "vstd!std_specs.result.")
+
+(module_id "vstd!std_specs.option.")
+
+(module_id "vstd!std_specs.vec.")
+
+(module_id "vstd!pervasive.")
+
+(module_id "vstd!bytes.")
+
+(module_id "vstd!calc_macro.")
+
+(module_id "vstd!map.")
+
+(module_id "vstd!option.")
+
+(module_id "vstd!result.")
+
+(module_id "vstd!seq.")
+
+(module_id "vstd!seq_lib.")
+
+(module_id "vstd!set.")
+
+(module_id "vstd!set_lib.")
+
+(module_id "vstd!slice.")
+
+(module_id "vstd!cell.")
+
+(module_id "vstd!invariant.")
+
+(module_id "vstd!atomic.")
+
+(module_id "vstd!atomic_ghost.")
+
+(module_id "vstd!modes.")
+
+(module_id "vstd!multiset.")
+
+(module_id "vstd!function.")
+
+(module_id "vstd!state_machine_internal.")
+
+(module_id "vstd!thread.")
+
+(module_id "vstd!ptr.")
+
+(module_id "vstd!string.")
+
+(module_id "vstd!vec.")
+
+(module_id "vstd!view.")
+
+(module_id "vstd!std_specs.")
+
+(module_id "vstd!prelude.")
+
+(module_id "vstd!.")
+
+(module_id "dist_unboxed!.")
+
+(external_fn (Fun :path "vstd!invariant.open_atomic_invariant_begin."))
+
+(external_fn (Fun :path "vstd!invariant.open_local_invariant_begin."))
+
+(external_fn (Fun :path "vstd!invariant.open_invariant_end."))
+
+(external_fn (Fun :path "vstd!string.impl&%0.from_rust_str."))
+
+(external_fn (Fun :path "vstd!string.impl&%0.into_rust_str."))
+
+(external_fn (Fun :path "vstd!string.impl&%1.from_rust_string."))
+
+(external_fn (Fun :path "vstd!string.impl&%1.into_rust_string."))
+
+(external_fn (Fun :path "vstd!string.impl&%1.as_rust_string_ref."))
+
+(external_fn (Fun :path "vstd!string.new_strlit."))
+
