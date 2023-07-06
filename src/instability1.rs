@@ -2,12 +2,10 @@
 // the existence of lemma_mul_induction_helper is affecting 
 // the proof of mul_is_distributive
 
-// Moreover, the typing information should be automatically inferred,
-// without the type annotation, we need to give the explicit proof as
-// dist_unboxed did.
+// Moreover, the assertion that shares x, y, z as variables cannot be proven
 
 // this might be related to why in the non-spinoff prover version, revealing
-// mul_pos is an adequate proof
+// mul_pos is an adequate proof (check MulInternals for a demo)
 
 // discovered during unwrapping the proof of mul_is_distributive
 use vstd::prelude::*;

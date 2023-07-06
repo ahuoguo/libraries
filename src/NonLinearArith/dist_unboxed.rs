@@ -104,6 +104,7 @@ pub proof fn lemma_induction_helper(n: int, f: FnSpec(int) -> bool, x: int)
     }
 }
 
+#[verifier(spinoff_prover)]
 proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     requires 
         f(0),

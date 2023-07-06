@@ -117,7 +117,6 @@ pub open spec fn mul_auto1() -> bool
     &&& forall |x:int, y:int, z:int| #[trigger] ((x - y) * z) == (x * z - y * z)
 }
 
-// cannot be proven
 // after I added this proof, some of the following proofs started to fail
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_auto1()
