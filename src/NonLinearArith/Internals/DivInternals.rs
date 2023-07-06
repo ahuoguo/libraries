@@ -55,7 +55,7 @@ pub open spec fn div_recursive(x: int, d: int) -> int
 
 // // same as lemma_mod_basics, we need to instantiate x
 // /// Proves the basics of the division operation
-// proof fn lemma_div_basics(n: int)
+// proof fn lemma_div_basics_auto(n: int)
 //     requires n > 0
 //     ensures  
 //         (n / n) == 1 &&  -((-n) / n) == 1,

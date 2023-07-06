@@ -4,6 +4,8 @@
 /* WARNING: Think three times before adding to this file, as nonlinear
 verification is highly unstable! */
 
+/* no need for spinoff_prover because it's implied by nonlinear_arith */
+
 // may be try to use singular?
 use vstd::prelude::*;
 

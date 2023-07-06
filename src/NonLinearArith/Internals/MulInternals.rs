@@ -54,6 +54,7 @@ pub open spec fn mul (a: int, b: int) -> int
 /* TODO */
 /* HOW TO LET THE ADD/add COMMUNICATE */
 /* NEED REVIEW */
+#[verifier(spinoff_prover)]
 proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     requires 
         f(0),
@@ -73,23 +74,11 @@ proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
 }
 
 /// proves that multiplication is always commutative
+#[verifier(spinoff_prover)]
 proof fn lemma_mul_commutes()
     ensures 
         forall |x: int, y: int| #[trigger] mul(x, y) == mul(y, x)
-{
-    // not important
-    // assert forall |x:int, y:int| (mul(x, y) == mul(y, x)) by { lemma_mul_induction(|i: int| x * i == i * x) };
-}
-
-spec fn dist_base_add(x:int, y:int) -> int
-{
-    x * y + y
-}
-
-spec fn dist_base_sub(x:int, y:int) -> int
-{
-    x * y - y
-}
+{}
 
 pub open spec fn dist_left_add (a: int, b: int, c: int) -> int
 {
@@ -111,42 +100,38 @@ pub open spec fn dist_right_sub (a: int, b: int, c: int) -> int
     a * c - b * c
 }
 
-/// proves the distributive property of multiplication when multiplying an interger
-/// by (x +/- 1)
-proof fn lemma_mul_successor()
-    ensures 
-        forall |x:int, y:int| #[trigger] dist_left_add(x, 1, y) == dist_base_add(x, y),
-        forall |x:int, y:int| #[trigger] dist_left_sub(x, 1, y) == dist_base_sub(x, y),
-{
-    // very different from the dafny proof, seems like the solver can figure out the sub case by itself
-    assert forall |x:int, y:int| #[trigger] dist_left_add(x, 1, y) == dist_base_add(x, y) by { lemma_mul_commutes() };
-}
-
-// // experimental
-// proof fn lemma_mul_successor1()
-//     ensures 
-//         forall |x:int, y:int| #[trigger] ((x + 1) * y) == x * y + y,
-//         forall |x:int, y:int| #[trigger] ((x - 1) * y) == x * y - y,
-// {
-// }
-
+#[verifier(spinoff_prover)]
 proof fn lemma_mul_distributes()
     ensures
-        forall |x, y, z| #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z),
-        forall |x, y, z| #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z)
+        forall |x: int, y: int, z: int| #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z),
+        forall |x: int, y: int, z: int| #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z)
 {
-    // assume(false);
-    reveal(mul_pos); // suprisingly this needs a mul_pos
+    // reveal(mul_pos); // without spinoff_prover, this lemma will verify with this reveal
+    
+    assert forall |x:int, y:int, z:int| 
+        #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z) 
+     && #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z) by
+    {
+        // Interesting you need to assert one of the following
+        let f2 = |i: int|  dist_left_sub(x, i, z) == dist_right_sub(x, i, z);
+        lemma_mul_induction(f2);
+        assert(f2(y));
+
+        // let f1 = |i: int| dist_left_add(x, i, z) == dist_right_add(x, i, z);
+        // lemma_mul_induction(f1);
+        // assert(f1(y));
+    }
 }
 
+#[verifier(spinoff_prover)]
 proof fn lemma_mul_distributes1()
     ensures
         forall |x: int, y: int, z: int| #[trigger] ((x + y) * z) == (x * z + y * z),
         forall |x: int, y: int, z: int| #[trigger] ((x - y) * z) == (x * z - y * z),
-{
-}
+{}
 
 // experimental
+#[verifier(spinoff_prover)]
 pub open spec fn mul_auto1() -> bool
 {
     &&& forall |x:int, y:int| #[trigger](x * y) == (y * x)
@@ -156,13 +141,10 @@ pub open spec fn mul_auto1() -> bool
 
 // cannot be proven
 // after I added this proof, some of the following proofs started to fail
+#[verifier(spinoff_prover)]
 pub proof fn lemma_mul_auto1()
     ensures  mul_auto1()
-{
-    // VERY IMPORTANT
-    // lemma_mul_commutes();
-    // lemma_mul_distributes1();
-}
+{}
 
 // this mul_auto seems to be pretty stable, do not switch to auto1
 /// groups distributive and associative properties of multiplication
@@ -174,15 +156,15 @@ pub open spec fn mul_auto() -> bool
 }
 
 /// proves that mul_auto is valid
+#[verifier(spinoff_prover)]
 pub proof fn lemma_mul_auto()
     ensures  mul_auto()
-{
-    // lemma_mul_commutes();
-    // lemma_mul_distributes();
-}
+{}
 
 // TODO: why this mul_anto antecedent is necessary?
+// should be convenient to let the prover prove the base case
 /// performs auto induction on multiplication for all i s.t. f(i) exists */
+#[verifier(spinoff_prover)]
 pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
     requires mul_auto() ==> { &&&  f(0)
                               &&& (forall |i| #[trigger] is_le(0, i) && f(i) ==> f(i + 1))
@@ -191,14 +173,9 @@ pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
         mul_auto(),
         f(x),
 {
-    // the commented out lemmas shuold be automatically inferred if I did not
-    // add the lemma_mul_auto1 proof
-    // lemma_mul_commutes();
-    // lemma_mul_distributes();
     assert (forall |i| is_le(0, i) && #[trigger] f(i) ==> f(i + 1));
     assert (forall |i| is_le(i, 0) && #[trigger] f(i) ==> f(i - 1));
     lemma_mul_induction(f);
-    // assert (f(x));
 }
 
 // not called anywhere else

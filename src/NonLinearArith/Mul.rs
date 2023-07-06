@@ -24,14 +24,6 @@ pub proof fn lemma_mul_is_mul_recursive(x: int, y: int)
     }
     else { 
         lemma_mul_is_mul_pos(-x, y);
-        // assert (-1 * -x * y == x * y);
-        // assert(x < 0);
-        // assert( mul_recursive(x, y) == -1 * mul_pos(-1 * x, y)); // it cannot run -x??
-        // assert (-x * y == mul_pos(-x, y));
-        // assert(-1 * mul_pos(-1 * x, y) == -1 * (-x * y));
-        // assert( -1 * (-1 * (x * y)) == (-1 * -1) * (x * y)) by { lemma_mul_is_associative(-1, -1, (x * y)) };
-        // assert (x * y == -1 * (-1 * (x * y)));
-        // assert (x * y == -1 * (-1 * (x * y)));
         assert (x * y == -1 * (-x * y)) by { lemma_mul_is_associative(-1, -x, y) }; // OBSERVE
         assert((x * y) == mul_recursive(x, y));
     }
