@@ -2,7 +2,11 @@
 // the existence of lemma_mul_induction_helper is affecting 
 // the proof of mul_is_distributive
 
+// To show the instability, try to comment out lemma_mul_induction_helper, and
+// mul_is_distributive proof will fail
+
 // Moreover, the assertion that shares x, y, z as variables cannot be proven
+// (see the assertion in dist_unboxed.rs)
 
 // this might be related to why in the non-spinoff prover version, revealing
 // mul_pos is an adequate proof (check MulInternals for a demo)
