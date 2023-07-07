@@ -28,7 +28,7 @@ axiom (forall<T> s: Seq T :: { Seq#Length(s) }
 
 // LIZ: done
 function Seq#Singleton<T>(T): Seq T;
-// LIZ: done
+// LIZ: done (axiom_seq_singleton_length)
 axiom (forall<T> t: T :: { Seq#Length(Seq#Singleton(t)) } Seq#Length(Seq#Singleton(t)) == 1);
 
 function Seq#Build<T>(s: Seq T, val: T): Seq T;
