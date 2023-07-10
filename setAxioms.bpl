@@ -15,6 +15,7 @@ function Set#Empty<T>(): Set T;
 axiom (forall<T> o: T :: { Set#Empty()[o] } !Set#Empty()[o]);
 
 // DONE: Unsat Core for LemmaCardinalityOfSet (axiom_set_empty_equivalency_len)
+// TODO: discuss its instablility
 axiom (forall<T> s: Set T :: { Set#Card(s) }
   (Set#Card(s) == 0 <==> s == Set#Empty()) &&
   (Set#Card(s) != 0 ==> (exists x: T :: s[x])));
@@ -22,24 +23,30 @@ axiom (forall<T> s: Set T :: { Set#Card(s) }
 // the empty set could be of anything
 //axiom (forall<T> t: Ty :: { $Is(Set#Empty() : [T]bool, TSet(t)) } $Is(Set#Empty() : [T]bool, TSet(t)));
 
+// TODO: should we define such singleton function? or only import it when it appreas in some unsat core
 function Set#Singleton<T>(T): Set T;
 axiom (forall<T> r: T :: { Set#Singleton(r) } Set#Singleton(r)[r]);
 axiom (forall<T> r: T, o: T :: { Set#Singleton(r)[o] } Set#Singleton(r)[o] <==> r == o);
 axiom (forall<T> r: T :: { Set#Card(Set#Singleton(r)) } Set#Card(Set#Singleton(r)) == 1);
 
+// Set#UnionOne correponds to `insert(self, a: A)` in verus
 function Set#UnionOne<T>(Set T, T): Set T;
 // DONE: Unsat Core for LemmaCardinalityOfSet (axiom_set_insert_contains)
 // LIZ: Technically this is satisfied by axiom_set_insert_same and axiom_set_insert_different, 
 // but i'm not sure if they are equivalent so I will also right a more explicit version of this
 axiom (forall<T> a: Set T, x: T, o: T :: { Set#UnionOne(a,x)[o] }
   Set#UnionOne(a,x)[o] <==> o == x || a[o]);
+// pre-exist: axiom_set_insert_same
 axiom (forall<T> a: Set T, x: T :: { Set#UnionOne(a, x) }
   Set#UnionOne(a, x)[x]);
+// TODO: I think this is euivalent to axiom_set_insert_different, but they
+// have huge syntactic difference
 axiom (forall<T> a: Set T, x: T, y: T :: { Set#UnionOne(a, x), a[y] }
   a[y] ==> Set#UnionOne(a, x)[y]);
 // DONE: Unsat Core for LemmaCardinalityOfSet (axiom_set_insert_same_len)
 // LIZ: this is equivalent to axiom_set_insert_len? but I will write a more
 // explicitly similar one and see if it changes anything
+// note that removing the two lemmas does break irrelevant proof
 axiom (forall<T> a: Set T, x: T :: { Set#Card(Set#UnionOne(a, x)) }
   a[x] ==> Set#Card(Set#UnionOne(a, x)) == Set#Card(a));
 // DONE: Unsat Core for LemmaCardinalityOfSet (axiom_set_insert_diff_len)
@@ -67,10 +74,13 @@ axiom (forall<T> a, b: Set T :: { Set#Union(a, b) }
 function Set#Intersection<T>(Set T, Set T): Set T;
 axiom (forall<T> a: Set T, b: Set T, o: T :: { Set#Intersection(a,b)[o] }
   Set#Intersection(a,b)[o] <==> a[o] && b[o]);
+// LIZ: axiom_set_union_again1
 axiom (forall<T> a, b: Set T :: { Set#Union(Set#Union(a, b), b) }
   Set#Union(Set#Union(a, b), b) == Set#Union(a, b));
+// LIZ: axiom_set_union_again2
 axiom (forall<T> a, b: Set T :: { Set#Union(a, Set#Union(a, b)) }
   Set#Union(a, Set#Union(a, b)) == Set#Union(a, b));
+
 axiom (forall<T> a, b: Set T :: { Set#Intersection(Set#Intersection(a, b), b) }
   Set#Intersection(Set#Intersection(a, b), b) == Set#Intersection(a, b));
 axiom (forall<T> a, b: Set T :: { Set#Intersection(a, Set#Intersection(a, b)) }
