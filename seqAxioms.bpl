@@ -238,15 +238,15 @@ function Seq#Rank<T>(Seq T): int;
 axiom (forall s: Seq Box, i: int ::
         { DtRank($Unbox(Seq#Index(s, i)): DatatypeType) }
         0 <= i && i < Seq#Length(s) ==> DtRank($Unbox(Seq#Index(s, i)): DatatypeType) < Seq#Rank(s) );
-// LIZ: TODO, can't figure out what rank function does
+// LIZ: done (axiom_seq_rank_drop)
 axiom (forall<T> s: Seq T, i: int ::
         { Seq#Rank(Seq#Drop(s, i)) }
         0 < i && i <= Seq#Length(s) ==> Seq#Rank(Seq#Drop(s, i)) < Seq#Rank(s) );
-// LIZ: TODO, can't figure out what rank function does
+// LIZ: done (axiom_seq_rank_take)
 axiom (forall<T> s: Seq T, i: int ::
         { Seq#Rank(Seq#Take(s, i)) }
         0 <= i && i < Seq#Length(s) ==> Seq#Rank(Seq#Take(s, i)) < Seq#Rank(s) );
-// LIZ: TODO, can't figure out what rank function does
+// LIZ: done (axiom_seq_rank_append_take_drop)
 axiom (forall<T> s: Seq T, i: int, j: int ::
         { Seq#Rank(Seq#Append(Seq#Take(s, i), Seq#Drop(s, j))) }
         0 <= i && i < j && j <= Seq#Length(s) ==> Seq#Rank(Seq#Append(Seq#Take(s, i), Seq#Drop(s, j))) < Seq#Rank(s) );
