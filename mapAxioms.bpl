@@ -9,16 +9,22 @@ type Map U V;
 
 function Map#Domain<U,V>(Map U V) : Set U;
 
+// [U]V is a map type
+// https://www.microsoft.com/en-us/research/wp-content/uploads/2016/12/krml178.pdf
+// kinda correponds to index in the verus map.rs (This is the curried version)
 function Map#Elements<U,V>(Map U V) : [U]V;
 
+// TODO
 function Map#Card<U,V>(Map U V) : int;
 
 axiom (forall<U,V> m: Map U V :: { Map#Card(m) } 0 <= Map#Card(m));
 
+// TODO
 axiom (forall<U, V> m: Map U V ::
   { Map#Card(m) }
   Map#Card(m) == 0 <==> m == Map#Empty());
 
+// THE axiom_map_exmpty is related but not representitive
 axiom (forall<U, V> m: Map U V ::
   { Map#Domain(m) }
   m == Map#Empty() || (exists k: U :: Map#Domain(m)[k]));
