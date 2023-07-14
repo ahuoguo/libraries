@@ -10,11 +10,12 @@ type Map U V;
 function Map#Domain<U,V>(Map U V) : Set U;
 
 // [U]V is a map type
+// LIZ: more specifically, [U]V denotes a mapping from type U onto type V
 // https://www.microsoft.com/en-us/research/wp-content/uploads/2016/12/krml178.pdf
 // kinda correponds to index in the verus map.rs (This is the curried version)
 function Map#Elements<U,V>(Map U V) : [U]V;
 
-// TODO
+// done: .len() (should connect to set axioms about length)
 function Map#Card<U,V>(Map U V) : int;
 
 axiom (forall<U,V> m: Map U V :: { Map#Card(m) } 0 <= Map#Card(m));
@@ -85,10 +86,13 @@ axiom (forall<U, V> u: U ::
         { Map#Domain(Map#Empty(): Map U V)[u] }
         !Map#Domain(Map#Empty(): Map U V)[u]);
 
+// LIZ: already done, this is Map::new in verus
 function Map#Glue<U, V>([U]bool, [U]V, Ty): Map U V;
+// LIZ: done (axiom_map_new_domain) but sketchy and worth taking another look at (TODO)
 axiom (forall<U, V> a: [U]bool, b: [U]V, t: Ty ::
   { Map#Domain(Map#Glue(a, b, t)) }
   Map#Domain(Map#Glue(a, b, t)) == a);
+// LIZ: done (axiom_map_new_values) but sketchy and worth taking another look at (TODO)
 axiom (forall<U, V> a: [U]bool, b: [U]V, t: Ty ::
   { Map#Elements(Map#Glue(a, b, t)) }
   Map#Elements(Map#Glue(a, b, t)) == b);
