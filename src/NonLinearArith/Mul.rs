@@ -110,7 +110,7 @@ pub proof fn lemma_mul_is_associative(x: int, y: int, z: int)
 
 /// multiplication is always associative for all integers
 #[verifier(spinoff_prover)]
-proof fn lemma_mul_is_associative_auto()
+pub proof fn lemma_mul_is_associative_auto()
     ensures forall |x: int, y: int, z: int| 
         #[trigger](x * (y * z)) == #[trigger]((x * y) * z)
 {
@@ -409,9 +409,7 @@ pub proof fn lemma_mul_strict_inequality_converse_auto()
 pub proof fn lemma_mul_is_distributive_add(x: int, y: int, z: int)
     ensures x * (y + z) == x * y + x * z
 {
-    // DISCUSS: this can automatically be verified
-    // Probably due to the (non-boxing) SMT encoding
-    // MulINL::lemma_mul_is_distributive_add(x, y, z);
+    MulINL::lemma_mul_is_distributive_add(x, y, z);
 }
 
 /// for all integers, multiplication is distributive with addition in the form x * (y + z)
@@ -430,7 +428,9 @@ pub proof fn lemma_mul_is_distributive_add_auto()
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_is_distributive_add_other_way(x: int, y: int, z: int)
     ensures (y + z) * x == y * x + z * x
-{}
+{
+    lemma_mul_auto();
+}
 
 #[verifier(spinoff_prover)]
 proof fn lemma_mul_is_distributive_add_other_way_auto()
@@ -447,7 +447,9 @@ proof fn lemma_mul_is_distributive_add_other_way_auto()
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_is_distributive_sub(x: int, y: int, z: int)
     ensures x * (y - z) == x * y - x * z
-{}
+{
+    lemma_mul_auto();
+}
 
 /// for all integers, multiplication is distributive with subtraction
 #[verifier(spinoff_prover)]
@@ -473,7 +475,9 @@ pub proof fn lemma_mul_is_distributive(x: int, y: int, z: int)
         x * (y - z) == (y - z) * x,
         x * y == y * x,
         x * z == z * x,
-{}
+{
+    lemma_mul_auto();
+}
 
 /// for all integers, multiplication is distributive
 #[verifier(spinoff_prover)]
@@ -484,6 +488,9 @@ pub proof fn lemma_mul_is_distributive_auto()
         forall |x: int, y: int, z: int| #[trigger]((y + z) * x) == y * x + z * x,
         forall |x: int, y: int, z: int| #[trigger]((y - z) * x) == y * x - z * x,
 {
+    lemma_mul_is_distributive_add_auto();
+    lemma_mul_is_distributive_sub_auto();
+    lemma_mul_is_commutative_auto();
 }
 
 /* multiplying two positive integers will result in a positive integer */
@@ -582,26 +589,40 @@ pub proof fn lemma_mul_nonnegative_auto()
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_unary_negation(x: int, y: int)
     ensures 
-        (-x) * y == -(x * y) && -(x * y) == x * (-y)
-{}
+        (-x) * y == -(x * y) == x * (-y)
+{
+    lemma_mul_induction_auto(x, |u: int| (-u) * y == - (u * y) == u * (-y));
+}
 
 /// shows the equivalent forms of using the unary negation operator for any integers
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_unary_negation_auto()
-    ensures forall |x: int, y: int| #[trigger]((-x) * y) == #[trigger](-(x * y)) && #[trigger](-(x * y)) == x * (-y),
-{}
+    ensures forall |x: int, y: int| #[trigger]((-x) * y) ==  #[trigger](-(x * y)) == x * (-y),
+{
+    assert forall |x: int, y: int| #[trigger]((-x) * y) ==  #[trigger](-(x * y)) == x * (-y) by
+    {
+        lemma_mul_unary_negation(x, y);
+    }
+}
 
 /// multiplying two negative integers, -x and -y, is equivalent to multiplying x and y
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_cancels_negatives(x: int, y: int)
     ensures x * y == (-x) * (-y)
-{}
+{
+    lemma_mul_induction_auto(x, |u: int| (-u) * y == - (u * y) == u * (-y));
+}
 
 /// multiplying two negative integers, -x and -y, is equivalent to multiplying x and y
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_cancels_negatives_auto()
     ensures forall |x: int, y: int| #[trigger](x * y) == (-x) * (-y)
-{}
+{
+    assert forall |x: int, y: int| #[trigger](x * y) == (-x) * (-y) by
+    {
+        lemma_mul_cancels_negatives(x, y);
+    }
+}
 
 /// includes all properties of multiplication
 #[verifier(spinoff_prover)]
@@ -625,11 +646,11 @@ pub proof fn lemma_mul_properties()
 {
     lemma_mul_strict_inequality_auto();
     lemma_mul_inequality_auto();
-    // lemma_mul_is_distributive_auto();
+    lemma_mul_is_distributive_auto();
     lemma_mul_is_associative_auto();
     lemma_mul_ordering_auto();
     lemma_mul_nonzero_auto();
-    // lemma_mul_nonnegative_auto();
+    lemma_mul_nonnegative_auto();
     lemma_mul_strictly_increases_auto();
     lemma_mul_increases_auto();
 }

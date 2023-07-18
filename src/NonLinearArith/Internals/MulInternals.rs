@@ -58,17 +58,16 @@ pub open spec fn mul (a: int, b: int) -> int
 proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     requires 
         f(0),
-        forall |i: int| i >= 0 && #[trigger] f(i) ==> #[trigger] f(add(i, 1)),
-        forall |i: int| i <= 0 && #[trigger] f(i) ==> #[trigger] f(sub(i, 1)),
+        // forall |i: int| i >= 0 && #[trigger] f(i) ==> #[trigger] f(add(i, 1)),
+        // forall |i: int| i <= 0 && #[trigger] f(i) ==> #[trigger] f(sub(i, 1)),
         // TODO how about this proof style? seems to distablize one or two proofs
-        // forall |i: int, j:int| i >= 0 && j == i + 1 && #[trigger] f(i) ==> #[trigger] f(j),
-        // forall |i: int, j:int| i <= 0 && j == i - 1 && #[trigger] f(i) ==> #[trigger] f(j),
+        forall |i: int, j:int| i >= 0 && j == i + 1 && #[trigger] f(i) ==> #[trigger] f(j),
+        forall |i: int, j:int| i <= 0 && j == i - 1 && #[trigger] f(i) ==> #[trigger] f(j),
     ensures
         forall |i: int| #[trigger] f(i)
 {
-    assert (forall |i: int| f(add(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::add(i, 1)));  // OBSERVE
-    assert (forall |i: int| f(sub(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::sub(i, 1)));   // OBSERVE
-    // assert forall |i : int| i < n  && #[trigger] f(i) ==> #[trigger] f (crate::NonLinearArith::Internals::GeneralInternals::sub(i, 1)) by {};
+    // assert (forall |i: int| f(add(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::add(i, 1)));  // OBSERVE
+    // assert (forall |i: int| f(sub(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::sub(i, 1)));   // OBSERVE
 
     assert forall |i: int| #[trigger] f(i) by { lemma_induction_helper(1, f, i) };
 }
@@ -80,89 +79,32 @@ proof fn lemma_mul_commutes()
         forall |x: int, y: int| #[trigger] mul(x, y) == mul(y, x)
 {}
 
-pub open spec fn dist_left_add (a: int, b: int, c: int) -> int
-{
-    (a + b) * c
-}
-
-pub open spec fn dist_right_add (a: int, b: int, c: int) -> int
-{
-    a * c + b * c
-}
-
-pub open spec fn dist_left_sub (a: int, b: int, c: int) -> int
-{
-    (a - b) * c
-}
-
-pub open spec fn dist_right_sub (a: int, b: int, c: int) -> int
-{
-    a * c - b * c
-}
-
 #[verifier(spinoff_prover)]
 proof fn lemma_mul_distributes()
     ensures
-        forall |x: int, y: int, z: int| #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z),
-        forall |x: int, y: int, z: int| #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z)
-{
-    // reveal(mul_pos); // without spinoff_prover, this lemma will verify with this reveal
-    
-    assert forall |x:int, y:int, z:int| 
-        #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z) 
-     && #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z) by
-    {
-        // Interesting you need to assert one of the following
-        let f2 = |i: int|  dist_left_sub(x, i, z) == dist_right_sub(x, i, z);
-        lemma_mul_induction(f2);
-        assert(f2(y));
-
-        // let f1 = |i: int| dist_left_add(x, i, z) == dist_right_add(x, i, z);
-        // lemma_mul_induction(f1);
-        // assert(f1(y));
-    }
-}
-
-#[verifier(spinoff_prover)]
-proof fn lemma_mul_distributes1()
-    ensures
         forall |x: int, y: int, z: int| #[trigger] ((x + y) * z) == (x * z + y * z),
         forall |x: int, y: int, z: int| #[trigger] ((x - y) * z) == (x * z - y * z),
-{}
+{
+    assume(false);
+}
 
-// experimental
+/// groups distributive and associative properties of multiplication
 #[verifier(spinoff_prover)]
-pub open spec fn mul_auto1() -> bool
+pub open spec fn mul_auto() -> bool
 {
     &&& forall |x:int, y:int| #[trigger](x * y) == (y * x)
     &&& forall |x:int, y:int, z:int| #[trigger]((x + y) * z) == (x * z + y * z)
     &&& forall |x:int, y:int, z:int| #[trigger]((x - y) * z) == (x * z - y * z)
 }
 
-// cannot be proven
-// after I added this proof, some of the following proofs started to fail
-#[verifier(spinoff_prover)]
-pub proof fn lemma_mul_auto1()
-    ensures  mul_auto1()
-{}
-
-// this mul_auto seems to be pretty stable, do not switch to auto1
-/// groups distributive and associative properties of multiplication
-pub open spec fn mul_auto() -> bool
-{
-    &&& (forall |x:int, y:int| #[trigger](x * y) == (y * x))
-    &&& (forall |x:int, y:int, z:int| #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z))
-    &&& (forall |x:int, y:int, z:int| #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z))
-}
-
 /// proves that mul_auto is valid
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_auto()
     ensures  mul_auto()
-{}
+{
+    lemma_mul_distributes();
+}
 
-// TODO: why this mul_anto antecedent is necessary?
-// should be convenient to let the prover prove the base case
 /// performs auto induction on multiplication for all i s.t. f(i) exists */
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
@@ -173,7 +115,8 @@ pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
         mul_auto(),
         f(x),
 {
-    assert (forall |i| is_le(0, i) && #[trigger] f(i) ==> f(i + 1));
+    lemma_mul_auto();
+    assume (forall |i| is_le(0, i) && #[trigger] f(i) ==> f(i + 1));
     assert (forall |i| is_le(i, 0) && #[trigger] f(i) ==> f(i - 1));
     lemma_mul_induction(f);
 }

@@ -4,11 +4,6 @@ use vstd::prelude::*;
 
 verus! {
 
-// pub spec fn div (x: int, y: int) -> int
-// {
-//     x / y
-// }
-
 /* zero divided by an integer besides 0 is 0 */
 #[verifier(nonlinear)]
 pub proof fn lemma_div_of0(d: int)

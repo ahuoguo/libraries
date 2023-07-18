@@ -7,7 +7,7 @@ verus! {
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::GeneralInternals::{is_le};
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::ModInternals::{lemma_mod_basics, lemma_mod_induction_forall, mod_auto, lemma_mod_auto};
+use crate::NonLinearArith::Internals::ModInternals::{lemma_mod_induction_forall, lemma_mod_induction_forall2, mod_auto, lemma_mod_auto, lemma_mod_basics_auto};
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::ModInternalsNonlinear;
 #[allow(unused_imports)]
@@ -52,169 +52,150 @@ pub open spec fn div_recursive(x: int, d: int) -> int
     }
 }
 
-
-// // same as lemma_mod_basics, we need to instantiate x
-// /// Proves the basics of the division operation
-// proof fn lemma_div_basics_auto(n: int)
-//     requires n > 0
-//     ensures  
-//         (n / n) == 1 &&  -((-n) / n) == 1,
-//         forall |x:int| 0 <= x < n <==> #[trigger](x / n) == 0,
-//         forall |x:int| #[trigger]((x + n) / n) == x / n + 1,
-//         // forall |x:int| #[trigger]((x - n) / n) == x / n - 1,
-// {
-//     assert((n / n) == 1 &&  -((-n) / n) == 1) by {
-//         DivInternalsNonlinear::lemma_div_by_self(n);
-//     }
-    
-//     assert forall |x:int| 0 <= x < n <==> #[trigger](x / n) == 0 by {
-//         DivInternalsNonlinear::lemma_small_div();
-//         ModInternalsNonlinear::lemma_fundamental_div_mod(x, n);
-//     }
-
-//     assert forall |x:int| #[trigger]((x + n) / n) == x / n + 1 by {
-//         // DivInternalsNonlinear::lemma_small_div();
-//         lemma_mod_basics(n, x);
-//         assert(((x + n) / n) == x / n + 1);
-
-//     }
-//     // assume(forall |x:int| #[trigger]((x + n) / n) == x / n + 1);
-
-// }
-
-// instantiated version of lemma_div_basics
-// TODO: TO BE DISCUSSED: might want to change the order of n and x
+/// Proves the basics of the division operation
 #[verifier(spinoff_prover)]
-pub proof fn lemma_div_basics(n: int, x: int)
+pub proof fn lemma_div_basics(n: int)
     requires n > 0
-    ensures
+    ensures  
         (n / n) == 1 &&  -((-n) / n) == 1,
-        0 <= x < n <==> #[trigger](x / n) == 0,
-        #[trigger]((x + n) / n) == x / n + 1,
-        #[trigger]((x - n) / n) == x / n - 1,
+        forall |x:int| 0 <= x < n <==> #[trigger](x / n) == 0,
+        forall |x:int| #[trigger]((x + n) / n) == x / n + 1,
+        forall |x:int| #[trigger]((x - n) / n) == x / n - 1,
 {
-    assert((n / n) == 1 &&  -((-n) / n) == 1) by {
-        DivInternalsNonlinear::lemma_div_by_self(n);
-    }
-    
+    lemma_mod_auto(n);
+    lemma_mod_basics_auto(n);
     DivInternalsNonlinear::lemma_small_div();
-    ModInternalsNonlinear::lemma_fundamental_div_mod(x, n);
-    lemma_mod_basics(n, x);
+    DivInternalsNonlinear::lemma_div_by_self(n);
+    
+    assert forall |x:int| 0 <= x < n <== #[trigger](x / n) == 0 by {
+        ModInternalsNonlinear::lemma_fundamental_div_mod(x, n);
+    }
 }
 
-// /// Automates the division operator process. Contains the identity property, a
-// /// fact about when quotients are zero, and facts about adding and subtracting
-// /// integers over a common denominator.
+/// Automates the division operator process. Contains the identity property, a
+/// fact about when quotients are zero, and facts about adding and subtracting
+/// integers over a common denominator.
 #[verifier(spinoff_prover)]
 pub open spec fn div_auto(n: int) -> bool
     recommends n > 0
 {
     &&& mod_auto(n)
-    &&& (n / n == 1 && -((-n) / n) == 1)
+    &&& (n / n == -((-n) / n) == 1)
     &&& forall |x: int| 0 <= x < n <==> #[trigger](x / n) == 0
-    // &&& (forall |x: int, y: int|
-    //      {let z = (x % n) + (y % n);
-    //      (  (0 <= z < n && #[trigger]((x + y) / n) == x / n + y / n)
-    //          || (n <= z < n + n && #[trigger]((x + y) / n) == x / n + y / n + 1))})
-    // &&& (forall |x: int, y: int|
-    //     {let z = (x % n) - (y % n);
-    //     (  (0 <= z < n && #[trigger]((x - y) / n) == x / n - y / n)
-    //         || (-n <= z < 0  && #[trigger]((x - y) / n) == x / n - y / n - 1))})
+    &&& (forall |x: int, y: int|
+         {let z = (x % n) + (y % n);
+         (  (0 <= z < n && #[trigger]((x + y) / n) == x / n + y / n)
+             || (n <= z < n + n && #[trigger]((x + y) / n) == x / n + y / n + 1))})
+    &&& (forall |x: int, y: int|
+        {let z = (x % n) - (y % n);
+        (  (0 <= z < n && #[trigger]((x - y) / n) == x / n - y / n)
+            || (-n <= z < 0  && #[trigger]((x - y) / n) == x / n - y / n - 1))})
 }
 
 // /// Ensures that div_auto is true 
 #[verifier(spinoff_prover)]
 pub proof fn lemma_div_auto(n: int)
     requires n > 0
-    ensures  div_auto(n)
+    ensures
+        div_auto(n) // the split condition failure disappears
+        // mod_auto(n),
+        // (n / n == -((-n) / n) == 1),
+        // forall |x: int| 0 <= x < n <==> #[trigger](x / n) == 0,
+        // (forall |x: int, y: int|
+        //  {let z = (x % n) + (y % n);
+        //  (  (0 <= z < n && #[trigger]((x + y) / n) == x / n + y / n)
+        //      || (n <= z < n + n && #[trigger]((x + y) / n) == x / n + y / n + 1))}),
+        // (forall |x: int, y: int|
+        // {let z = (x % n) - (y % n);
+        // (  (0 <= z < n && #[trigger]((x - y) / n) == x / n - y / n)
+        //     || (-n <= z < 0  && #[trigger]((x - y) / n) == x / n - y / n - 1))})
 {
     lemma_mod_auto(n);
-    
-    DivInternalsNonlinear::lemma_div_by_self(n);
-
-    // this also has a split error
-    // assert ((n / n == 1) && (-((-n) / n) == 1)) by {
-    //     DivInternalsNonlinear::lemma_div_by_self(n);
-    // }
+    lemma_div_basics(n);
 
     assert forall |x: int| 0 <= x < n <==> #[trigger](x / n) == 0 by {
-        lemma_div_basics(n, x);
+        lemma_div_basics(n);
     }
-//     assert (0 + n) / n == 1;
-//     assert (0 - n) / n == -1;
+    assert ((0 + n) / n == 1);
+    assert ((0 - n) / n == -1);
 
+    assert forall |x: int, y: int|
+         {let z = (x % n) + (y % n);
+         (  (0 <= z < n && #[trigger]((x + y) / n) == x / n + y / n)
+             || (n <= z < n + n && #[trigger]((x + y) / n) == x / n + y / n + 1))} by
+    {
+    let f = |xx:int, yy:int|
+        {let z = (xx % n) + (yy % n);
+            (  (0 <= z < n && ((xx + yy) / n) == xx / n + yy / n)
+                || (n <= z < 2 * n && ((xx + yy) / n) == xx / n + yy / n + 1))};
+    
+    assert forall |i: int, j: int| {
+        // changing this from j + n to mod's addition speeds up the verification
+        // otherwise you need higher rlimit
+        // might be a good case for profilers
+        &&& ( j >= 0 && #[trigger]f(i, j) ==> f(i, crate::NonLinearArith::Internals::ModInternals::add(j, n)))
+        &&& ( i < n  && f(i, j) ==> f(i - n, j))
+        &&& ( j < n  && f(i, j) ==> f(i, j - n))
+        &&& ( i >= 0 && f(i, j) ==> f(i + n, j))
+    } by
+    {
+        assert(((i + n) + j) / n == ((i + j) + n) / n);
+        assert((i + (j + n)) / n == ((i + j) + n) / n);
+        assert(((i - n) + j) / n == ((i + j) - n) / n);
+        assert((i + (j - n)) / n == ((i + j) - n) / n);
+    }
+    assert forall |i: int, j: int| 0 <= i < n && 0 <= j < n ==> #[trigger]f(i, j) by
+    {
+        assert(((i + n) + j) / n == ((i + j) + n) / n);
+        assert((i + (j + n)) / n == ((i + j) + n) / n);
+        assert(((i - n) + j) / n == ((i + j) - n) / n);
+        assert((i + (j - n)) / n == ((i + j) - n) / n);
+    }
 
+    lemma_mod_induction_forall2(n, f);
+    assert(f(x, y));
+    }
 
-//     forall x:int, y:int {:trigger (x + y) / n}
-//     ensures  var z := (x % n) + (y % n);
-//             (|| (0 <= z < n && (x + y) / n == x / n + y / n)
-//                 || (n <= z < 2 * n && (x + y) / n == x / n + y / n + 1))
-//     {
-//     var f := (xx:int, yy:int) =>
-//         (var z := (xx % n) + (yy % n);
-//         (   (0 <= z < n && (xx + yy) / n == xx / n + yy / n)
-//             || (n <= z < 2 * n && (xx + yy) / n == xx / n + yy / n + 1)));
-//     forall i, j
-//         ensures j >= 0 && f(i, j) ==> f(i, j + n)
-//         ensures i < n  && f(i, j) ==> f(i - n, j)
-//         ensures j < n  && f(i, j) ==> f(i, j - n)
-//         ensures i >= 0 && f(i, j) ==> f(i + n, j)
-//     {
-//         assert ((i + n) + j) / n == ((i + j) + n) / n;
-//         assert (i + (j + n)) / n == ((i + j) + n) / n;
-//         assert ((i - n) + j) / n == ((i + j) - n) / n;
-//         assert (i + (j - n)) / n == ((i + j) - n) / n;
-//     }
-//     forall i, j
-//         ensures 0 <= i < n && 0 <= j < n ==> f(i, j)
-//     {
-//         assert ((i + n) + j) / n == ((i + j) + n) / n;
-//         assert (i + (j + n)) / n == ((i + j) + n) / n;
-//         assert ((i - n) + j) / n == ((i + j) - n) / n;
-//         assert (i + (j - n)) / n == ((i + j) - n) / n;
-//     }
-//     lemma_mod_induction_forall2(n, f);
-//     assert f(x, y);
-//     }
-//     forall x:int, y:int {:trigger (x - y) / n}
-//     ensures  var z := (x % n) - (y % n);
-//             (|| (0 <= z < n && (x - y) / n == x / n - y / n)
-//                 || (-n <= z < 0 && (x - y) / n == x / n - y / n - 1))
-//     {
-//     var f := (xx:int, yy:int) =>
-//         (var z := (xx % n) - (yy % n);
-//         (   (0 <= z < n && (xx - yy) / n == xx / n - yy / n)
-//             || (-n <= z < 0 && (xx - yy) / n == xx / n - yy / n - 1)));
-//     forall i, j
-//         ensures j >= 0 && f(i, j) ==> f(i, j + n)
-//         ensures i < n  && f(i, j) ==> f(i - n, j)
-//         ensures j < n  && f(i, j) ==> f(i, j - n)
-//         ensures i >= 0 && f(i, j) ==> f(i + n, j)
-//     {
-//         assert ((i + n) - j) / n == ((i - j) + n) / n;
-//         assert (i - (j - n)) / n == ((i - j) + n) / n;
-//         assert ((i - n) - j) / n == ((i - j) - n) / n;
-//         assert (i - (j + n)) / n == ((i - j) - n) / n;
-//     }
-//     forall i, j
-//         ensures 0 <= i < n && 0 <= j < n ==> f(i, j)
-//     {
-//         assert ((i + n) - j) / n == ((i - j) + n) / n;
-//         assert (i - (j - n)) / n == ((i - j) + n) / n;
-//         assert ((i - n) - j) / n == ((i - j) - n) / n;
-//         assert (i - (j + n)) / n == ((i - j) - n) / n;
-//     }
-//     lemma_mod_induction_forall2(n, f);
-//     assert f(x, y);
-//     }
+    assert forall |x:int, y:int|
+        {let z = (x % n) - (y % n);
+        (  (0 <= z < n && #[trigger]((x - y) / n) == x / n - y / n)
+            || (-n <= z < 0  && #[trigger]((x - y) / n) == x / n - y / n - 1))} by
+    {
+    let f = |xx:int, yy:int|
+        {let z = (xx % n) - (yy % n);
+            (  (0 <= z < n &&((xx - yy) / n) == xx / n - yy / n)
+                || (-n <= z < 0 && (xx - yy) / n == xx / n - yy / n - 1))};
+    
+    assert forall |i: int, j: int| {
+        &&& ( j >= 0 && #[trigger]f(i, j) ==> f(i, j + n))
+        &&& ( i < n  && f(i, j) ==> f(i - n, j))
+        &&& ( j < n  && f(i, j) ==> f(i, j - n))
+        &&& ( i >= 0 && f(i, j) ==> f(i + n, j))
+    } by
+    {
+        assert(((i + n) - j) / n == ((i - j) + n) / n);
+        assert((i - (j - n)) / n == ((i - j) + n) / n);
+        assert(((i - n) - j) / n == ((i - j) - n) / n);
+        assert((i - (j + n)) / n == ((i - j) - n) / n);
+    }
+    assert forall |i: int, j: int| 0 <= i < n && 0 <= j < n ==> #[trigger]f(i, j) by
+    {
+        assert(((i + n) - j) / n == ((i - j) + n) / n);
+        assert((i - (j - n)) / n == ((i - j) + n) / n);
+        assert(((i - n) - j) / n == ((i - j) - n) / n);
+        assert((i - (j + n)) / n == ((i - j) - n) / n);
+    }
+    lemma_mod_induction_forall2(n, f);
+    assert(f(x, y));
+    }
 }
 
-pub open spec fn add(x: int, y: int) -> int
+spec fn add(x: int, y: int) -> int
 {
     x + y
 }
 
-pub open spec fn sub(x: int, y: int) -> int
+spec fn sub(x: int, y: int) -> int
 {
     x - y
 }
@@ -235,16 +216,14 @@ pub proof fn lemma_div_induction_auto(n: int, x: int, f: FnSpec(int) -> bool)
     assert(forall |i: int| is_le(0, i) && i < n ==> f(i));
     assert(forall |i: int| is_le(0, i) && #[trigger]f(i) ==> #[trigger]f(add(i, n)));
     assert(forall |i: int| is_le(i + 1, n) && #[trigger]f(i) ==> #[trigger]f(sub(i, n)));
-    assert forall |i: int| 0 <= i < n ==> #[trigger]f(i) by {
-        if 0 <= i < n {
-            assert(f(i)) by {
-                assert(forall |i: int| is_le(0, i) && i < n ==> f(i));
-                assert(is_le(0, i) && i < n);
-            };
-        }
+    assert forall |i: int| 0 <= i < n implies #[trigger]f(i) by {
+        assert(f(i)) by {
+            assert(forall |i: int| is_le(0, i) && i < n ==> f(i));
+            assert(is_le(0, i) && i < n);
+        };
     };
-    assert(forall |i: int| i >= 0 && #[trigger]f(i) ==> #[trigger]f(add(i, n)));
-    assert(forall |i: int| i < n && #[trigger]f(i) ==> #[trigger]f(sub(i, n)));
+    // assert(forall |i: int| i >= 0 && #[trigger]f(i) ==> #[trigger]f(add(i, n)));
+    // assert(forall |i: int| i < n && #[trigger]f(i) ==> #[trigger]f(sub(i, n)));
     assert forall |i: int| i >= 0 && #[trigger]f(i) ==> #[trigger]f(crate::NonLinearArith::Internals::ModInternals::add(i, n)) by {
         assert(crate::NonLinearArith::Internals::ModInternals::add(i, n) == add(i, n));
     }; // OBSERVE COMMUNICATION

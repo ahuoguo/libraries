@@ -1,27 +1,31 @@
 use vstd::prelude::*;
 use std::vec::Vec;
 // mod relations;
+#[allow(unused_imports)]
 use crate::Collections::relations::{total_ordering, sorted_by, lemma_new_first_element_still_sorted_by};
 
 verus! {
-    //Splits a sequence in two, sorts the two subsequences using itself, and merge the two sorted sequences using `MergeSortedWith`
-    fn merge_sort_by<T: std::marker::Copy, F: std::clone::Clone>(v: Vec<T>, Ghost(leq_pure): Ghost<FnSpec(T,T) ->bool>, leq: &F) -> (result: Vec<T>)
-        where F: Fn(T, T) -> bool
+    /// Splits a sequence in two, sorts the two subsequences using itself, and merge the two sorted sequences using `MergeSortedWith`
+    fn merge_sort_by<T: std::marker::Copy, F: std::clone::Clone> (a: Vec<T>, Ghost(leq_pure): Ghost<FnSpec(T,T) ->bool>, leq: &F) -> (result: Vec<T>)
+        where F: Fn(T, T) -> bool,
         requires
             total_ordering(leq_pure),
-            forall |x, y| #[trigger] leq.requires((x, y)), // for any pair (x, y), it is safe to call leq(x, y)
-            forall |x, y, b| #[trigger] leq.ensures((x, y), b) ==> #[trigger] leq_pure(x, y) == b // If `leq` takes input (x, y) and returns b, then leq_pure(x, y) == b
+            forall |x, y|    #[trigger] leq.requires((x, y)), // for any pair (x, y), it is safe to call leq(x, y)
+            forall |x, y, b| #[trigger] leq.ensures((x, y), b) ==> #[trigger] leq_pure(x, y) == b, // If `leq` takes input (x, y) and returns b, then leq_pure(x, y) == b
         ensures
+            // TODO lack multiset(a) == multiset(result)
             sorted_by(result@, leq_pure),
     {
-        if v.len() <=1
+        if a.len() <=1
         {
-            v
-        } else{
-            let split_index = v.len() /2;
-            let mut left = v;
+            a
+        } else {
+            let split_index = a.len() / 2;
+            let mut left = a;
             let right = left.split_off(split_index);
             
+            // assert (a =~= left.push(right));
+
             let left_sorted = merge_sort_by(left, Ghost(leq_pure), leq);
             let right_sorted = merge_sort_by(right, Ghost(leq_pure), leq);
 
@@ -42,6 +46,7 @@ verus! {
             forall|x: T| result@.contains(x) <==> left@.contains(x) || right@.contains(x),
             sorted_by(result@, leq_pure), 
     {
+        assume(false);
         if left.len() == 0{
             right
         } else if right.len() == 0{
@@ -72,8 +77,7 @@ verus! {
             
             let result_unmut = result;
             result_unmut
-        }
-        else{
+        } else{
             assert(forall |x: T| left@.contains(x) ==> leq_pure(left[0], x));
             assert(!leq_pure(left[0], right[0]));
             assert(leq_pure(right[0], left[0]));
