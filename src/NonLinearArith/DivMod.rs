@@ -14,7 +14,7 @@ use crate::NonLinearArith::Internals::ModInternals::lemma_mod_auto;
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::ModInternalsNonlinear as ModINL;
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::MulInternals::{lemma_mul_induction_auto, lemma_mul_auto};
+use crate::NonLinearArith::Internals::MulInternals::{lemma_mul_induction_auto, lemma_mul_auto, lemma_mul_induction};
 #[allow(unused_imports)]
 use crate::NonLinearArith::Mul::*;
 // use crate::NonLinearArith::Mul::{lemma_mul_strictly_positive_auto, lemma_mul_is_associative_auto, lemma_mul_is_distributive_auto, lemma_mul_is_commutative_auto, lemma_mul_strict_inequality_converse_auto, lemma_mul_inequality_auto, lemma_mul_increases_auto};
@@ -855,21 +855,26 @@ proof fn lemma_mul_hoist_inequality(x: int, y: int, z: int)
 //     }
 // }
 
-// /// this is the same as writing x + (b/d) == x when b is less than d; this is true because (b/d) == 0
-// #[verifier::spinoff_prover]
 
-// proof fn lemma_div_multiples_vanish_fancy(x: int, b: int, d: int)
-//     requires 
-//         0 < d,
-//         0 <= b < d,
-//     ensures 
-//         (d * x + b) / d == x
-// {
-//     lemma_div_auto(d);
-//     let f = |u: int| (d * u + b) / d == u;
-//     lemma_mul_induction_auto(x, f);
-//     assert(f(x));
-// }
+/// this is the same as writing x + (b/d) == x when b is less than d; this is true because (b/d) == 0
+#[verifier::spinoff_prover]
+pub proof fn lemma_div_multiples_vanish_fancy(x: int, b: int, d: int)
+    requires 
+        0 < d,
+        0 <= b < d,
+    ensures 
+        (d * x + b) / d == x
+{
+    lemma_div_auto(d);
+    let f = |u: int| (d * u + b) / d == u;
+    
+    lemma_mul_auto();
+    lemma_mul_induction(f);
+
+    // OBSERVE: the original code uses the auto lemma, which cause the rlimit to complain
+    // lemma_mul_induction_auto(x, f);
+    assert(f(x));
+}
 
 // proof fn lemma_div_multiples_vanish_fancy_auto()
 //     ensures forall x: int, b: int, d: int {:trigger (d * x + b) / d}
@@ -882,13 +887,14 @@ proof fn lemma_mul_hoist_inequality(x: int, y: int, z: int)
 //     }
 // }
 
-// /* multiplying an integer by a common numerator and denominator results in the original integer */
-// proof fn lemma_div_multiples_vanish(x: int, d: int)
-//     requires 0 < d
-//     ensures (d * x) / d == x
-// {
-//     lemma_div_multiples_vanish_fancy(x, 0, d);
-// }
+/// multiplying an integer by a common numerator and denominator results in the original integer
+#[verifier::spinoff_prover]
+pub proof fn lemma_div_multiples_vanish(x: int, d: int)
+    requires 0 < d
+    ensures (d * x) / d == x
+{
+    lemma_div_multiples_vanish_fancy(x, 0, d);
+}
 
 // proof fn lemma_div_multiples_vanish_auto()
 //     ensures forall x: int, d: int {:trigger (d * x) / d} :: 0 < d ==> (d * x) / d == x
@@ -900,14 +906,18 @@ proof fn lemma_mul_hoist_inequality(x: int, y: int, z: int)
 //     }
 // }
 
-// /* multiplying a whole number by a common numerator and denominator results in the original integer */
-// proof fn lemma_div_by_multiple(b: int, d: int)
-//     requires 0 <= b
-//     requires 0 < d
-//     ensures  (b * d) / d == b
-// {
-//     lemma_div_multiples_vanish(b,d);
-// }
+/// multiplying a whole number by a common numerator and denominator results in the original integer
+#[verifier::spinoff_prover]
+pub proof fn lemma_div_by_multiple(b: int, d: int)
+    requires
+        0 <= b,
+        0 < d,
+    ensures
+        (b * d) / d == b
+{
+    lemma_div_multiples_vanish(b, d);
+    lemma_mul_auto(); // commutativity
+}
 
 // proof fn lemma_div_by_multiple_auto()
 //     ensures forall b: int, d: int {:trigger (b * d) / d} :: 0 <= b && 0 < d ==> (b * d) / d == b
@@ -919,17 +929,19 @@ proof fn lemma_mul_hoist_inequality(x: int, y: int, z: int)
 //     }
 // }
 
-// /* a dividend y that is a positive multiple of the divisor z will always yield a greater quotient 
-// than a dividend x that is less than y */
-// proof fn lemma_div_by_multiple_is_strongly_ordered(x: int, y: int, m: int, z: int)
-//     requires x < y
-//     requires y == m * z
-//     requires 0 < z
-//     ensures  x / z < y / z
-// {
-//     lemma_mod_multiples_basic(m, z);
-//     lemma_div_induction_auto(z, y - x, yx => var u := yx + x; x < u && u % z == 0 ==> x / z < u / z);
-// }
+/// a dividend y that is a positive multiple of the divisor z will always yield a greater quotient 
+/// than a dividend x that is less than y
+pub proof fn lemma_div_by_multiple_is_strongly_ordered(x: int, y: int, m: int, z: int)
+    requires
+        x < y,
+        y == m * z,
+        0 < z,
+    ensures
+        x / z < y / z
+{
+    lemma_mod_multiples_basic(m, z);
+    lemma_div_induction_auto(z, y - x, |yx: int| {let u = yx + x; x < u && u % z == 0 ==> x / z < u / z});
+}
 
 // proof fn lemma_div_by_multiple_is_strongly_ordered_auto()
 //     ensures forall x: int, y: int, m: int, z: int {:trigger x / z, m * z, y / z}
@@ -1186,14 +1198,14 @@ pub proof fn lemma_mod_properties_auto()
 //     }
 // }
 
-// /* a dividend that is any multiple of the divisor will result in a remainder of 0 */
-// proof fn lemma_mod_multiples_basic(x: int, m: int)
-//     requires m > 0
-//     ensures (x * m) % m == 0
-// {
-//     lemma_mod_auto(m);
-//     lemma_mul_induction_auto(x, u => (u * m) % m == 0);
-// }
+/// a dividend that is any multiple of the divisor will result in a remainder of 0
+pub proof fn lemma_mod_multiples_basic(x: int, m: int)
+    requires m > 0
+    ensures (x * m) % m == 0
+{
+    lemma_mod_auto(m);
+    lemma_mul_induction_auto(x, |u: int| (u * m) % m == 0);
+}
 
 // proof fn lemma_mod_multiples_basic_auto()
 //     ensures forall x: int, m: int {:trigger (x * m) % m} :: m > 0 ==> (x * m) % m == 0

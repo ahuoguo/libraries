@@ -33,13 +33,13 @@ pub open spec fn mul_recursive(x: int, y: int) -> int
 
 /* you need these add, sub because by importing the GeneralInternals add,
     it will still complain it is an arithmetic expression */
-spec fn add (a: int, b: int) -> int
+pub open spec fn add (a: int, b: int) -> int
 {
     // or a + b
     crate::NonLinearArith::Internals::GeneralInternals::add(a, b)
 } 
 
-spec fn sub (a: int, b: int) -> int
+pub open spec fn sub (a: int, b: int) -> int
 {
     // or a + b
     crate::NonLinearArith::Internals::GeneralInternals::sub(a, b)
@@ -55,19 +55,19 @@ pub open spec fn mul (a: int, b: int) -> int
 /* HOW TO LET THE ADD/add COMMUNICATE */
 /* NEED REVIEW */
 #[verifier(spinoff_prover)]
-proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
+pub proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     requires 
         f(0),
-        // forall |i: int| i >= 0 && #[trigger] f(i) ==> #[trigger] f(add(i, 1)),
-        // forall |i: int| i <= 0 && #[trigger] f(i) ==> #[trigger] f(sub(i, 1)),
+        forall |i: int| i >= 0 && #[trigger] f(i) ==> #[trigger] f(add(i, 1)),
+        forall |i: int| i <= 0 && #[trigger] f(i) ==> #[trigger] f(sub(i, 1)),
         // TODO how about this proof style? seems to distablize one or two proofs
-        forall |i: int, j:int| i >= 0 && j == i + 1 && #[trigger] f(i) ==> #[trigger] f(j),
-        forall |i: int, j:int| i <= 0 && j == i - 1 && #[trigger] f(i) ==> #[trigger] f(j),
+        // forall |i: int, j:int| i >= 0 && j == i + 1 && #[trigger] f(i) ==> #[trigger] f(j),
+        // forall |i: int, j:int| i <= 0 && j == i - 1 && #[trigger] f(i) ==> #[trigger] f(j),
     ensures
         forall |i: int| #[trigger] f(i)
 {
-    // assert (forall |i: int| f(add(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::add(i, 1)));  // OBSERVE
-    // assert (forall |i: int| f(sub(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::sub(i, 1)));   // OBSERVE
+    assert (forall |i: int| f(add(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::add(i, 1)));  // OBSERVE
+    assert (forall |i: int| f(sub(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::sub(i, 1)));   // OBSERVE
 
     assert forall |i: int| #[trigger] f(i) by { lemma_induction_helper(1, f, i) };
 }
