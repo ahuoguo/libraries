@@ -1154,14 +1154,14 @@ pub proof fn lemma_mod_properties_auto()
     }
 }
 
-// /* the remainder of a natural number x divided by a natural number d will be less
-// than or equal to x */
-// proof fn lemma_mod_decreases(x: nat, m: nat)
-//     requires 0 < m
-//     ensures x % m <= x
-// {
-//     lemma_mod_auto(m);
-// }
+/// the remainder of a natural number x divided by a natural number d will be less
+/// than or equal to x
+proof fn lemma_mod_decreases(x: nat, m: nat)
+    requires 0 < m
+    ensures x % m <= x
+{
+    lemma_mod_auto(m as int);
+}
 
 // proof fn lemma_mod_decreases_auto()
 //     ensures forall x: nat, m: nat {:trigger x % m} :: 0 < m ==> x % m <= x
@@ -1173,19 +1173,24 @@ pub proof fn lemma_mod_properties_auto()
 //     }
 // }
 
-// /* if x % y is zero and x is greater than zero, x is greater than y. */
-// proof fn lemma_mod_is_zero(x: nat, m: nat)
-//     requires x > 0 && m > 0
-//     requires x % m == 0
-//     ensures x >= m
-// {
-//     calc ==> {
-//     x < m;
-//     { lemma_small_mod(x, m); }
-//     x % m == x;
-//     false;
-//     }
-// }
+/// if x % y is zero and x is greater than zero, x is greater than y.
+proof fn lemma_mod_is_zero(x: nat, m: nat)
+    requires
+        x > 0 && m > 0,
+        x % m == 0,
+    ensures 
+        x >= m
+{
+    if (x < m) {
+        lemma_small_mod(x, m);
+    }
+    // calc ==> {
+    // x < m;
+    // { lemma_small_mod(x, m); }
+    // x % m == x;
+    // false;
+    // }
+}
 
 // proof fn lemma_mod_is_zero_auto()
 //     ensures forall x: nat, m: nat {:trigger x % m} :: (x > 0 && m > 0
@@ -1217,14 +1222,14 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* the remainder of adding the divisor m to the dividend b will be the same
-// as simply performing b % m */
-// proof fn lemma_mod_add_multiples_vanish(b: int, m: int)
-//     requires 0 < m
-//     ensures (m + b) % m == b % m
-// {
-//     lemma_mod_auto(m);
-// }
+/// the remainder of adding the divisor m to the dividend b will be the same
+/// as simply performing b % m
+proof fn lemma_mod_add_multiples_vanish(b: int, m: int)
+    requires 0 < m
+    ensures (m + b) % m == b % m
+{
+    lemma_mod_auto(m);
+}
 
 // proof fn lemma_mod_add_multiples_vanish_auto()
 //     ensures forall b: int, m: int {:trigger b % m} :: 0 < m ==> (m + b) % m == b % m
@@ -1236,14 +1241,14 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* the remainder of subtracting the divisor m from the dividend b will be the same
-// as simply performing b % m */
-// proof fn lemma_mod_sub_multiples_vanish(b: int, m: int)
-//     requires 0 < m
-//     ensures (-m + b) % m == b % m
-// {
-//     lemma_mod_auto(m);
-// }
+/// the remainder of subtracting the divisor m from the dividend b will be the same
+/// as simply performing b % m
+proof fn lemma_mod_sub_multiples_vanish(b: int, m: int)
+    requires 0 < m
+    ensures (-m + b) % m == b % m
+{
+    lemma_mod_auto(m);
+}
 
 // proof fn lemma_mod_sub_multiples_vanish_auto()
 //     ensures forall b: int, m: int {:trigger b % m} :: 0 < m ==> (-m + b) % m == b % m
@@ -1255,16 +1260,16 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* the remainder of adding any multiple of the divisor m to the dividend b will be the same
-// as simply performing b % m */
-// proof fn lemma_mod_multiples_vanish(a: int, b: int, m: int)
-//     decreases if a > 0 then a else -a
-//     requires 0 < m
-//     ensures (m * a + b) % m == b % m
-// {
-//     lemma_mod_auto(m);
-//     lemma_mul_induction_auto(a, u => (m * u + b) % m == b % m);
-// }
+/// the remainder of adding any multiple of the divisor m to the dividend b will be the same
+/// as simply performing b % m
+proof fn lemma_mod_multiples_vanish(a: int, b: int, m: int)
+    requires 0 < m
+    ensures (m * a + b) % m == b % m
+    decreases (if a > 0 { a } else { -a })
+{
+    lemma_mod_auto(m);
+    lemma_mul_induction_auto(a, |u: int| (m * u + b) % m == b % m);
+}
 
 // proof fn lemma_mod_multiples_vanish_auto()
 //     ensures forall a: int, b: int, m: int {:trigger (m * a + b) % m} :: 0 < m ==> (m * a + b) % m == b % m
@@ -1276,14 +1281,16 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* proves equivalent forms of modulus subtraction */
-// proof fn lemma_mod_subtraction(x: nat, s: nat, d: nat)
-//     requires 0 < d
-//     requires 0 <= s <= x % d
-//     ensures x % d - s % d == (x - s) % d
-// {
-//     lemma_mod_auto(d);
-// }
+/// proves equivalent forms of modulus subtraction
+proof fn lemma_mod_subtraction(x: nat, s: nat, d: nat)
+    requires 
+        0 < d, 
+        0 <= s <= x % d
+    ensures 
+        x % d - s % d == (x - s) % d as int
+{
+    lemma_mod_auto(d as int);
+}
 
 // proof fn lemma_mod_subtraction_auto()
 //     ensures forall x: nat, s: nat, d: nat {:trigger (x - s) % d}
@@ -1296,13 +1303,13 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* describes expanded and succinct version of modulus operator in relation to addition (read "ensures") */
-// proof fn lemma_add_mod_noop(x: int, y: int, m: int)
-//     requires 0 < m
-//     ensures ((x % m) + (y % m)) % m == (x + y) % m
-// {
-//     lemma_mod_auto(m);
-// }
+/// describes expanded and succinct version of modulus operator in relation to addition (read "ensures")
+proof fn lemma_add_mod_noop(x: int, y: int, m: int)
+    requires 0 < m
+    ensures ((x % m) + (y % m)) % m == (x + y) % m
+{
+    lemma_mod_auto(m);
+}
 
 // proof fn lemma_add_mod_noop_auto()
 //     ensures forall x: int, y: int, m: int {:trigger (x + y) % m}
@@ -1315,13 +1322,13 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* describes expanded and succinct version of modulus operator in relation to addition (read "ensures") */
-// proof fn lemma_add_mod_noop_right(x: int, y: int, m: int)
-//     requires 0 < m
-//     ensures (x + (y % m)) % m == (x + y) % m
-// {
-//     lemma_mod_auto(m);
-// }
+/// describes expanded and succinct version of modulus operator in relation to addition (read "ensures")
+proof fn lemma_add_mod_noop_right(x: int, y: int, m: int)
+    requires 0 < m
+    ensures (x + (y % m)) % m == (x + y) % m
+{
+    lemma_mod_auto(m);
+}
 
 // proof fn lemma_add_mod_noop_right_auto()
 //     ensures forall x: int, y: int, m: int {:trigger (x + y) % m}
@@ -1334,13 +1341,13 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* describes expanded and succinct version of modulus operator in relation to subtraction (read "ensures") */
-// proof fn lemma_sub_mod_noop(x: int, y: int, m: int)
-//     requires 0 < m
-//     ensures ((x % m) - (y % m)) % m == (x - y) % m
-// {
-//     lemma_mod_auto(m);
-// }
+/// describes expanded and succinct version of modulus operator in relation to subtraction (read "ensures")
+proof fn lemma_sub_mod_noop(x: int, y: int, m: int)
+    requires 0 < m
+    ensures ((x % m) - (y % m)) % m == (x - y) % m
+{
+    lemma_mod_auto(m);
+}
 
 // proof fn lemma_sub_mod_noop_auto()
 //     ensures forall x: int, y: int, m: int {:trigger (x - y) % m}
@@ -1353,13 +1360,14 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* describes expanded and succinct version of modulus operator in relation to subtraction (read "ensures") */
-// proof fn lemma_sub_mod_noop_right(x: int, y: int, m: int)
-//     requires 0 < m
-//     ensures (x - (y % m)) % m == (x - y) % m
-// {
-//     lemma_mod_auto(m);
-// }
+/// describes expanded and succinct version of modulus operator in relation to subtraction (read "ensures")
+#[verifier::spinoff_prover]
+proof fn lemma_sub_mod_noop_right(x: int, y: int, m: int)
+    requires 0 < m
+    ensures (x - (y % m)) % m == (x - y) % m
+{
+    lemma_mod_auto(m);
+}
 
 // proof fn lemma_sub_mod_noop_right_auto()
 //     ensures forall x: int, y: int, m: int {:trigger (x - y) % m}
@@ -1372,15 +1380,17 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* proves equivalent forms of modulus addition */
-// proof fn lemma_mod_adds(a: int, b: int, d: int)
-//     requires 0 < d
-//     ensures a % d + b % d == (a + b) % d + d * ((a % d + b % d) / d)
-//     ensures (a % d + b % d) < d ==> a % d + b % d == (a + b) % d
-// {
-//     lemma_mul_auto();
-//     lemma_div_auto(d);
-// }
+/// proves equivalent forms of modulus addition
+#[verifier::spinoff_prover]
+proof fn lemma_mod_adds(a: int, b: int, d: int)
+    requires 0 < d
+    ensures 
+        a % d + b % d == (a + b) % d + d * ((a % d + b % d) / d),
+        (a % d + b % d) < d ==> a % d + b % d == (a + b) % d
+{
+    lemma_mul_auto();
+    lemma_div_auto(d);
+}
 
 // proof fn lemma_mod_adds_auto()
 //     ensures forall a: int, b: int, d: int {:trigger (a + b) % d}
@@ -1395,28 +1405,30 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// lemma {:vcs_split_on_every_assert} lemma_mod_neg_neg(x: int, d: int)
-//     requires 0 < d
-//     ensures x % d == (x * (1 - d)) % d
-// {
-//     assert (x - x * d) % d == x % d
-//     by {
-//     lemma_mod_auto(d);
-//     var f := i => (x - i * d) % d == x % d;
-//     assert  MulAuto() ==> && f(0)
-//                             && (forall i {:trigger IsLe(0, i)} :: IsLe(0, i) && f(i) ==> f(i + 1))
-//                             && (forall i {:trigger IsLe(i, 0)} :: IsLe(i, 0) && f(i) ==> f(i - 1));
-//     lemma_mul_induction_auto(x, f);
-//     }
-//     lemma_mul_auto();
-// }
+// {:vcs_split_on_every_assert}
+#[verifier::spinoff_prover]
+proof fn lemma_mod_neg_neg(x: int, d: int)
+    requires 0 < d
+    ensures x % d == (x * (1 - d)) % d
+{
+    assert((x - x * d) % d == x % d)
+    by {
+    lemma_mod_auto(d);
+    let f = |i: int| (x - i * d) % d == x % d;
+    // assert  MulAuto() ==> && f(0)
+    //                         && (forall i {:trigger IsLe(0, i)} :: IsLe(0, i) && f(i) ==> f(i + 1))
+    //                         && (forall i {:trigger IsLe(i, 0)} :: IsLe(i, 0) && f(i) ==> f(i - 1));
+    lemma_mul_induction_auto(x, f);
+    }
+    lemma_mul_auto();
+}
 
-// TODO
+
+// // TODO
+// // THIS PROOF TIMES OUT A LOT
 // /// proves the validity of the quotient and remainder
-// {:timeLimitMultiplier 5}
-// this never ends
+// // {:timeLimitMultiplier 5}
 // #[verifier::spinoff_prover]
-// #[verifier(nonlinear)]
 // proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
 //     requires 
 //         d != 0,
@@ -1427,8 +1439,57 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //         r == x % d
 // {
 //     lemma_div_auto(d);
-//     lemma_mul_induction_auto(q, |u: int| u == (u * d + r) / d);
-//     lemma_mul_induction_auto(q, |u: int| r == (u * d + r) % d);
+//     let f = |u: int| u == (u * d + r) / d;
+//     // TOBE DISCUSSED
+//     // OBSERVE
+//     // making mul_auto in the larger context will exceed rlimit
+//     assert(f(q)) by {
+//         assert
+//         forall |i: int| i >= 0 && #[trigger] f(i) implies #[trigger] f(crate::NonLinearArith::Internals::MulInternals::add(i, 1))
+//         by {
+//             lemma_div_auto(d);
+//             lemma_mul_auto();
+//         };
+//         assert
+//             forall |i: int| i <= 0 && #[trigger] f(i) implies #[trigger] f(crate::NonLinearArith::Internals::MulInternals::sub(i, 1))
+//          by {
+//             lemma_div_auto(d);
+//             lemma_mul_auto();
+//         };
+//         // assert(f(0)) by {
+            
+//         //     // assume(false);
+//         //     assert(0 == (0 * d + r) / d) by {
+//         //         lemma_mul_by_zero_is_zero_auto();
+//         //         crate::NonLinearArith::Internals::DivInternals::lemma_div_basics(d);
+//         //     };
+//         // };
+//         lemma_mul_induction(f);
+//     }
+//     let g = |u: int| r == (u * d + r) % d;
+//     assert(g(q)) by {
+//         lemma_div_auto(d);
+//         assert
+//         forall |i: int| i >= 0 && #[trigger] g(i) implies #[trigger] g(crate::NonLinearArith::Internals::MulInternals::add(i, 1))
+//         by {
+//             lemma_div_auto(d);
+//             lemma_mul_auto();
+//         };
+//         assert
+//             forall |i: int| i <= 0 && #[trigger] g(i) implies #[trigger] g(crate::NonLinearArith::Internals::MulInternals::sub(i, 1))
+//          by {
+//             lemma_div_auto(d);
+//             lemma_mul_auto();
+//         }
+//         // assert(g(0)) by {
+//         //     lemma_div_auto(d);
+//         //     lemma_mul_auto();
+//         // };
+//         lemma_mul_induction(g);
+//     };
+
+//     // lemma_mul_induction_auto(q, |u: int| u == (u * d + r) / d);
+//     // lemma_mul_induction_auto(q, |u: int| r == (u * d + r) % d);
 // }
 
 // lemma {:timeLimitMultiplier 5} lemma_fundamental_div_mod_converse_auto()
@@ -1443,15 +1504,17 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 // }
 
 
-// /* the remainder of any natural number x divided by a positive integer m is always less than m */
-// proof fn lemma_mod_pos_bound(x: int, m: int)
-//     decreases x
-//     requires 0 <= x
-//     requires 0 < m
-//     ensures  0 <= x % m < m
-// {
-//     lemma_mod_auto(m);
-// }
+/// the remainder of any natural number x divided by a positive integer m is always less than m
+#[verifier::spinoff_prover]
+proof fn lemma_mod_pos_bound(x: int, m: int)
+    requires 
+        0 <= x,
+        0 < m,
+    ensures  0 <= x % m < m
+    decreases x
+{
+    lemma_mod_auto(m);
+}
 
 // proof fn lemma_mod_pos_bound_auto()
 //     ensures forall x: int, m: int {:trigger x % m} :: 0 <= x && 0 < m ==> 0 <= x % m < m
@@ -1463,13 +1526,14 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// proof fn lemma_mul_mod_noop_left(x: int, y: int, m: int)
-//     requires 0 < m
-//     ensures (x % m) * y % m == x * y % m
-// {
-//     lemma_mod_auto(m);
-//     lemma_mul_induction_auto(y, u => (x % m) * u % m == x * u % m);
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mul_mod_noop_left(x: int, y: int, m: int)
+    requires 0 < m
+    ensures (x % m) * y % m == x * y % m
+{
+    lemma_mod_auto(m);
+    lemma_mul_induction_auto(y, |u: int| (x % m) * u % m == x * u % m);
+}
 
 // proof fn lemma_mul_mod_noop_left_auto()
 //     ensures forall x: int, y: int, m: int {:trigger x * y % m} :: 0 < m ==> (x % m) * y % m == x * y % m
@@ -1481,13 +1545,14 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// proof fn lemma_mul_mod_noop_right(x: int, y: int, m: int)
-//     requires 0 < m
-//     ensures x * (y % m) % m == (x * y) % m
-// {
-//     lemma_mod_auto(m);
-//     lemma_mul_induction_auto(x, u => u * (y % m) % m == (u * y) % m);
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mul_mod_noop_right(x: int, y: int, m: int)
+    requires 0 < m
+    ensures x * (y % m) % m == (x * y) % m
+{
+    lemma_mod_auto(m);
+    lemma_mul_induction_auto(x, |u: int| u * (y % m) % m == (u * y) % m);
+}
 
 // proof fn lemma_mul_mod_noop_right_auto()
 //     ensures forall x: int, y: int, m: int {:trigger (x * y) % m}
@@ -1500,18 +1565,20 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* combines previous no-op mod lemmas into a general, overarching lemma */
-// proof fn lemma_mul_mod_noop_general(x: int, y: int, m: int)
-//     requires 0 < m
-//     ensures ((x % m) * y      ) % m == (x * y) % m
-//     ensures ( x      * (y % m)) % m == (x * y) % m
-//     ensures ((x % m) * (y % m)) % m == (x * y) % m
-// {
-//     lemma_mod_properties_auto();
-//     lemma_mul_mod_noop_left(x, y, m);
-//     lemma_mul_mod_noop_right(x, y, m);
-//     lemma_mul_mod_noop_right(x % m, y, m);
-// }
+/// combines previous no-op mod lemmas into a general, overarching lemma
+#[verifier::spinoff_prover]
+proof fn lemma_mul_mod_noop_general(x: int, y: int, m: int)
+    requires 0 < m
+    ensures 
+        ((x % m) * y      ) % m == (x * y) % m,
+        ( x      * (y % m)) % m == (x * y) % m,
+        ((x % m) * (y % m)) % m == (x * y) % m
+{
+    lemma_mod_properties_auto();
+    lemma_mul_mod_noop_left(x, y, m);
+    lemma_mul_mod_noop_right(x, y, m);
+    lemma_mul_mod_noop_right(x % m, y, m);
+}
 
 // proof fn lemma_mul_mod_noop_general_auto()
 //     ensures forall x: int, y: int, m: int {:trigger (x * y) % m}
@@ -1524,12 +1591,13 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// proof fn lemma_mul_mod_noop(x: int, y: int, m: int)
-//     requires 0 < m
-//     ensures (x % m) * (y % m) % m == (x * y) % m
-// {
-//     lemma_mul_mod_noop_general(x, y, m);
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mul_mod_noop(x: int, y: int, m: int)
+    requires 0 < m
+    ensures (x % m) * (y % m) % m == (x * y) % m
+{
+    lemma_mul_mod_noop_general(x, y, m);
+}
 
 // proof fn lemma_mul_mod_noop_auto()
 //     ensures forall x: int, y: int, m: int {:trigger (x * y) % m}
@@ -1542,13 +1610,14 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* proves modulus equivalence in two forms */
-// proof fn lemma_mod_equivalence(x: int, y: int, m: int)
-//     requires 0 < m
-//     ensures x % m == y % m <==> (x - y) % m == 0
-// {
-//     lemma_mod_auto(m);
-// }
+/// proves modulus equivalence in two forms
+#[verifier::spinoff_prover]
+proof fn lemma_mod_equivalence(x: int, y: int, m: int)
+    requires 0 < m
+    ensures x % m == y % m <==> (x - y) % m == 0
+{
+    lemma_mod_auto(m);
+}
 
 // proof fn lemma_mod_equivalence_auto()
 //     ensures forall x: int, y: int, m: int {:trigger  x % m , y % m}
@@ -1561,20 +1630,20 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 //     }
 // }
 
-// /* true if x%n and y%n are equal */
-// ghost predicate IsModEquivalent(x: int, y: int, m: int)
-//     requires m > 0
-//     ensures x % m == y % m <==> (x - y) % m == 0
+// /// true if x%n and y%n are equal */
+// pub open spec fn is_mod_equivalent(x: int, y: int, m: int) -> bool
+//     recommends m > 0
+//     // ensures x % m == y % m <==> (x - y) % m == 0
 // {
-//     lemma_mod_equivalence(x, y, m);
+//     // lemma_mod_equivalence(x, y, m);
 //     (x - y) % m == 0 // same as x % n == y % n, but easier to do induction on x - y than x and y separately
 // }
 
-// /* if x % m == y % m, then (x * z) % m == (y * z) % m. */
+// /// if x % m == y % m, then (x * z) % m == (y * z) % m.
 // proof fn lemma_mod_mul_equivalent(x: int, y: int, z: int, m: int)
 //     requires m > 0
-//     requires IsModEquivalent(x, y, m)
-//     ensures IsModEquivalent(x * z, y * z, m)
+//     requires is_mod_equivalent(x, y, m)
+//     ensures is_mod_equivalent(x * z, y * z, m)
 // {
 //     lemma_mul_mod_noop_left(x, z, m);
 //     lemma_mul_mod_noop_left(y, z, m);
@@ -1582,11 +1651,11 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 
 // proof fn lemma_mod_mul_equivalent_auto()
 //     ensures forall x: int, y: int, z: int, m: int
-//             {:trigger IsModEquivalent(x * z, y * z, m)}
-//             :: m > 0 && IsModEquivalent(x, y, m) ==> IsModEquivalent(x * z, y * z, m)
+//             {:trigger is_mod_equivalent(x * z, y * z, m)}
+//             :: m > 0 && is_mod_equivalent(x, y, m) ==> is_mod_equivalent(x * z, y * z, m)
 // {
-//     forall x: int, y: int, z: int, m: int | m > 0 && IsModEquivalent(x, y, m)
-//     ensures IsModEquivalent(x * z, y * z, m)
+//     forall x: int, y: int, z: int, m: int | m > 0 && is_mod_equivalent(x, y, m)
+//     ensures is_mod_equivalent(x * z, y * z, m)
 //     {
 //     lemma_mod_mul_equivalent(x, y, z, m);
 //     }

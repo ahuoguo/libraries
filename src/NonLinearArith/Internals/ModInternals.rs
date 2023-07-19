@@ -260,7 +260,7 @@ pub proof fn lemma_mod_below_denominator(n: int, x: int)
 pub proof fn lemma_mod_basics_auto(n: int)
     requires n > 0
     ensures  
-        (forall |x: int| #[trigger]((x + n) % n) == x % n),
+        forall |x: int| #[trigger]((x + n) % n) == x % n,
         forall |x: int| #[trigger]((x - n) % n) == x % n,
         forall |x: int| #[trigger]((x + n) / n) == x / n + 1,
         forall |x: int| #[trigger]((x - n) / n) == x / n - 1,

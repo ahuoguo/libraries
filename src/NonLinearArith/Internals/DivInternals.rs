@@ -82,14 +82,14 @@ pub open spec fn div_auto(n: int) -> bool
     &&& mod_auto(n)
     &&& (n / n == -((-n) / n) == 1)
     &&& forall |x: int| 0 <= x < n <==> #[trigger](x / n) == 0
-    &&& (forall |x: int, y: int|
+    &&& (forall |x: int, y: int| #![trigger ((x + y) / n)]
          {let z = (x % n) + (y % n);
-         (  (0 <= z < n && #[trigger]((x + y) / n) == x / n + y / n)
-             || (n <= z < n + n && #[trigger]((x + y) / n) == x / n + y / n + 1))})
-    &&& (forall |x: int, y: int|
+         (  (0 <= z < n && ((x + y) / n) == x / n + y / n)
+             || (n <= z < n + n && ((x + y) / n) == x / n + y / n + 1))})
+    &&& (forall |x: int, y: int| #![trigger ((x - y) / n)]
         {let z = (x % n) - (y % n);
-        (  (0 <= z < n && #[trigger]((x - y) / n) == x / n - y / n)
-            || (-n <= z < 0  && #[trigger]((x - y) / n) == x / n - y / n - 1))})
+        (  (0 <= z < n && ((x - y) / n) == x / n - y / n)
+            || (-n <= z < 0  && ((x - y) / n) == x / n - y / n - 1))})
 }
 
 // /// Ensures that div_auto is true 
