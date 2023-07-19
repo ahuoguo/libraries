@@ -1,0 +1,146 @@
+[byc:~/Desktop/REUSE2023/libraries ]$ verus src/main.rs --verify-module NonLinearArith::DivMod --verify-function lemma_fundamental_div_mod_converse --profile --rlimit 1
+note: verifying module NonLinearArith::DivMod
+
+note: function body check has been running for 2 seconds
+    --> src/NonLinearArith/DivMod.rs:1430:7
+     |
+1430 | proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: function body check has been running for 4 seconds
+
+note: function body check has been running for 6 seconds
+
+error: function body check: Resource limit (rlimit) exceeded
+    --> src/NonLinearArith/DivMod.rs:1430:7
+     |
+1430 | proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: Analyzing prover log...
+
+[00:00:00] ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] █████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ███████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ██████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ██████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ███████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ███████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ███████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] █████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:00] ███████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] █████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] ███████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] █████████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] ███████████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] █████████████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] ██████████████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] ████████████████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] ██████████████████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] ████████████████████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] ██████████████████████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] ████████████████████████████████████████████████████░░░░░░░░░░░░░░░░░░░░░░
+[00:00:01] ██████████████████████████████████████████████████████░░░░░░░░░░░░░░░░░░░░
+[00:00:01] ████████████████████████████████████████████████████████░░░░░░░░░░░░░░░░░░
+[00:00:01] ██████████████████████████████████████████████████████████░░░░░░░░░░░░░░░░
+[00:00:01] ████████████████████████████████████████████████████████████░░░░░░░░░░░░░░
+[00:00:02] ██████████████████████████████████████████████████████████████░░░░░░░░░░░░
+[00:00:02] ████████████████████████████████████████████████████████████████░░░░░░░░░░
+[00:00:02] ██████████████████████████████████████████████████████████████████░░░░░░░░
+[00:00:02] ████████████████████████████████████████████████████████████████████░░░░░░
+[00:00:02] ███████████████████████████████████████████████████████████████████████░░░
+[00:00:02] █████████████████████████████████████████████████████████████████████████░
+[00:00:02] ██████████████████████████████████████████████████████████████████████████
+[00:00:02] ██████████████████████████████████████████████████████████████████████████
+[00:00:02] ██████████████████████████████████████████████████████████████████████████
+[00:00:02] ████████████████████████████████████████████████████████████████████████████████ 1485/1485K lines
+note: ... analysis complete
+
+note: Observed 989,124 total instantiations of user-level quantifiers
+
+note: Cost * Instantiations: 3751678849706 (Instantiated 961,711 times - 97% of the total, cost 3901046) top 1 of 13 user-level quantifiers.
+  --> src/NonLinearArith/Internals/MulInternals.rs:97:48
+   |
+97 |     &&& forall |x:int, y:int, z:int| #[trigger]((x - y) * z) == (x * z - y * z)
+   |         ---------------------------------------^^^^^^^^^^^^^------------------- Triggers selected for this quantifier
+
+note: Cost * Instantiations: 24575234034 (Instantiated 12,974 times - 1% of the total, cost 1894191) top 2 of 13 user-level quantifiers.
+  --> src/NonLinearArith/Internals/MulInternals.rs:95:41
+   |
+95 |     &&& forall |x:int, y:int| #[trigger](x * y) == (y * x)
+   |         --------------------------------^^^^^^^----------- Triggers selected for this quantifier
+
+note: Cost * Instantiations: 1035268062 (Instantiated 1,137 times - 0% of the total, cost 910526) top 3 of 13 user-level quantifiers.
+  --> src/NonLinearArith/Internals/MulInternals.rs:96:48
+   |
+96 |     &&& forall |x:int, y:int, z:int| #[trigger]((x + y) * z) == (x * z + y * z)
+   |         ---------------------------------------^^^^^^^^^^^^^------------------- Triggers selected for this quantifier
+
+note: Cost * Instantiations: 308607120 (Instantiated 11,628 times - 1% of the total, cost 26540) top 4 of 13 user-level quantifiers.
+  --> src/NonLinearArith/Internals/DivInternals.rs:89:45
+   |
+89 |       &&& (forall |x: int, y: int| #![trigger ((x - y) / n)]
+   |  _________-                                   ^^^^^^^^^^^^^
+90 | |         {let z = (x % n) - (y % n);
+91 | |         (  (0 <= z < n && ((x - y) / n) == x / n - y / n)
+92 | |             || (-n <= z < 0  && ((x - y) / n) == x / n - y / n - 1))})
+   | |______________________________________________________________________- Triggers selected for this quantifier
+
+note: Cost * Instantiations: 1800720 (Instantiated 1,220 times - 0% of the total, cost 1476) top 5 of 13 user-level quantifiers.
+   --> src/NonLinearArith/Internals/ModInternals.rs:341:37
+    |
+339 |       &&& (forall |x: int, y: int|
+    |  _________-
+340 | |         {let z = (x % n) - (y % n);
+341 | |         (  (0 <= z < n && #[trigger]((x - y) % n) == z)
+    | |                                     ^^^^^^^^^^^^^
+342 | |             || (-n <= z < 0  && #[trigger]((x - y) % n) == z + n))})
+    | |___________________________________________^^^^^^^^^^^^^____________- Triggers selected for this quantifier
+
+note: Cost * Instantiations: 122628 (Instantiated 66 times - 0% of the total, cost 1858) top 6 of 13 user-level quantifiers.
+  --> src/NonLinearArith/Internals/DivInternals.rs:85:45
+   |
+85 |       &&& (forall |x: int, y: int| #![trigger ((x + y) / n)]
+   |  _________-                                   ^^^^^^^^^^^^^
+86 | |          {let z = (x % n) + (y % n);
+87 | |          (  (0 <= z < n && ((x + y) / n) == x / n + y / n)
+88 | |              || (n <= z < n + n && ((x + y) / n) == x / n + y / n + 1))})
+   | |_________________________________________________________________________- Triggers selected for this quantifier
+
+note: Cost * Instantiations: 26475 (Instantiated 75 times - 0% of the total, cost 353) top 7 of 13 user-level quantifiers.
+   --> src/NonLinearArith/Internals/ModInternals.rs:337:38
+    |
+335 |       &&& (forall |x: int, y: int|
+    |  _________-
+336 | |          {let z = (x % n) + (y % n);
+337 | |          (  (0 <= z < n && #[trigger]((x + y) % n) == z)
+    | |                                      ^^^^^^^^^^^^^
+338 | |              || (n <= z < n + n && #[trigger]((x + y) % n) == z - n))})
+    | |______________________________________________^^^^^^^^^^^^^____________- Triggers selected for this quantifier
+
+note: Cost * Instantiations: 23104 (Instantiated 152 times - 0% of the total, cost 152) top 8 of 13 user-level quantifiers.
+   --> src/NonLinearArith/Internals/ModInternals.rs:334:52
+    |
+334 |     &&& (forall |x: int| 0 <= x < n <==> #[trigger](x % n) == x)
+    |         -------------------------------------------^^^^^^^------ Triggers selected for this quantifier
+
+note: Cost * Instantiations: 16129 (Instantiated 127 times - 0% of the total, cost 127) top 9 of 13 user-level quantifiers.
+  --> src/NonLinearArith/Internals/DivInternals.rs:84:51
+   |
+84 |     &&& forall |x: int| 0 <= x < n <==> #[trigger](x / n) == 0
+   |         ------------------------------------------^^^^^^^----- Triggers selected for this quantifier
+
+note: Cost * Instantiations: 900 (Instantiated 30 times - 0% of the total, cost 30) top 10 of 13 user-level quantifiers.
+   --> src/NonLinearArith/Internals/ModInternals.rs:333:36
+    |
+333 |     &&& (forall |x: int| #[trigger]((x % n) % n) == x % n)
+    |         ---------------------------^^^^^^^^^^^^^---------- Triggers selected for this quantifier
+
+error: aborting due to previous error
+
+verification results:: 0 verified, 1 errors (partial verification with `--verify-*`)
