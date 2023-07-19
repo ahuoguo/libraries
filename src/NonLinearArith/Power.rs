@@ -10,8 +10,6 @@ use crate::NonLinearArith::Mul::{lemma_mul_basics, lemma_mul_basics_auto, lemma_
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::MulInternals::{lemma_mul_induction_auto};
 
-// TODO:
-// marking this as opquaue will cause trouble to Power2.rs
 #[verifier(opaque)]
 pub open spec fn pow(b: int, e: nat) -> int
     decreases e

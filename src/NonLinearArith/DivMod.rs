@@ -26,7 +26,7 @@ use crate::NonLinearArith::Internals::GeneralInternals::{is_le};
  * Division:
  *****************************************************************************/
 
-// /// the common syntax of division gives the same quotient as performing division through recursion
+/// the common syntax of division gives the same quotient as performing division through recursion
 #[verifier(spinoff_prover)]
 proof fn lemma_div_is_div_recursive(x: int, d: int)
     requires 0 < d
@@ -81,7 +81,6 @@ pub proof fn lemma_div_basics(x: int)
     }
 }
 
-// TODO: depends on way latter lemmas in line 200-300
 #[verifier(spinoff_prover)]
 proof fn lemma_div_basics_auto()
     ensures
@@ -353,13 +352,9 @@ pub proof fn lemma_div_is_ordered(x: int, y: int, z: int)
             if (i > 0) {
                 assert ( z > 0 );
                 assert( i <= z );
-                
-                // assert ( ((i + y) - z) / z == (i + y) / z - 1 ) by { lem_div_basics(z, i + y) };
                 assert ( ((i + y) - z) / z <= y / z );
-                // assert( (i - z + y) / z <= y / z ) by { lem_div_basics(z, i) };
             } else {
                 assert( (i + y) / z <= y / z );
-                // assert( (i - z + y) / z <= y / z ) by { lem_div_basics(z, i + y) };
             }
             assert( (i - z + y) / z <= y / z );
         }
@@ -380,6 +375,7 @@ pub proof fn lemma_div_is_ordered(x: int, y: int, z: int)
 
 /* dividing an integer by 2 or more results in a quotient that is smaller than the 
 original dividend */
+#[verifier(spinoff_prover)]
 proof fn lemma_div_decreases(x: int, d: int)
     requires 
         0 < x,
@@ -390,18 +386,20 @@ proof fn lemma_div_decreases(x: int, d: int)
     lemma_div_induction_auto(d, x, |u: int| 0 < u ==> u / d < u);
 }
 
-// proof fn lemma_div_decreases_auto()
-//     ensures forall x: int, d: int {:trigger x / d} :: 0 < x && 1 < d ==> x / d < x
-// {
-//     forall (x: int, d: int | 0 < x && 1 < d)
-//     ensures x / d < x
-//     {
-//     lemma_div_decreases(x, d);
-//     }
-// }
+#[verifier(spinoff_prover)]
+proof fn lemma_div_decreases_auto()
+    ensures 
+        forall |x: int, d: int| 0 < x && 1 < d ==> #[trigger](x / d) < x,
+{
+    assert forall |x: int, d: int| 0 < x && 1 < d implies #[trigger](x / d) < x by
+    {
+        lemma_div_decreases(x, d);
+    };
+}
 
-/* dividing an integer by 1 or more results in a quotient that is less than or equal to 
-the original dividend */
+/// dividing an integer by 1 or more results in a quotient that is less than or equal to 
+/// the original dividend
+#[verifier(spinoff_prover)]
 proof fn lemma_div_nonincreasing(x: int, d: int)
     requires 
         0 <= x,
@@ -422,7 +420,8 @@ proof fn lemma_div_nonincreasing(x: int, d: int)
 //     }
 // }
 
-/* a natural number x divided by a larger natural number gives a remainder equal to x */
+/// a natural number x divided by a larger natural number gives a remainder equal to x
+#[verifier(spinoff_prover)]
 proof fn lemma_small_mod(x: nat, m: nat)
     requires 
         x < m,
@@ -433,6 +432,7 @@ proof fn lemma_small_mod(x: nat, m: nat)
     ModINL::lemma_small_mod(x, m);
 }
 
+#[verifier(spinoff_prover)]
 proof fn lemma_breakdown(x: int, y: int, z: int)
     requires 
         0 <= x,
@@ -510,6 +510,7 @@ proof fn lemma_breakdown(x: int, y: int, z: int)
 //     }
 // }
 
+#[verifier(spinoff_prover)]
 proof fn lemma_remainder_upper(x: int, d: int)
     requires 
         0 <= x,
@@ -531,6 +532,7 @@ proof fn lemma_remainder_upper(x: int, d: int)
 //     }
 // }
 
+#[verifier(spinoff_prover)]
 proof fn lemma_remainder_lower(x: int, d: int)
     requires 
         0 <= x,
@@ -552,6 +554,7 @@ proof fn lemma_remainder_lower(x: int, d: int)
 //     }
 // }
 
+#[verifier(spinoff_prover)]
 proof fn lemma_remainder(x: int, d: int)
     requires 
         0 <= x,
@@ -594,6 +597,9 @@ proof fn lemma_fundamental_div_mod(x: int, d: int)
 
 // change to int because verus `*` does not support nat
 // I do not want to do type conversion everywhere
+
+/// dividing a fraction by a divisor is equivalent to multiplying the fraction's 
+/// denominator with the divisor
 #[verifier::spinoff_prover]
 proof fn lemma_div_denominator1(x: int, c: int, d: int)
     requires 
@@ -643,8 +649,7 @@ proof fn lemma_div_denominator1(x: int, c: int, d: int)
     { lemma_mul_is_associative(-k, d, c); }
     c * (((x + ((-k) * (d * c))) / c) % d) + x % c;
     { lemma_mul_unary_negation(k, d * c); }
-    c * (((x + (-(k * (d * c)))) / c) % d) + x % c;
-    { lemma_mul_is_associative(k, d, c); }
+    c * (((x + (-(k * (d * c)))) / c) % d) + x % c;    { lemma_mul_is_associative(k, d, c); }
     c * (((x + (-(k * d * c))) / c) % d) + x % c;
     { }
     c * (((x - k * d * c) / c) % d) + x % c;
@@ -686,13 +691,8 @@ proof fn lemma_div_denominator1(x: int, c: int, d: int)
     }
 }
 
-// TODO: somehow having two lemma_div_denominator (with the same body around)
-// will cause some lemma else where to run forever
-
-// // TODO
-// /// dividing a fraction by a divisor is equivalent to multiplying the fraction's 
-// /// denominator with the divisor
-// // is there any good reason that lemma_div_denominator receives nat type?
+// original lemma_div_denominator
+// is there any good reason that lemma_div_denominator receives nat type?
 // #[verifier::spinoff_prover]
 // proof fn lemma_div_denominator(x: int, c: nat, d: nat)
 //     requires 
@@ -703,100 +703,7 @@ proof fn lemma_div_denominator1(x: int, c: int, d: int)
 //         c * d != 0,
 //         (x / c as int) / d as int == x / (c as int * d as int ),
 // {
-//     lemma_mul_strictly_positive_auto();
-//     let r = x % (c as int * d as int);
-//     lemma_mod_properties_auto();
-
-//     lemma_div_pos_is_pos(r, c as int);
-//     if (r / c as int >= d) {
-//     ModINL::lemma_fundamental_div_mod(r, c as int);
-//     lemma_mul_inequality(d as int, r / c as int, c as int);
-//     lemma_mul_is_commutative_auto();
-//     assert(false);
-//     }
-//     assert(r / (c as int) < d);
-
-//     lemma_mul_basics_auto();
-
-//     // TODO: the following lemma is very problematic
-//     // lemma_fundamental_div_mod_converse(r / c, d, 0, r / c);
 //     assume(false);
-//     // assume( 0 == (r / c as int) / d as int);
-//     // assume(r / c as int ==  (r / c as int) % d as int);
-
-//     // assert((r / c as int) % d as int == r / c as int);
-
-//     // lemma_fundamental_div_mod(r, c as int);
-//     // assert(c * (r / c as int) + r % c as int == r);
-
-//     // assert(c * ((r / c as int) % d as int) + r % c as int == r);
-
-//     // let k = x / (c as int * d as int);
-//     // lemma_fundamental_div_mod(x, c * d as int);
-//     // assert(x == (c * d) * (x / (c * d as int)) + x % (c * d as int));
-//     // assert(r == x - (c * d) * (x / (c * d as int)));
-//     // assert(r == x - (c * d) * k);
-
-//     // calc! {
-//     // (==)
-//     // c * ((x / c) % d) + x % c;
-//     // (==) { lemma_mod_multiples_vanish(-k, x / c, d); lemma_mul_is_commutative_auto(); }
-//     // c * ((x / c + (-k) * d) % d) + x % c;
-//     // (==) { lemma_hoist_over_denominator(x, (-k)*d, c); }
-//     // c * (((x + (((-k) * d) * c)) / c) % d) + x % c;
-//     // (==) { lemma_mul_is_associative(-k, d, c); }
-//     // c * (((x + ((-k) * (d * c))) / c) % d) + x % c;
-//     // (==) { lemma_mul_unary_negation(k, d * c); }
-//     // c * (((x + (-(k * (d * c)))) / c) % d) + x % c;
-//     // (==) { lemma_mul_is_associative(k, d, c); }
-//     // c * (((x + (-(k * d * c))) / c) % d) + x % c;
-//     // (==) { }
-//     // c * (((x - k * d * c) / c) % d) + x % c;
-//     // (==) {
-//     //     lemma_mul_is_associative_auto();
-//     //     lemma_mul_is_commutative_auto();
-//     // }
-//     // c * ((r / c) % d) + x % c;
-//     // (==) { }
-//     // c * (r / c) + x % c;
-//     // (==) { lemma_fundamental_div_mod(r, c);
-//     //     assert(r == c * (r / c) + r % c);
-//     //     // lemma_mod_mod(x, c, d);
-//     //     assert(r % c == x % c);
-//     // }
-//     // r;
-//     // // (==) { lemma_mod_is_mod_recursive_auto(); }
-//     // (==) { }
-//     // r % (c * d);
-//     // (==) { }
-//     // (x - (c * d) * k) % (c * d);
-//     // (==) { lemma_mul_unary_negation(c * d, k); }
-//     // (x + (c * d) * (-k)) % (c * d);
-//     // (==) { lemma_mod_multiples_vanish(-k, x, c * d); }
-//     // x % (c * d);
-//     // }
-
-//     // calc ==> {
-//     // c * (x / c) + x % c - r == c * (x / c) - c * ((x / c) % d);
-//     // { lemma_fundamental_div_mod(x, c); }
-//     // x - r == c * (x / c) - c * ((x / c) % d);
-//     // }
-//     // calc ==> {
-//     // true;
-//     // { lemma_fundamental_div_mod(x / c, d); }
-//     // d * ((x / c) / d) == x / c - ((x / c) % d);
-//     // c * (d * ((x / c) / d)) == c * (x / c - ((x / c) % d));
-//     // { lemma_mul_is_associative_auto(); }
-//     // (c * d) * ((x / c) / d) == c * (x / c - ((x / c) % d));
-//     // { lemma_mul_is_distributive_auto(); }
-//     // (c * d) * ((x / c) / d) == c * (x / c) - c * ((x / c) % d);
-//     // (c * d) * ((x / c) / d) == x - r;
-//     // { lemma_fundamental_div_mod(x, c * d); }
-//     // (c * d) * ((x / c) / d) == (c * d) * (x / (c * d)) + x % (c * d) - r;
-//     // (c * d) * ((x / c) / d) == (c * d) * (x / (c * d));
-//     // { lemma_mul_equality_converse(c * d, (x / c) / d, x / (c * d)); }
-//     // (x / c) / d == x / (c * d);
-//     // }
 // }
 
 // proof fn lemma_div_denominator_auto()
@@ -1074,6 +981,7 @@ pub proof fn lemma_div_by_multiple(b: int, d: int)
 
 /// a dividend y that is a positive multiple of the divisor z will always yield a greater quotient 
 /// than a dividend x that is less than y
+#[verifier::spinoff_prover]
 pub proof fn lemma_div_by_multiple_is_strongly_ordered(x: int, y: int, m: int, z: int)
     requires
         x < y,
@@ -1173,6 +1081,7 @@ proof fn lemma_hoist_over_denominator(x: int, j: int, d: nat)
 //     }
 // }
 
+#[verifier::spinoff_prover]
 proof fn lemma_part_bound1(a: int, b: int, c: int)
     requires 
         0 <= a,
@@ -1231,6 +1140,7 @@ proof fn lemma_part_bound1(a: int, b: int, c: int)
 
 /// the common syntax of the modulus operation results in the same remainder as recursively
 /// calculating the modulus
+#[verifier::spinoff_prover]
 proof fn lemma_mod_is_mod_recursive(x: int, m: int)
     requires m > 0
     ensures mod_recursive(x, m) == x % m
@@ -1332,6 +1242,7 @@ proof fn lemma_mod_decreases(x: nat, m: nat)
 // }
 
 /// if x % y is zero and x is greater than zero, x is greater than y.
+#[verifier::spinoff_prover]
 proof fn lemma_mod_is_zero(x: nat, m: nat)
     requires
         x > 0 && m > 0,
@@ -1362,6 +1273,7 @@ proof fn lemma_mod_is_zero(x: nat, m: nat)
 // }
 
 /// a dividend that is any multiple of the divisor will result in a remainder of 0
+#[verifier::spinoff_prover]
 pub proof fn lemma_mod_multiples_basic(x: int, m: int)
     requires m > 0
     ensures (x * m) % m == 0
@@ -1382,6 +1294,7 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
 
 /// the remainder of adding the divisor m to the dividend b will be the same
 /// as simply performing b % m
+#[verifier::spinoff_prover]
 proof fn lemma_mod_add_multiples_vanish(b: int, m: int)
     requires 0 < m
     ensures (m + b) % m == b % m
@@ -1401,6 +1314,7 @@ proof fn lemma_mod_add_multiples_vanish(b: int, m: int)
 
 /// the remainder of subtracting the divisor m from the dividend b will be the same
 /// as simply performing b % m
+#[verifier::spinoff_prover]
 proof fn lemma_mod_sub_multiples_vanish(b: int, m: int)
     requires 0 < m
     ensures (-m + b) % m == b % m
@@ -1420,13 +1334,19 @@ proof fn lemma_mod_sub_multiples_vanish(b: int, m: int)
 
 /// the remainder of adding any multiple of the divisor m to the dividend b will be the same
 /// as simply performing b % m
+#[verifier::spinoff_prover]
 proof fn lemma_mod_multiples_vanish(a: int, b: int, m: int)
     requires 0 < m
     ensures (m * a + b) % m == b % m
     decreases (if a > 0 { a } else { -a })
 {
     lemma_mod_auto(m);
-    lemma_mul_induction_auto(a, |u: int| (m * u + b) % m == b % m);
+    lemma_mul_auto();
+    let f = |u: int| (m * u + b) % m == b % m;
+    lemma_mul_induction(f);
+    assert(f(a));
+    // TODO: need to use the statement above
+    // lemma_mul_induction_auto(a, |u: int| (m * u + b) % m == b % m);
 }
 
 // proof fn lemma_mod_multiples_vanish_auto()
@@ -1440,6 +1360,7 @@ proof fn lemma_mod_multiples_vanish(a: int, b: int, m: int)
 // }
 
 /// proves equivalent forms of modulus subtraction
+#[verifier::spinoff_prover]
 proof fn lemma_mod_subtraction(x: nat, s: nat, d: nat)
     requires 
         0 < d, 
@@ -1462,6 +1383,7 @@ proof fn lemma_mod_subtraction(x: nat, s: nat, d: nat)
 // }
 
 /// describes expanded and succinct version of modulus operator in relation to addition (read "ensures")
+#[verifier::spinoff_prover]
 proof fn lemma_add_mod_noop(x: int, y: int, m: int)
     requires 0 < m
     ensures ((x % m) + (y % m)) % m == (x + y) % m
@@ -1481,6 +1403,7 @@ proof fn lemma_add_mod_noop(x: int, y: int, m: int)
 // }
 
 /// describes expanded and succinct version of modulus operator in relation to addition (read "ensures")
+#[verifier::spinoff_prover]
 proof fn lemma_add_mod_noop_right(x: int, y: int, m: int)
     requires 0 < m
     ensures (x + (y % m)) % m == (x + y) % m
@@ -1500,6 +1423,7 @@ proof fn lemma_add_mod_noop_right(x: int, y: int, m: int)
 // }
 
 /// describes expanded and succinct version of modulus operator in relation to subtraction (read "ensures")
+#[verifier::spinoff_prover]
 proof fn lemma_sub_mod_noop(x: int, y: int, m: int)
     requires 0 < m
     ensures ((x % m) - (y % m)) % m == (x - y) % m
@@ -1563,9 +1487,7 @@ proof fn lemma_mod_adds(a: int, b: int, d: int)
 //     }
 // }
 
-// // TODO: verifies for a long time when spinoff_prover is added
-// //       probably add lemma_div_basics_auto?
-// // {:vcs_split_on_every_assert}
+// {:vcs_split_on_every_assert}
 #[verifier::spinoff_prover]
 proof fn lemma_mod_neg_neg(x: int, d: int)
     requires 0 < d
@@ -1586,9 +1508,8 @@ proof fn lemma_mod_neg_neg(x: int, d: int)
 
 
 /// proves the validity of the quotient and remainder
-// TODO the spinoff prover can't be adde 
-// #[verifier::spinoff_prover]
 // {:timeLimitMultiplier 5} from dafny
+#[verifier::spinoff_prover]
 proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
     requires 
         d != 0,
@@ -1601,7 +1522,8 @@ proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
 
     lemma_div_auto(d);
     let f = |u: int| u == (u * d + r) / d;
-    // TOBE DISCUSSED
+    // TODO: shorten this?
+    // TO BE DISCUSSED
     // OBSERVE
     // making mul_auto in the larger context will exceed rlimit
     assert(f(q)) by {
@@ -1755,7 +1677,6 @@ proof fn lemma_mul_mod_noop_general(x: int, y: int, m: int)
 //     }
 // }
 
-// TODO: verifies for a long time when spinoff prover is used
 #[verifier::spinoff_prover]
 proof fn lemma_mul_mod_noop(x: int, y: int, m: int)
     requires 0 < m
