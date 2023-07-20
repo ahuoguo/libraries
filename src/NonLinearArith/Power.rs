@@ -1,14 +1,15 @@
 use vstd::prelude::*;
+use vstd::calc_macro::*;
 
 verus! {
 #[allow(unused_imports)]
-use crate::NonLinearArith::DivMod;
+use crate::NonLinearArith::DivMod::{lemma_div_by_multiple};
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::GeneralInternals::{is_le};
 #[allow(unused_imports)]
-use crate::NonLinearArith::Mul::{lemma_mul_basics, lemma_mul_basics_auto, lemma_mul_increases_auto, lemma_mul_is_associative_auto};
+use crate::NonLinearArith::Mul::{lemma_mul_strictly_increases, lemma_mul_left_inequality, lemma_mul_basics, lemma_mul_basics_auto, lemma_mul_increases_auto, lemma_mul_strictly_increases_auto, lemma_mul_is_commutative_auto, lemma_mul_is_distributive_auto, lemma_mul_is_associative_auto, lemma_mul_nonnegative};
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::MulInternals::{lemma_mul_induction_auto};
+use crate::NonLinearArith::Internals::MulInternals::{lemma_mul_auto, lemma_mul_induction_auto};
 
 #[verifier(opaque)]
 pub open spec fn pow(b: int, e: nat) -> int
@@ -22,24 +23,25 @@ pub open spec fn pow(b: int, e: nat) -> int
 }
 
 /// A number raised to the power of 0 equals
+#[verifier(spinoff_prover)]
 pub proof fn lemma_pow0(b: int)
     ensures pow(b, 0) == 1
 {
     reveal(pow);
 }
 
+#[verifier(spinoff_prover)]
 pub proof fn lemma_pow0_auto()
     ensures forall |b: int| #[trigger]pow(b, 0 as nat) == 1
 {
     reveal(pow);
 }
 
-use vstd::calc_macro::*;
 /* A number raised to the power of 1 equals the number itself. */
+#[verifier(spinoff_prover)]
 pub proof fn lemma_pow1(b: int)
     ensures pow(b, 1) == b
 {
-    // reveal(pow);
     calc! {
     (==)
     pow(b, 1);
@@ -52,18 +54,20 @@ pub proof fn lemma_pow1(b: int)
     }
 }
 
-// proof fn lemma_pow1_auto()
-//     ensures forall b: nat {:trigger pow(b, 1)} :: pow(b, 1) == b
-// {
-//     reveal pow();
-//     forall b: nat {:trigger pow(b, 1)}
-//     ensures pow(b, 1) == b
-//     {
-//     lemma_pow1(b);
-//     }
-// }
+#[verifier(spinoff_prover)]
+proof fn lemma_pow1_auto()
+    ensures 
+        forall |b: int| #[trigger]pow(b, 1) == b,
+{
+    reveal(pow);
+    assert forall |b: int| #[trigger]pow(b, 1) == b by
+    {
+    lemma_pow1(b);
+    };
+}
 
 /// 0 raised to a positive power equals 0.
+#[verifier(spinoff_prover)]
 pub proof fn lemma0_pow(e: nat)
     requires e > 0
     ensures pow(0, e) == 0
@@ -76,6 +80,7 @@ pub proof fn lemma0_pow(e: nat)
     }
 }
 
+#[verifier(spinoff_prover)]
 proof fn lemma0_pow_auto()
     ensures forall |e: nat| e > 0 ==> #[trigger]pow(0, e) == 0
 {
@@ -88,6 +93,7 @@ proof fn lemma0_pow_auto()
 }
 
 /// 1 raised to any power equals 1.
+#[verifier(spinoff_prover)]
 pub proof fn lemma1_pow(e: nat)
     ensures pow(1, e) == 1
     decreases e
@@ -99,6 +105,7 @@ pub proof fn lemma1_pow(e: nat)
     }
 }
 
+#[verifier(spinoff_prover)]
 proof fn lemma1_pow_auto()
     ensures forall |e: nat| e > 0 ==> #[trigger]pow(1, e) == 1
 {
@@ -111,6 +118,7 @@ proof fn lemma1_pow_auto()
 }
 
 /// Squaring a number is equal to raising it to the power of 2.
+#[verifier(spinoff_prover)]
 pub proof fn lemma_square_is_pow2(x: int)
 ensures pow(x, 2) == x * x
 {
@@ -124,6 +132,7 @@ ensures pow(x, 2) == x * x
     assert(x as int * pow(x as int, 1) == x * (x as int * pow(x as int, 0)));
 }
 
+#[verifier(spinoff_prover)]
 proof fn lemma_square_is_pow2_auto()
     ensures forall |x: int| x > 0 ==> #[trigger]pow(x, 2) == x * x,
 {
@@ -165,19 +174,20 @@ pub proof fn lemma_pow_positive(b: int, e: nat)
     lemma_mul_induction_auto(e as int, |u: int| 0 <= u ==> 0 < pow(b, u as nat));
 }
 
-// proof fn lemma_pow_positive_auto()
-//     ensures forall b: int, e: nat {:trigger pow(b, e)}
-//             :: b > 0 ==> 0 < pow(b, e)
-// {
-//     reveal pow();
-//     forall b: int, e: nat {:trigger pow(b, e)} | b > 0
-//     ensures 0 < pow(b, e)
-//     {
-//     lemma_pow_positive(b, e);
-//     }
-// }
+#[verifier(spinoff_prover)]
+proof fn lemma_pow_positive_auto()
+    ensures 
+        forall |b: int, e: nat| b > 0 ==> 0 < #[trigger] pow(b, e)
+{
+    reveal(pow);
+    assert forall |b: int, e: nat| b > 0 implies 0 < #[trigger] pow(b, e) by
+    {
+        lemma_pow_positive(b, e);
+    }
+}
 
 /// Add exponents when multiplying powers with the same base.
+#[verifier(spinoff_prover)]
 proof fn lemma_pow_adds(b: int, e1: nat, e2: nat)
     ensures pow(b, e1 + e2) == pow(b, e1) * pow(b, e2),
     decreases e1
@@ -208,18 +218,18 @@ proof fn lemma_pow_adds(b: int, e1: nat, e2: nat)
     }
 }
 
-// proof fn lemma_pow_adds_auto()
-//     ensures forall b: int, e1: nat, e2: nat {:trigger pow(b, e1 + e2)}
-//             :: pow(b, e1 + e2) == pow(b, e1) * pow(b, e2)
-// {
-//     reveal pow();
-//     forall b: int, e1: nat, e2: nat {:trigger pow(b, e1 + e2)}
-//     ensures pow(b, e1 + e2) == pow(b, e1) * pow(b, e2)
-//     {
-//     lemma_pow_adds(b, e1, e2);
-//     }
-// }
+#[verifier(spinoff_prover)]
+proof fn lemma_pow_adds_auto()
+    ensures forall |x: int, y: nat, z: nat| #[trigger] pow(x, y + z) == pow(x, y) * pow(x, z),
+{
+    // reveal pow();
+    assert forall |x: int, y: nat, z: nat| #[trigger] pow(x, y + z) == pow(x, y) * pow(x, z) by
+    {
+    lemma_pow_adds(x, y, z);
+    }
+}
 
+#[verifier(spinoff_prover)]
 proof fn lemma_pow_sub_add_cancel(b: int, e1: nat, e2: nat)
     requires e1 >= e2
     ensures pow(b, (e1 - e2) as nat) * pow(b, e2) == pow(b, e1)
@@ -228,37 +238,36 @@ proof fn lemma_pow_sub_add_cancel(b: int, e1: nat, e2: nat)
     lemma_pow_adds(b, (e1 - e2) as nat, e2);
 }
 
-// proof fn lemma_pow_sub_add_cancel_auto()
-//     ensures forall b: int, e1: nat, e2: nat {:trigger pow(b, e1 - e2)} | e1 >= e2
-//             :: pow(b, e1 - e2) * pow(b, e2) == pow(b, e1)
-// {
-//     reveal pow();
-//     forall b: int, e1: nat, e2: nat | e1 >= e2
-//     {
-//     lemma_pow_sub_add_cancel(b, e1, e2);
-//     }
-// }
+proof fn lemma_pow_sub_add_cancel_auto()
+    ensures forall |x: int, y: nat, z: nat| y >= z ==> #[trigger]pow(x, (y - z) as nat) * pow(x, z) == pow(x, y),
 
-// TODO: NEED PROGRESS ON DIVMOD
-/* Subtract exponents when dividing powers. */
-// proof fn lemma_pow_subtracts(b: nat, e1: nat, e2: nat)
-//     requires 
-//         b > 0,
-//         e1 <= e2
-//     ensures 
-//         pow(b, e1) > 0,
-//         pow(b, (e2 - e1) as nat) == pow(b, e2) / pow(b, e1) > 0
-// {
-//     lemma_pow_positive_auto();
-//     calc! {
-//         (==)
-//         pow(b, e2) / pow(b, e1);
-//         { lemma_pow_sub_add_cancel(b, e2, e1); }
-//         pow(b, e2 - e1) * pow(b, e1) / pow(b, e1);
-//         { lemma_div_by_multiple(pow(b, e2 - e1), pow(b, e1)); }
-//         pow(b, e2 - e1);
-//     }
-// }
+{
+    assert forall |x: int, y: nat, z: nat| y >= z implies #[trigger]pow(x, (y - z) as nat) * pow(x, z) == pow(x, y) by 
+    {
+        lemma_pow_sub_add_cancel(x, y, z);
+    }
+}
+
+/// Subtract exponents when dividing powers.
+#[verifier(spinoff_prover)]
+proof fn lemma_pow_subtracts(b: nat, e1: nat, e2: nat)
+    requires 
+        b > 0,
+        e1 <= e2
+    ensures 
+        pow(b as int, e1) > 0,
+        pow(b as int, (e2 - e1) as nat) == pow(b as int, e2) / pow(b as int, e1) > 0
+{
+    lemma_pow_positive_auto();
+    calc! {
+        (==)
+        pow(b as int, e2) / pow(b as int, e1);
+        { lemma_pow_sub_add_cancel(b as int, e2, e1); }
+        pow(b as int, (e2 - e1) as nat) * pow(b as int, e1) / pow(b as int, e1);
+        { lemma_div_by_multiple(pow(b as int, (e2 - e1) as nat), pow(b as int, e1)); }
+        pow(b as int, (e2 - e1) as nat);
+    }
+}
 
 // proof fn lemma_pow_subtracts_auto()
 //     ensures forall b: nat, e1: nat :: b > 0 ==> pow(b, e1) > 0
@@ -276,47 +285,54 @@ proof fn lemma_pow_sub_add_cancel(b: int, e1: nat, e2: nat)
 //     }
 // }
 
-// /* Multiply exponents when finding the power of a power. */
-// proof fn lemma_pow_multiplies(a: int, b: nat, c: nat)
-//     decreases c
-//     ensures 0 <= b * c
-//     ensures pow(pow(a, b), c) == pow(a, b * c)
-// {
-//     lemma_mul_nonnegative(b, c);
-//     if c == 0 {
-//     lemma_mul_basics_auto();
-//     calc {
-//         pow(a, b * c);
-//         { lemma_pow0(a); }
-//         1;
-//         { lemma_pow0(pow(a, b)); }
-//         pow(pow(a, b), c);
-//     }
-//     }
-//     else {
-//     calc {
-//         b * c - b;
-//         { lemma_mul_basics_auto(); }
-//         b * c - b * 1;
-//         { lemma_mul_is_distributive_auto(); }
-//         b * (c - 1);
-//     }
-//     lemma_mul_nonnegative(b, c - 1);
-//     assert 0 <= b * c - b;
+/// Multiply exponents when finding the power of a power.
+#[verifier(spinoff_prover)]
+proof fn lemma_pow_multiplies(a: int, b: nat, c: nat)
+    ensures 
+        0 <= b * c,
+        pow(pow(a, b), c) == pow(a, b * c)
+    decreases c
+{
+    lemma_mul_nonnegative(b as int, c as int);
+    if c == 0 {
+    lemma_mul_basics_auto();
+    calc! {
+        (==)
+        pow(a, (b * c) as nat);
+        { lemma_pow0(a); }
+        1;
+        { lemma_pow0(pow(a, b)); }
+        pow(pow(a, b), c);
+    }
+    }
+    else {
+    calc! {
+        (==)
+        b * c - b;
+        { lemma_mul_basics_auto(); }
+        b * c - b * 1;
+        { lemma_mul_is_distributive_auto(); }
+        b * (c - 1);
+    }
+    lemma_mul_nonnegative(b as int, c - 1);
+    assert(0 <= b * c - b);
 
-//     calc {
-//         pow(a, b * c);
-//         pow(a, b + b * c - b);
-//         { lemma_pow_adds(a, b, b * c - b); }
-//         pow(a, b) * pow(a, b * c - b);
-//         pow(a, b) * pow(a, b * (c - 1));
-//         { lemma_pow_multiplies(a, b, c - 1); }
-//         pow(a, b) * pow(pow(a, b), c - 1);
-//         { reveal pow(); }
-//         pow(pow(a, b), c);
-//     }
-//     }
-// }
+    calc! {
+        (==)
+        pow(a, b * c);
+        { }
+        pow(a, (b + b * c - b) as nat);
+        { lemma_pow_adds(a, b, (b * c - b) as nat); }
+        pow(a, b) * pow(a, (b * c - b) as nat);
+        { }
+        pow(a, b) * pow(a, (b * (c - 1)) as nat);
+        { lemma_pow_multiplies(a, b, (c - 1) as nat); }
+        pow(a, b) * pow(pow(a, b), (c - 1) as nat);
+        { reveal(pow); }
+        pow(pow(a, b), c);
+    }
+    }
+}
 
 // proof fn lemma_pow_multiplies_auto()
 //     ensures forall b: nat, c: nat {:trigger b * c} :: 0 <= b * c
@@ -332,89 +348,115 @@ proof fn lemma_pow_sub_add_cancel(b: int, e1: nat, e2: nat)
 //     }
 // }
 
-// /* Distribute the power to factors of a product. */
-// proof fn lemma_pow_distributes(a: int, b: int, e: nat)
-//     decreases e
-//     ensures pow(a * b, e) == pow(a, e) * pow(b, e)
-// {
-//     reveal pow();
-//     lemma_mul_basics_auto();
-//     if e > 0 {
-//     calc {
-//         pow(a * b, e);
-//         (a * b) * pow(a * b, e - 1);
-//         { lemma_pow_distributes(a, b, e - 1); }
-//         (a * b) * (pow(a, e - 1) * pow(b, e - 1));
-//         { lemma_mul_is_associative_auto(); lemma_mul_is_commutative_auto(); }
-//         (a * pow(a, e - 1)) * (b * pow(b, e - 1));
-//         pow(a, e) * pow(b, e);
-//     }
-//     }
-// }
+/// Distribute the power to factors of a product.
+#[verifier(spinoff_prover)]
+proof fn lemma_pow_distributes(a: int, b: int, e: nat)
+    ensures 
+        pow(a * b, e) == pow(a, e) * pow(b, e)
+    decreases e
+{
+    reveal(pow);
+    lemma_mul_basics_auto();
+    if e >= 1 {
 
-// proof fn lemma_pow_distributes_auto()
-//     ensures forall a: int, b: int, e: nat {:trigger pow(a * b, e)}
-//             :: pow(a * b, e) == pow(a, e) * pow(b, e)
-// {
-//     reveal pow();
-//     forall a: int, b: int, e: nat {:trigger pow(a * b, e)}
-//     ensures pow(a * b, e) == pow(a, e) * pow(b, e)
-//     {
-//     lemma_pow_distributes(a, b, e);
-//     }
-// }
+    calc! {
+        (==)
+        pow(a * b, e); { reveal(pow); }
+        (a * b) * pow(a * b, (e - 1) as nat);
+        { lemma_pow_distributes(a, b, (e - 1) as nat); }
+        (a * b) * (pow(a, (e - 1) as nat) * pow(b, (e - 1) as nat));
+        { lemma_mul_is_associative_auto(); 
+          lemma_mul_is_commutative_auto(); 
+          assert ((a * b * pow(a, (e - 1) as nat)) * pow(b, (e - 1) as nat) 
+               == (a * pow(a, (e - 1) as nat) * b) * pow(b, (e - 1) as nat)); 
+        }
+        (a * pow(a, (e - 1) as nat)) * (b * pow(b, (e - 1) as nat)); { reveal(pow);}
+        pow(a, e) * pow(b, e);
+    }
+    }
+}
 
-// /* Group properties of powers. */
-// proof fn lemma_pow_auto()
-//     ensures forall x: int {:trigger pow(x, 0)} :: pow(x, 0) == 1
-//     ensures forall x: int {:trigger pow(x, 1)} :: pow(x, 1) == x
-//     ensures forall x: int, y: int {:trigger pow(x, y)} :: y == 0 ==> pow(x, y) == 1
-//     ensures forall x: int, y: int {:trigger pow(x, y)} :: y == 1 ==> pow(x, y) == x
-//     ensures forall x: int, y: int {:trigger x * y} :: 0 < x && 0 < y ==> x <= x * y
-//     ensures forall x: int, y: int {:trigger x * y} :: 0 < x && 1 < y ==> x < x * y
-//     ensures forall x: int, y: nat, z: nat {:trigger pow(x, y + z)} :: pow(x, y + z) == pow(x, y) * pow(x, z)
-//     ensures forall x: int, y: nat, z: nat {:trigger pow(x, y - z)} :: y >= z ==> pow(x, y - z) * pow(x, z) == pow(x, y)
-//     ensures forall x: int, y: int, z: nat {:trigger pow(x * y, z)} :: pow(x * y, z) == pow(x, z) * pow(y, z)
-// {
-//     reveal pow();
+#[verifier(spinoff_prover)]
+proof fn lemma_pow_distributes_auto()
+    ensures forall |x: int, y: nat, z: nat| #[trigger]pow(x * y, z) == pow(x, z) * pow(y as int, z),
+{
+    // reveal pow();
+    assert forall |x: int, y: nat, z: nat| #[trigger]pow(x * y, z) == pow(x, z) * pow(y as int, z) by
+    {
+    lemma_pow_distributes(x, y as int, z);
+    }
+}
 
-//     lemma_pow0_auto();
-//     lemma_pow1_auto();
+/// Group properties of powers
+#[verifier(spinoff_prover)]
+proof fn lemma_pow_auto()
+    ensures 
+        forall |x: int| pow(x, 0) == 1,
+        forall |x: int| #[trigger] pow(x, 1) == x,
+        forall |x: int, y: int| y == 0 ==> #[trigger] pow(x, y as nat) == 1,
+        forall |x: int, y: int| y == 1 ==> #[trigger]pow(x, y as nat) == x,
+        forall |x: int, y: int| 0 < x && 0 < y ==> x <= #[trigger](x * y as nat),
+        forall |x: int, y: int| 0 < x && 1 < y ==> x < #[trigger](x * y as nat),
+        forall |x: int, y: nat, z: nat| #[trigger] pow(x, y + z) == pow(x, y) * pow(x, z),
+        forall |x: int, y: nat, z: nat| y >= z ==> #[trigger]pow(x, (y - z) as nat) * pow(x, z) == pow(x, y),
+        forall |x: int, y: nat, z: nat| #[trigger]pow(x * y, z) == pow(x, z) * pow(y as int, z),
+{
+    reveal(pow);
 
-//     lemma_pow_distributes_auto();
-//     lemma_pow_adds_auto();
-//     lemma_pow_sub_add_cancel_auto();
+    lemma_pow0_auto();
+    lemma_pow1_auto();
 
-//     lemma_mul_auto();
-//     lemma_mul_increases_auto();
-//     lemma_mul_strictly_increases_auto();
-// }
+    lemma_pow_distributes_auto();
+    lemma_pow_adds_auto();
+    lemma_pow_sub_add_cancel_auto();
 
-// /* A positive number raised to a power strictly increases as the power
-// strictly increases. */
-// proof fn lemma_pow_strictly_increases(b: nat, e1: nat, e2: nat)
-//     requires 1 < b
-//     requires e1 < e2
-//     ensures pow(b, e1) < pow(b, e2)
-// {
-//     lemma_pow_auto();
-//     var f := e => 0 < e ==> pow(b, e1) < pow(b, e1 + e);
-//     forall i {:trigger IsLe(0, i)} | IsLe(0, i) && f(i)
-//     ensures f(i + 1)
-//     {
-//     calc {
-//         pow(b, e1 + i);
-//     <= { lemma_pow_positive(b, e1 + i);
-//             lemma_mul_left_inequality(pow(b, e1 + i), 1, b); }
-//         pow(b, e1 + i) * b;
-//     == { lemma_pow1(b); }
-//         pow(b, e1 + i) * pow(b, 1);
-//     == { lemma_pow_adds(b, e1 + i, 1); }
-//         pow(b, e1 + i + 1);
-//     }
-//     }
-//     lemma_mul_induction_auto(e2 - e1, f);
-// }
+    lemma_mul_auto();
+    lemma_mul_increases_auto();
+    lemma_mul_strictly_increases_auto();
+}
+
+/// A positive number raised to a power strictly increases as the power
+/// strictly increases.
+// TODO: quite longer than dafny
+#[verifier(spinoff_prover)]
+proof fn lemma_pow_strictly_increases(b: nat, e1: nat, e2: nat)
+    requires 
+        1 < b,
+        e1 < e2,
+    ensures 
+        pow(b as int, e1) < pow(b as int, e2)
+{
+    // lemma_pow_auto();
+    let f = |e: int| 0 < e ==> pow(b as int, e1) < pow(b as int, (e1 + e) as nat);
+    assert forall |i: int| (#[trigger]is_le(0, i) && f(i)) implies f(i + 1) by
+    {
+    calc! {
+    (<=)    pow(b as int, (e1 + i) as nat);
+       { lemma_pow_positive(b as int, (e1 + i) as nat);
+        lemma_mul_left_inequality(pow(b as int, (e1 + i) as nat), 1, b as int); }
+        pow(b as int, (e1 + i) as nat) * b;
+        (<=) { lemma_pow1(b as int); }
+        pow(b as int, (e1 + i) as nat) * pow(b as int, 1);
+        (<=)   { lemma_pow_adds(b as int, (e1 + i) as nat, 1nat); }
+       pow(b as int, (e1 + i + 1) as nat);
+    }
+    assert(0 < i ==> pow(b as int, e1) < pow(b as int, (e1 + i) as nat));
+    if (i == 0) {
+        assert(pow(b as int, e1) < pow(b as int, (e1 + 1) as nat)) by {
+            reveal(pow);
+            assert(pow(b as int, e1) < b * pow(b as int, e1)) by {
+                assert(b > 1);
+                assert(pow(b as int, e1) > 0) by { 
+                    // lemma_pow_auto casue the proof tp never stop
+                    lemma_pow_positive_auto() };
+                lemma_mul_strictly_increases(b as int, pow(b as int, e1));
+            };
+        };
+    }
+    assert(f(i + 1));
+    }
+    lemma_mul_induction_auto(e2 - e1, f);
+} 
 
 // proof fn lemma_pow_strictly_increases_auto()
 //     ensures forall b: nat, e1: nat, e2: nat {:trigger pow(b, e1),
