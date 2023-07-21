@@ -1538,7 +1538,7 @@ proof fn lemma_mod_neg_neg(x: int, d: int)
 // {:timeLimitMultiplier 5} from dafny
 // this proof breaks a lot when introducing new auto lemma
 // this proof verifies for a long time
-// now it verifies for 2-4s ish
+// now it verifies for 2-8s ish
 #[verifier::spinoff_prover]
 proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
     requires 
