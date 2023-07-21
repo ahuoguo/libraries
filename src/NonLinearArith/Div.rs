@@ -881,7 +881,7 @@ pub proof fn lemma_div_multiples_vanish_quotient(x: int, a: int, d: int)
 pub proof fn lemma_div_multiples_vanish_quotient_auto()
     ensures forall |x: int, a: int, d: int| #![trigger (a / d), (x * a), (x * d)] 0 < x && 0 <= a && 0 < d ==> 0 < x * d && a / d == (x * a) / (x * d)
 {
-    assert(true); // OBSERVE?????????
+    // assert(true); // OBSERVE?????????
     assert forall |x: int, a: int, d: int| 0 < x && 0 <= a && 0 < d implies 0 < #[trigger](x * d) && #[trigger](a / d) == (#[trigger](x * a) / #[trigger](x * d)) by
     {
         if (0 < x && 0 <= a && 0 < d) {

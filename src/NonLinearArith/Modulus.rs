@@ -236,7 +236,7 @@ pub proof fn lemma_mod_multiples_vanish(a: int, b: int, m: int)
     ensures (m * a + b) % m == b % m
     decreases (if a > 0 { a } else { -a })
 {
-    assert(true);
+    // assert(true);
     lemma_mod_auto(m);
     lemma_mul_auto();
     // lemma_mul_induction_auto(a, |u: int| (m * u + b) % m == b % m);
