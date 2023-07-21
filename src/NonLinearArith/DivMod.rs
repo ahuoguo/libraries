@@ -511,9 +511,13 @@ proof fn lemma_breakdown(x: int, y: int, z: int)
 #[verifier::spinoff_prover]
 proof fn lemma_breakdown_auto()
     ensures 
-        forall |x: int, y: int, z: int| #![trigger (y * z), (x % (y * z)), (y * ((x / y) % z) + x % y)]0 <= x && 0 < y && 0 < z ==> 0 < y * z && x % (y * z) == y * ((x / y) % z) + x % y,
+        forall |x: int, y: int, z: int| #![trigger (y * z), (x % (y * z)), (y * ((x / y) % z) + x % y)] 0 <= x && 0 < y && 0 < z ==> 0 < y * z && x % (y * z) == y * ((x / y) % z) + x % y,
+        // forall |x: int, y: int, z: int| #![trigger (y * z), (x % (y * z)), (y * ((x / y) % z) + x % y)] 
+        //     0 <= x && 0 < y && 0 < z ==> 0 < y * z,
+        // forall |x: int, y: int, z: int| #![trigger (y * z), (x % (y * z)), (y * ((x / y) % z) + x % y)] 
+        //     0 <= x && 0 < y && 0 < z ==> x % (y * z) == y * ((x / y) % z) + x % y,
+
 {
-    // assume(false);
     assert forall |x: int, y: int, z: int|(0 <= x && 0 < y && 0 < z) implies 0 < #[trigger](y * z) && #[trigger](x % (y * z)) == #[trigger](y * ((x / y) % z) + x % y) by
     {
         // TO BE DISCUSSED
@@ -874,13 +878,13 @@ proof fn lemma_div_multiples_vanish_quotient(x: int, a: int, d: int)
 proof fn lemma_div_multiples_vanish_quotient_auto()
     ensures forall |x: int, a: int, d: int| #![trigger (a / d), (x * a), (x * d)] 0 < x && 0 <= a && 0 < d ==> 0 < x * d && a / d == (x * a) / (x * d)
 {
+    assert(true); // OBSERVE?????????
     assert forall |x: int, a: int, d: int| 0 < x && 0 <= a && 0 < d implies 0 < #[trigger](x * d) && #[trigger](a / d) == (#[trigger](x * a) / #[trigger](x * d)) by
     {
         if (0 < x && 0 <= a && 0 < d) {
         lemma_div_multiples_vanish_quotient(x, a, d);
         assert(0 < (x * d) && (a / d) == ((x * a) / (x * d)));
         }
-
     }
 }
 
@@ -972,15 +976,15 @@ pub proof fn lemma_div_by_multiple(b: int, d: int)
     lemma_mul_auto(); // commutativity
 }
 
-// proof fn lemma_div_by_multiple_auto()
-//     ensures forall b: int, d: int {:trigger (b * d) / d} :: 0 <= b && 0 < d ==> (b * d) / d == b
-// {
-//     forall b: int, d: int | 0 <= b && 0 < d
-//     ensures (b * d) / d == b
-//     {
-//     lemma_div_by_multiple(b, d);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_div_by_multiple_auto()
+    ensures forall |b: int, d: int| #![trigger ((b * d) / d)] 0 <= b && 0 < d ==> (b * d) / d == b,
+{
+    assert forall |b: int, d: int| 0 <= b && 0 < d implies #[trigger]((b * d) / d) == b by
+    {
+        lemma_div_by_multiple(b, d);
+    }
+}
 
 /// a dividend y that is a positive multiple of the divisor z will always yield a greater quotient 
 /// than a dividend x that is less than y
@@ -997,16 +1001,15 @@ pub proof fn lemma_div_by_multiple_is_strongly_ordered(x: int, y: int, m: int, z
     lemma_div_induction_auto(z, y - x, |yx: int| {let u = yx + x; x < u && u % z == 0 ==> x / z < u / z});
 }
 
-// proof fn lemma_div_by_multiple_is_strongly_ordered_auto()
-//     ensures forall x: int, y: int, m: int, z: int {:trigger x / z, m * z, y / z}
-//             :: x < y && y == m * z && 0 < z ==> x / z < y / z
-// {
-//     forall x: int, y: int, m: int, z: int | x < y && y == m * z && 0 < z
-//     ensures x / z < y / z
-//     {
-//     lemma_div_by_multiple_is_strongly_ordered(x, y, m, z);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_div_by_multiple_is_strongly_ordered_auto()
+    ensures forall |x: int, y: int, m: int, z: int| #![trigger x / z, m * z, y / z] x < y && y == m * z && 0 < z ==> x / z < y / z,
+{
+    assert forall |x: int, y: int, m: int, z: int| x < y && y == #[trigger](m * z) && 0 < z implies #[trigger](x / z) < #[trigger](y / z) by
+    {
+        lemma_div_by_multiple_is_strongly_ordered(x, y, m, z);
+    }
+}
 
 /// if an integer a is less than or equal to the product of two other integers b and c, then the 
 /// quotient of a/b will be less than or equal to c
@@ -1018,23 +1021,19 @@ proof fn lemma_multiply_divide_le(a: int, b: int, c: int)
     ensures
         a / b <= c
 {
-    // TODO interesting case
     lemma_mod_multiples_basic(c, b);
-    let f = |i: int| 0 <= i && (i + a) % b == 0 ==> a / b <= (i + a) / b;
-    lemma_div_induction_auto(b, b * c - a, f);
-    // assert(f(b)); // OBSERVE
+    lemma_div_induction_auto(b, b * c - a, |i: int| 0 <= i && (i + a) % b == 0 ==> a / b <= (i + a) / b);
     lemma_div_multiples_vanish(c, b);
 }
 
-// proof fn lemma_multiply_divide_le_auto()
-//     ensures forall a: int, b: int, c: int {:trigger a / b , b * c} :: 0 < b && a <= b * c ==> a / b <= c
-// {
-//     forall a: int, b: int, c: int | 0 < b && a <= b * c
-//     ensures a / b <= c
-//     {
-//     lemma_multiply_divide_le(a, b, c);
-//     }
-// }
+proof fn lemma_multiply_divide_le_auto()
+    ensures forall |a: int, b: int, c: int| #![trigger a / b, b * c] 0 < b && a <= b * c ==> a / b <= c,
+{
+    assert forall |a: int, b: int, c: int| 0 < b && a <= #[trigger](b * c) implies #[trigger](a / b) <= c by
+    {
+        lemma_multiply_divide_le(a, b, c);
+    }
+}
 
 /// if an integer a is less than the product of two other integers b and c, then the quotient 
 /// of a/b will be less than c
@@ -1054,15 +1053,15 @@ proof fn lemma_multiply_divide_lt(a: int, b: int, c: int)
     lemma_div_multiples_vanish(c, b);
 }
 
-// proof fn lemma_multiply_divide_lt_auto()
-//     ensures forall a: int, b: int, c: int {:trigger a / b, b * c} :: 0 < b && a < b * c ==> a / b < c
-// {
-//     forall a: int, b: int, c: int | 0 < b && a < b * c
-//     ensures a / b < c
-//     {
-//     lemma_multiply_divide_lt(a, b, c);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_multiply_divide_lt_auto()
+    ensures forall |a: int, b: int, c: int| #![trigger a / b, b * c] 0 < b && a < b * c ==> a / b < c,
+{
+    assert forall |a: int, b: int, c: int| 0 < b && a < #[trigger](b * c) implies #[trigger](a / b) < c by
+    {
+        lemma_multiply_divide_lt(a, b, c);
+    }
+}
 
 /// expresses the equality of giving fractions common denominators and then adding them together
 #[verifier::spinoff_prover]
@@ -1072,12 +1071,25 @@ proof fn lemma_hoist_over_denominator(x: int, j: int, d: nat)
 {
     lemma_div_auto(d as int);
     let f = |u: int| x / d as int + u == (x + u * d) / d as int;
-    lemma_mul_auto();
+    // OBSERVE: push precondition on its on scope
+    assert (  f(0)
+        && (forall |i: int| i >= 0 && #[trigger] f(i) ==> #[trigger]f(crate::NonLinearArith::Internals::MulInternals::add(i, 1)))
+        && (forall |i: int| i <= 0 && #[trigger] f(i) ==> #[trigger]f(crate::NonLinearArith::Internals::MulInternals::sub(i, 1)))) by {
+            lemma_mul_auto();
+    }
     lemma_mul_induction(f);
     assert(f(j));
 }
 
-// proof fn lemma_hoist_over_denominator_auto()
+#[verifier::spinoff_prover]
+proof fn lemma_hoist_over_denominator_auto()
+    ensures forall |x: int, j: int, d: nat| #![trigger x / d as int + j] 0 < d ==> x / d as int + j == (x + j * d) / d as int,
+{
+    assert forall |x: int, j: int, d: nat| 0 < d implies #[trigger](x / d as int + j) == (x + j * d) / d as int by
+    {
+        lemma_hoist_over_denominator(x, j, d);
+    }
+}
 //     ensures forall x: int, j: int, d: nat {:trigger  x / d + j} :: 0 < d ==> x / d + j == (x + j * d) / d
 // {
 //     forall x: int, j: int, d: nat | 0 < d
@@ -1128,16 +1140,14 @@ proof fn lemma_part_bound1(a: int, b: int, c: int)
     // }
 }
 
-// proof fn lemma_part_bound1_auto()
-//     ensures forall a: int, b: int, c: int {:trigger b * (a / b) % (b * c)}
-//             :: 0 <= a && 0 < b && 0 < c ==> 0 < b * c && (b * (a / b) % (b * c)) <= b * (c - 1)
-// {
-//     forall a: int, b: int, c: int | 0 <= a && 0 < b && 0 < c
-//     ensures 0 < b * c && (b * (a / b) % (b * c)) <= b * (c - 1)
-//     {
-//     lemma_part_bound1(a, b, c);
-//     }
-// }
+proof fn lemma_part_bound1_auto()
+    ensures forall |a: int, b: int, c: int| #![trigger (b * (a / b) % (b * c))] 0 <= a && 0 < b && 0 < c ==> 0 < b * c && (b * (a / b) % (b * c)) <= b * (c - 1),
+{
+    assert forall |a: int, b: int, c: int| 0 <= a && 0 < b && 0 < c implies 0 < #[trigger](b * c) && #[trigger](b * (a / b) % (b * c)) <= b * (c - 1) by
+    {
+        lemma_part_bound1(a, b, c);
+    }
+}
 
 
 // /*******************************************************************************
@@ -1240,15 +1250,15 @@ proof fn lemma_mod_decreases(x: nat, m: nat)
     lemma_mod_auto(m as int);
 }
 
-// proof fn lemma_mod_decreases_auto()
-//     ensures forall x: nat, m: nat {:trigger x % m} :: 0 < m ==> x % m <= x
-// {
-//     forall x: nat, m: nat | 0 < m
-//     ensures x % m <= x
-//     {
-//     lemma_mod_decreases(x, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_decreases_auto()
+    ensures forall |x: nat, m: nat| 0 < m ==> #[trigger](x % m) <= x,
+{
+    assert forall |x: nat, m: nat| 0 < m implies #[trigger](x % m) <= x by
+    {
+        lemma_mod_decreases(x, m);
+    }
+}
 
 /// if x % y is zero and x is greater than zero, x is greater than y.
 #[verifier::spinoff_prover]
@@ -1270,16 +1280,15 @@ proof fn lemma_mod_is_zero(x: nat, m: nat)
     // }
 }
 
-// proof fn lemma_mod_is_zero_auto()
-//     ensures forall x: nat, m: nat {:trigger x % m} :: (x > 0 && m > 0
-//                                                     && x % m == 0) ==> x >= m
-// {
-//     forall x: nat, m: nat | x > 0 && m > 0 && x % m == 0
-//     ensures x >= m
-//     {
-//     lemma_mod_is_zero(x, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_is_zero_auto()
+    ensures forall |x: nat, m: nat| x > 0 && m > 0 && #[trigger](x % m) == 0 ==> x >= m,
+{
+    assert forall |x: nat, m: nat| x > 0 && m > 0 && #[trigger](x % m) == 0 implies x >= m by
+    {
+        lemma_mod_is_zero(x, m);
+    }
+}
 
 /// a dividend that is any multiple of the divisor will result in a remainder of 0
 #[verifier::spinoff_prover]
@@ -1295,15 +1304,15 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
     // lemma_mul_induction_auto(x, |u: int| (u * m) % m == 0);
 }
 
-// proof fn lemma_mod_multiples_basic_auto()
-//     ensures forall x: int, m: int {:trigger (x * m) % m} :: m > 0 ==> (x * m) % m == 0
-// {
-//     forall x: int, m: int | m > 0
-//     ensures (x * m) % m == 0
-//     {
-//     lemma_mod_multiples_basic(x, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_multiples_basic_auto()
+    ensures forall |x: int, m: int| m > 0 ==> #[trigger]((x * m) % m) == 0,
+{
+    assert forall |x: int, m: int| m > 0 implies #[trigger]((x * m) % m) == 0 by
+    {
+        lemma_mod_multiples_basic(x, m);
+    }
+}
 
 /// the remainder of adding the divisor m to the dividend b will be the same
 /// as simply performing b % m
@@ -1315,15 +1324,15 @@ proof fn lemma_mod_add_multiples_vanish(b: int, m: int)
     lemma_mod_auto(m);
 }
 
-// proof fn lemma_mod_add_multiples_vanish_auto()
-//     ensures forall b: int, m: int {:trigger b % m} :: 0 < m ==> (m + b) % m == b % m
-// {
-//     forall b: int, m: int | 0 < m
-//     ensures (m + b) % m == b % m
-//     {
-//     lemma_mod_add_multiples_vanish(b, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_add_multiples_vanish_auto()
+    ensures forall |b: int, m: int| m > 0 ==> ((m + b) % m) == #[trigger](b % m),
+{
+    assert forall |b: int, m: int| m > 0 implies ((m + b) % m) == #[trigger](b % m) by
+    {
+        lemma_mod_add_multiples_vanish(b, m);
+    }
+}
 
 /// the remainder of subtracting the divisor m from the dividend b will be the same
 /// as simply performing b % m
@@ -1335,15 +1344,15 @@ proof fn lemma_mod_sub_multiples_vanish(b: int, m: int)
     lemma_mod_auto(m);
 }
 
-// proof fn lemma_mod_sub_multiples_vanish_auto()
-//     ensures forall b: int, m: int {:trigger b % m} :: 0 < m ==> (-m + b) % m == b % m
-// {
-//     forall b: int, m: int | 0 < m
-//     ensures (-m + b) % m == b % m
-//     {
-//     lemma_mod_sub_multiples_vanish(b, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_sub_multiples_vanish_auto()
+    ensures forall |b: int, m: int| m > 0 ==> ((-m + b) % m) == #[trigger](b % m),
+{
+    assert forall |b: int, m: int| m > 0 implies ((-m + b) % m) == #[trigger](b % m) by
+    {
+        lemma_mod_sub_multiples_vanish(b, m);
+    }
+}
 
 /// the remainder of adding any multiple of the divisor m to the dividend b will be the same
 /// as simply performing b % m
@@ -1355,22 +1364,18 @@ proof fn lemma_mod_multiples_vanish(a: int, b: int, m: int)
 {
     lemma_mod_auto(m);
     lemma_mul_auto();
-    let f = |u: int| (m * u + b) % m == b % m;
-    lemma_mul_induction(f);
-    assert(f(a));
-    // TODO: need to use the statement above
     lemma_mul_induction_auto(a, |u: int| (m * u + b) % m == b % m);
 }
 
-// proof fn lemma_mod_multiples_vanish_auto()
-//     ensures forall a: int, b: int, m: int {:trigger (m * a + b) % m} :: 0 < m ==> (m * a + b) % m == b % m
-// {
-//     forall a: int, b: int, m: int | 0 < m
-//     ensures (m * a + b) % m == b % m
-//     {
-//     lemma_mod_multiples_vanish(a, b, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_multiples_vanish_auto()
+    ensures forall |a: int, b: int, m: int| m > 0 ==> #[trigger]((m * a + b) % m) == b % m,
+{
+    assert forall |a: int, b: int, m: int| m > 0 implies #[trigger]((m * a + b) % m) == b % m by
+    {
+        lemma_mod_multiples_vanish(a, b, m);
+    }
+}
 
 /// proves equivalent forms of modulus subtraction
 #[verifier::spinoff_prover]
@@ -1384,16 +1389,15 @@ proof fn lemma_mod_subtraction(x: nat, s: nat, d: nat)
     lemma_mod_auto(d as int);
 }
 
-// proof fn lemma_mod_subtraction_auto()
-//     ensures forall x: nat, s: nat, d: nat {:trigger (x - s) % d}
-//             :: 0 < d && 0 <= s <= x % d ==> x % d - s % d == (x - s) % d
-// {
-//     forall x: nat, s: nat, d: nat | 0 < d && 0 <= s <= x % d
-//     ensures x % d - s % d == (x - s) % d
-//     {
-//     lemma_mod_subtraction(x, s, d);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_subtraction_auto()
+    ensures forall |x: nat, s: nat, d: nat| #![trigger ((x - s) % d as int)] 0 < d && 0 <= s <= x % d ==> x % d - s % d == (x - s) % d as int,
+{
+    assert forall |x: nat, s: nat, d: nat| 0 < d && 0 <= s <= x % d implies x % d - s % d == #[trigger]((x - s) % d as int) as int by
+    {
+        lemma_mod_subtraction(x, s, d);
+    }
+}
 
 /// describes expanded and succinct version of modulus operator in relation to addition (read "ensures")
 #[verifier::spinoff_prover]
@@ -1404,16 +1408,15 @@ proof fn lemma_add_mod_noop(x: int, y: int, m: int)
     lemma_mod_auto(m);
 }
 
-// proof fn lemma_add_mod_noop_auto()
-//     ensures forall x: int, y: int, m: int {:trigger (x + y) % m}
-//             :: 0 < m ==> ((x % m) + (y % m)) % m == (x + y) % m
-// {
-//     forall x: int, y: int, m: int | 0 < m
-//     ensures ((x % m) + (y % m)) % m == (x + y) % m
-//     {
-//     lemma_add_mod_noop(x, y, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_add_mod_noop_auto()
+    ensures forall |x: int, y: int, m: int| #![trigger (x + y) % m] 0 < m ==> ((x % m) + (y % m)) % m == (x + y) % m,
+{
+    assert forall |x: int, y: int, m: int| 0 < m implies ((x % m) + (y % m)) % m == #[trigger]((x + y) % m) by
+    {
+        lemma_add_mod_noop(x, y, m);
+    }
+}
 
 /// describes expanded and succinct version of modulus operator in relation to addition (read "ensures")
 #[verifier::spinoff_prover]
@@ -1424,16 +1427,15 @@ proof fn lemma_add_mod_noop_right(x: int, y: int, m: int)
     lemma_mod_auto(m);
 }
 
-// proof fn lemma_add_mod_noop_right_auto()
-//     ensures forall x: int, y: int, m: int {:trigger (x + y) % m}
-//             :: 0 < m ==> (x + (y % m)) % m == (x + y) % m
-// {
-//     forall x: int, y: int, m: int | 0 < m
-//     ensures (x + (y % m)) % m == (x + y) % m
-//     {
-//     lemma_add_mod_noop_right(x, y, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_add_mod_noop_right_auto()
+    ensures forall |x: int, y: int, m: int| #![trigger (x + y) % m] 0 < m ==> (x + (y % m)) % m == (x + y) % m,
+{
+    assert forall |x: int, y: int, m: int| 0 < m implies (x + (y % m)) % m == #[trigger]((x + y) % m) by
+    {
+        lemma_add_mod_noop_right(x, y, m);
+    }
+}
 
 /// describes expanded and succinct version of modulus operator in relation to subtraction (read "ensures")
 #[verifier::spinoff_prover]
@@ -1444,16 +1446,15 @@ proof fn lemma_sub_mod_noop(x: int, y: int, m: int)
     lemma_mod_auto(m);
 }
 
-// proof fn lemma_sub_mod_noop_auto()
-//     ensures forall x: int, y: int, m: int {:trigger (x - y) % m}
-//             :: 0 < m ==> ((x % m) - (y % m)) % m == (x - y) % m
-// {
-//     forall x: int, y: int, m: int | 0 < m
-//     ensures ((x % m) - (y % m)) % m == (x - y) % m
-//     {
-//     lemma_sub_mod_noop(x, y, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_sub_mod_noop_auto()
+    ensures forall |x: int, y: int, m: int| #![trigger (x - y) % m] 0 < m ==> ((x % m) - (y % m)) % m == (x - y) % m,
+{
+    assert forall |x: int, y: int, m: int| 0 < m implies ((x % m) - (y % m)) % m == #[trigger]((x - y) % m) by
+    {
+        lemma_sub_mod_noop(x, y, m);
+    }
+}
 
 /// describes expanded and succinct version of modulus operator in relation to subtraction (read "ensures")
 #[verifier::spinoff_prover]
@@ -1464,16 +1465,15 @@ proof fn lemma_sub_mod_noop_right(x: int, y: int, m: int)
     lemma_mod_auto(m);
 }
 
-// proof fn lemma_sub_mod_noop_right_auto()
-//     ensures forall x: int, y: int, m: int {:trigger (x - y) % m}
-//             :: 0 < m ==> (x - (y % m)) % m == (x - y) % m
-// {
-//     forall x: int, y: int, m: int | 0 < m
-//     ensures (x - (y % m)) % m == (x - y) % m
-//     {
-//     lemma_sub_mod_noop_right(x, y, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_sub_mod_noop_right_auto()
+    ensures forall |x: int, y: int, m: int| #![trigger ((x - y) % m)] 0 < m ==> (x - (y % m)) % m == (x - y) % m,
+{
+    assert forall |x: int, y: int, m: int| 0 < m implies (x - (y % m)) % m == #[trigger]((x - y) % m) by
+    {
+        lemma_sub_mod_noop_right(x, y, m);
+    }
+}
 
 /// proves equivalent forms of modulus addition
 #[verifier::spinoff_prover]
@@ -1487,18 +1487,15 @@ proof fn lemma_mod_adds(a: int, b: int, d: int)
     lemma_div_auto(d);
 }
 
-// proof fn lemma_mod_adds_auto()
-//     ensures forall a: int, b: int, d: int {:trigger (a + b) % d}
-//             :: 0 < d ==> && a % d + b % d == (a + b) % d + d * ((a % d + b % d) / d)
-//                         && ((a % d + b % d) < d ==> a % d + b % d == (a + b) % d)
-// {
-//     forall a: int, b: int, d: int | 0 < d
-//     ensures && a % d + b % d == (a + b) % d + d * ((a % d + b % d) / d)
-//             && ((a % d + b % d) < d ==> a % d + b % d == (a + b) % d)
-//     {
-//     lemma_mod_adds(a, b, d);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_adds_auto()
+    ensures forall |a: int, b: int, d: int| #![trigger ((a + b) % d)] 0 < d ==> a % d + b % d == (a + b) % d + d * ((a % d + b % d) / d),
+{
+    assert forall |a: int, b: int, d: int| 0 < d implies a % d + b % d == #[trigger]((a + b) % d) + d * ((a % d + b % d) / d) by
+    {
+        lemma_mod_adds(a, b, d);
+    }
+}
 
 // {:vcs_split_on_every_assert}
 // this proof times out a lot
@@ -1539,65 +1536,79 @@ proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
         q == x / d,
         r == x % d
 {
-    assume(false);
-    // // lemma_div_auto(d);
-    // let f = |u: int| u == (u * d + r) / d;
-    // // TODO: shorten this?
-    // // TO BE DISCUSSED
-    // // OBSERVE
-    // // making mul_auto in the larger context will exceed rlimit
-    // assert(f(q)) by {
-    //     assert
-    //     forall |i: int| i >= 0 && #[trigger] f(i) implies #[trigger] f(crate::NonLinearArith::Internals::MulInternals::add(i, 1))
-    //     by {
-    //         lemma_div_auto(d);
-    //         // lemma_mul_auto();
-    //         assert(i * d + r + d == (i + 1) * d + r) by {
-    //             lemma_mul_auto();
-    //         };
-    //     };
-    //     assert
-    //         forall |i: int| i <= 0 && #[trigger] f(i) implies #[trigger] f(crate::NonLinearArith::Internals::MulInternals::sub(i, 1))
-    //      by {
-    //         lemma_div_auto(d);
-    //         lemma_mul_auto();
-    //     };
-    //     assert(f(0)) by {
-    //         assert(0 == (0 * d + r) / d) by {
-    //             lemma_mul_by_zero_is_zero_auto();
-    //             crate::NonLinearArith::Internals::DivInternals::lemma_div_basics(d);
-    //         };
-    //     };
-    //     lemma_mul_induction(f);
-    //     assert(f(q));
-    // }
-    // let g = |u: int| r == (u * d + r) % d;
-    // assert(g(q)) by {
-    //     lemma_div_auto(d);
-    //     assert
-    //     forall |i: int| i >= 0 && #[trigger] g(i) implies #[trigger] g(crate::NonLinearArith::Internals::MulInternals::add(i, 1))
-    //     by {
-    //         lemma_div_auto(d);
-    //         lemma_mul_auto();
-    //     };
-    //     assert
-    //         forall |i: int| i <= 0 && #[trigger] g(i) implies #[trigger] g(crate::NonLinearArith::Internals::MulInternals::sub(i, 1))
-    //      by {
-    //         lemma_div_auto(d);
-    //         lemma_mul_auto();
-    //     }
-    //     assert(g(0)) by {
-    //         lemma_div_auto(d);
-    //         lemma_mul_auto();
-    //     };
-    //     lemma_mul_induction(g);
-    //     assert(g(q));
-    // };
+    // TODO: shorten this?
+    // TO BE DISCUSSED
+    // OBSERVE
+    // making mul_auto in the larger context will exceed rlimit
+    let f = |u: int| u == (u * d + r) / d;
+    assert(f(q)) by {
+        assert
+        forall |i: int| i >= 0 && #[trigger] f(i) implies #[trigger] f(crate::NonLinearArith::Internals::MulInternals::add(i, 1))
+        by {
+            lemma_div_auto(d);
+            // lemma_mul_auto();
+            assert(i * d + r + d == (i + 1) * d + r) by {
+                lemma_mul_auto();
+            };
+        };
+        assert
+            forall |i: int| i <= 0 && #[trigger] f(i) implies #[trigger] f(crate::NonLinearArith::Internals::MulInternals::sub(i, 1))
+         by {
+            lemma_div_auto(d);
+            lemma_mul_auto();
+        };
+        assert(f(0)) by {
+            assert(0 == (0 * d + r) / d) by {
+                lemma_mul_by_zero_is_zero_auto();
+                crate::NonLinearArith::Internals::DivInternals::lemma_div_basics(d);
+            };
+        };
+        lemma_mul_induction(f);
+        assert(f(q));
+    }
+    let g = |u: int| r == (u * d + r) % d;
+    assert(g(q)) by {
+        lemma_div_auto(d);
+        assert
+        forall |i: int| i >= 0 && #[trigger] g(i) implies #[trigger] g(crate::NonLinearArith::Internals::MulInternals::add(i, 1))
+        by {
+            lemma_div_auto(d);
+            lemma_mul_auto();
+        };
+        assert
+            forall |i: int| i <= 0 && #[trigger] g(i) implies #[trigger] g(crate::NonLinearArith::Internals::MulInternals::sub(i, 1))
+         by {
+            lemma_div_auto(d);
+            lemma_mul_auto();
+        }
+        assert(g(0)) by {
+            lemma_div_auto(d);
+            lemma_mul_auto();
+        };
+        lemma_mul_induction(g);
+        assert(g(q));
+    };
+    // lemma_div_auto(d);
     // lemma_mul_induction_auto(q, |u: int| u == (u * d + r) / d);
     // lemma_mul_induction_auto(q, |u: int| r == (u * d + r) % d);
 }
 
-// lemma {:timeLimitMultiplier 5} lemma_fundamental_div_mod_converse_auto()
+// // {:timeLimitMultiplier 5}
+// // TO DO
+// #[verifier::spinoff_prover]
+// proof fn lemma_fundamental_div_mod_converse_auto()
+//     ensures 
+//         forall |x: int, d: int, q: int, r: int| d != 0 && 0 <= r < d && x == #[trigger](q * d + r) ==> q == (x / d) && r == #[trigger](x % d),
+//         // forall |x: int, d: int, q: int, r: int| d != 0 && 0 <= r < d && x == #[trigger](q * d + r) ==> q == #[trigger](x / d),
+//         // forall |x: int, d: int, q: int, r: int| d != 0 && 0 <= r < d && x == #[trigger](q * d + r) ==> r == #[trigger](x % d),
+// {
+//     assert forall |x: int, d: int, q: int, r: int| d != 0 && 0 <= r < d && x == #[trigger](q * d + r) implies q == (x / d) && r == #[trigger](x % d) by
+//     {
+//         if ( d != 0 && 0 <= r < d && x == (q * d + r)) {
+//         lemma_fundamental_div_mod_converse(x, d, q, r);
+//         }
+//     }
+// }
 //     ensures forall x: int, d: int, q: int, r: int {:trigger q * d + r, x % d}
 //             :: d != 0 && 0 <= r < d && x == q * d + r ==> q == x / d && r == x % d
 // {
@@ -1621,15 +1632,15 @@ proof fn lemma_mod_pos_bound(x: int, m: int)
     lemma_mod_auto(m);
 }
 
-// proof fn lemma_mod_pos_bound_auto()
-//     ensures forall x: int, m: int {:trigger x % m} :: 0 <= x && 0 < m ==> 0 <= x % m < m
-// {
-//     forall x: int, m: int | 0 <= x && 0 < m
-//     ensures 0 <= x % m < m
-//     {
-//     lemma_mod_pos_bound(x, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_pos_bound_auto()
+    ensures forall |x: int, m: int| 0 <= x && 0 < m ==> 0 <= #[trigger](x % m) < m,
+{
+    assert forall |x: int, m: int| 0 <= x && 0 < m implies 0 <= #[trigger](x % m) < m by
+    {
+        lemma_mod_pos_bound(x, m);
+    }
+}
 
 // TODO: verifies for a long time when spinoff prover is used
 #[verifier::spinoff_prover]
@@ -1641,15 +1652,15 @@ proof fn lemma_mul_mod_noop_left(x: int, y: int, m: int)
     lemma_mul_induction_auto(y, |u: int| (x % m) * u % m == x * u % m);
 }
 
-// proof fn lemma_mul_mod_noop_left_auto()
-//     ensures forall x: int, y: int, m: int {:trigger x * y % m} :: 0 < m ==> (x % m) * y % m == x * y % m
-// {
-//     forall x: int, y: int, m: int | 0 < m
-//     ensures (x % m) * y % m == x * y % m
-//     {
-//     lemma_mul_mod_noop_left(x, y, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mul_mod_noop_left_auto()
+    ensures forall |x: int, y: int, m: int| 0 < m ==> (x % m) * y % m == #[trigger](x * y % m),
+{
+    assert forall |x: int, y: int, m: int| 0 < m implies (x % m) * y % m == #[trigger](x * y % m) by
+    {
+        lemma_mul_mod_noop_left(x, y, m);
+    }
+}
 
 // TODO: verifies for a long time when spinoff prover is used
 #[verifier::spinoff_prover]
@@ -1661,16 +1672,15 @@ proof fn lemma_mul_mod_noop_right(x: int, y: int, m: int)
     lemma_mul_induction_auto(x, |u: int| u * (y % m) % m == (u * y) % m);
 }
 
-// proof fn lemma_mul_mod_noop_right_auto()
-//     ensures forall x: int, y: int, m: int {:trigger (x * y) % m}
-//             :: 0 < m ==> x * (y % m) % m == (x * y) % m
-// {
-//     forall x: int, y: int, m: int | 0 < m
-//     ensures x * (y % m) % m == (x * y) % m
-//     {
-//     lemma_mul_mod_noop_right(x, y, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mul_mod_noop_right_auto()
+    ensures forall |x: int, y: int, m: int| 0 < m ==> x * (y % m) % m == #[trigger]((x * y) % m),
+{
+    assert forall |x: int, y: int, m: int| 0 < m implies x * (y % m) % m == #[trigger]((x * y) % m) by
+    {
+        lemma_mul_mod_noop_right(x, y, m);
+    }
+}
 
 /// combines previous no-op mod lemmas into a general, overarching lemma
 // TODO: verifies for a long time when spinoff prover is used
@@ -1688,16 +1698,15 @@ pub proof fn lemma_mul_mod_noop_general(x: int, y: int, m: int)
     lemma_mul_mod_noop_right(x % m, y, m);
 }
 
-// proof fn lemma_mul_mod_noop_general_auto()
-//     ensures forall x: int, y: int, m: int {:trigger (x * y) % m}
-//             :: 0 < m ==> ((x % m) * y) % m == (x * (y % m)) % m == ((x % m) * (y % m)) % m == (x * y) % m
-// {
-//     forall x: int, y: int, m: int | 0 < m
-//     ensures ((x % m) * y) % m == (x * (y % m)) % m == ((x % m) * (y % m)) % m == (x * y) % m
-//     {
-//     lemma_mul_mod_noop_general(x, y, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mul_mod_noop_general_auto()
+    ensures forall |x: int, y: int, m: int| 0 < m ==> (((x % m) * y) % m == (x * (y % m)) % m == ((x % m) * (y % m)) % m == #[trigger]((x * y) % m)),
+{
+    assert forall |x: int, y: int, m: int| 0 < m implies (((x % m) * y) % m == (x * (y % m)) % m == ((x % m) * (y % m)) % m == #[trigger]((x * y) % m)) by
+    {
+        lemma_mul_mod_noop_general(x, y, m);
+    }
+}
 
 #[verifier::spinoff_prover]
 proof fn lemma_mul_mod_noop(x: int, y: int, m: int)
@@ -1707,16 +1716,15 @@ proof fn lemma_mul_mod_noop(x: int, y: int, m: int)
     lemma_mul_mod_noop_general(x, y, m);
 }
 
-// proof fn lemma_mul_mod_noop_auto()
-//     ensures forall x: int, y: int, m: int {:trigger (x * y) % m}
-//             :: 0 < m ==> (x % m) * (y % m) % m == (x * y) % m
-// {
-//     forall x: int, y: int, m: int | 0 < m
-//     ensures (x % m) * (y % m) % m == (x * y) % m
-//     {
-//     lemma_mul_mod_noop(x, y, m);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mul_mod_noop_auto()
+    ensures forall |x: int, y: int, m: int| 0 < m ==> ((x % m) * (y % m) % m == #[trigger]((x * y) % m)),
+{
+    assert forall |x: int, y: int, m: int| 0 < m implies ((x % m) * (y % m) % m == #[trigger]((x * y) % m)) by
+    {
+        lemma_mul_mod_noop(x, y, m);
+    }
+}
 
 /// proves modulus equivalence in two forms
 #[verifier::spinoff_prover]
@@ -1727,42 +1735,61 @@ proof fn lemma_mod_equivalence(x: int, y: int, m: int)
     lemma_mod_auto(m);
 }
 
-// proof fn lemma_mod_equivalence_auto()
-//     ensures forall x: int, y: int, m: int {:trigger  x % m , y % m}
-//             :: 0 < m && x % m == y % m <==> 0 < m && (x - y) % m == 0
-// {
-//     forall x: int, y: int, m: int | 0 < m
-//     ensures x % m == y % m <==> 0 < m && (x - y) % m == 0
-//     {
-//     lemma_mod_equivalence(x, y, m);
-//     }
-// }
-
-// TODO: the following two proofs are styled very differently from dafny
-/// true if x%n and y%n are equal */
-pub open spec fn is_mod_equivalent(x: int, y: int, m: int) -> bool
-    recommends m > 0
-    // ensures x % m == y % m <==> (x - y) % m == 0
+#[verifier::spinoff_prover]
+proof fn lemma_mod_equivalence_auto()
+    ensures forall |x: int, y: int, m: int| #![trigger (x % m), (y % m)] 0 < m ==> (x % m == y % m <==> (x - y) % m == 0),
 {
-    // lemma_mod_equivalence(x, y, m);
-    (x - y) % m == 0 // same as x % n == y % n, but easier to do induction on x - y than x and y separately
+    assert forall |x: int, y: int, m: int| 0 < m implies (#[trigger](x % m) == #[trigger](y % m) <==> (x - y) % m == 0) by
+    {
+        lemma_mod_equivalence(x, y, m);
+    }
 }
 
+// // TODO: the following two proofs are styled very differently from dafny
+// /// true if x%n and y%n are equal */
+// pub open spec fn is_mod_equivalent(x: int, y: int, m: int) -> bool
+//     recommends m > 0
+//     // ensures x % m == y % m <==> (x - y) % m == 0
+// {
+//     // lemma_mod_equivalence(x, y, m);
+//     x % m == y % m <==> (x - y) % m == 0 // same as x % n == y % n, but easier to do induction on x - y than x and y separately
+// }
+
+// #[verifier::opaque]
+// pub closed spec fn is_mod_equivalent(x: int, y: int, m: int) -> bool
+// {
+//     x % m == y % m <==> (x - y) % m == 0
+// }
+
+// having a function name is_mod_equialent is just too risky
+// I change the following two proofs by replacing is_mod_equivalent
 /// if x % m == y % m, then (x * z) % m == (y * z) % m.
 #[verifier::spinoff_prover]
 proof fn lemma_mod_mul_equivalent(x: int, y: int, z: int, m: int)
     requires
         m > 0,
-        is_mod_equivalent(x, y, m),
+        // is_mod_equivalent(x, y, m),
+        x % m == y % m <==> (x - y) % m == 0,
     ensures
-        (x - y) % m == 0
         // is_mod_equivalent(x * z, y * z, m)
+        (x * z) % m == (y * z) % m <==> (x * z - y * z) % m == 0
 {
+    // reveal(is_mod_equivalent);
     lemma_mul_mod_noop_left(x, z, m);
     lemma_mul_mod_noop_left(y, z, m);
+    lemma_mod_equivalence(x, y, m);
+    lemma_mod_equivalence(x * z, y * z, m);
 }
 
+// #[verifier::spinoff_prover]
 // proof fn lemma_mod_mul_equivalent_auto()
+//     ensures forall |x: int, y: int, z: int, m: int|  m > 0 && ( x % m == y % m <==> (x - y) % m == 0) ==> #[trigger]is_mod_equivalent(x * z, y * z, m),
+// {
+//     assert forall |x: int, y: int, z: int, m: int| m > 0 && is_mod_equivalent(x, y, m) implies #[trigger]is_mod_equivalent(x * z, y * z, m) by
+//     {
+//         lemma_mod_mul_equivalent(x, y, z, m);
+//     }
+// }
 //     ensures forall x: int, y: int, z: int, m: int
 //             {:trigger is_mod_equivalent(x * z, y * z, m)}
 //             :: m > 0 && is_mod_equivalent(x, y, m) ==> is_mod_equivalent(x * z, y * z, m)
@@ -1813,16 +1840,15 @@ proof fn lemma_mod_ordering(x: int, k: int, d: int)
     };
 }
 
-// proof fn lemma_mod_ordering_auto()
-//     ensures forall x: int, k: int, d: int {:trigger x % (d * k)}
-//             :: 1 < d && 0 < k ==> 0 < d * k && x % d <= x % (d * k)
-// {
-//     forall x: int, k: int, d: int | 1 < d && 0 < k
-//     ensures d * k > 0 && x % d <= x % (d * k)
-//     {
-//     lemma_mod_ordering(x, k, d);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_ordering_auto()
+    ensures forall |x: int, k: int, d: int| 1 < d && 0 < k ==> (x % d <= #[trigger](x % (d * k))),
+{
+    assert forall |x: int, k: int, d: int| 1 < d && 0 < k implies (x % d <= #[trigger](x % (d * k))) by
+    {
+        lemma_mod_ordering(x, k, d);
+    }
+}
 
 #[verifier::spinoff_prover]
 proof fn lemma_mod_mod(x: int, a: int, b: int)
@@ -1851,17 +1877,18 @@ proof fn lemma_mod_mod(x: int, a: int, b: int)
     lemma_fundamental_div_mod_converse(x, a, b * (x / (a * b)) + x % (a * b) / a, (x % (a * b)) % a);
 }
 
-// proof fn lemma_mod_mod_auto()
-//     ensures forall x: int, a: int, b: int {:trigger a * b, x % a}
-//             :: 0 < a && 0 < b ==> 0 < a * b && (x % (a * b)) % a == x % a
-// {
-//     forall x: int, a: int, b: int | 0 < a && 0 < b
-//     ensures 0 < a * b && (x % (a * b)) % a == x % a
-//     {
-//     lemma_mod_mod(x, a, b);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_mod_auto()
+    ensures forall |x: int, a: int, b: int| #![trigger (a * b), (x % a)](0 < a && 0 < b) ==> ((0 < a * b) && ((x % (a * b)) % a == (x % a))),
+{
+    assert(true); // OBSERVE??????
+    assert forall |x: int, a: int, b: int| 0 < a && 0 < b implies 0 < #[trigger](a * b) && ((x % (a * b)) % a == #[trigger](x % a)) by
+    {
+        lemma_mod_mod(x, a, b);
+    }
+}
 
+#[verifier::spinoff_prover]
 proof fn lemma_part_bound2(x: int, y: int, z: int)
     requires 
         0 <= x,
@@ -1883,7 +1910,21 @@ proof fn lemma_part_bound2(x: int, y: int, z: int)
     assert((x % y) % (y * z) == x % y);
 }
 
+// TODO: bug
+// #[verifier::spinoff_prover]
 // proof fn lemma_part_bound2_auto()
+//     // ensures forall |x: int, y: int, z: int| #![trigger (y * z), (x % y)] (0 <= x && 0 < y && 0 < z) ==> (y * z > 0 && (x % y) % (y * z) < y),
+//     ensures forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> ((#[trigger](y * z) > 0) && ((#[trigger](x % y)) % (y * z) < y))
+// {
+//     assume(forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](y * z) > 0 && (#[trigger](x % y)) % (y * z) < y));
+//     // assert forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) implies (#[trigger](y * z) > 0 && #[trigger](x % y) % (y * z) < y) by
+//     // {
+//     //     if 0 <= x && 0 < y && 0 < z {
+//     //         lemma_part_bound2(x, y, z);
+//     //     }
+//     //     lemma_part_bound2(x, y, z);
+//     // }
+// }
 //     ensures forall x: int, y: int, z: int {:trigger y * z, x % y}
 //             :: 0 <= x && 0 < y && 0 < z ==> y * z > 0 && (x % y) % (y * z) < y
 // {
@@ -1896,6 +1937,7 @@ proof fn lemma_part_bound2(x: int, y: int, z: int)
 
 /* ensures the validity of an expanded form of the modulus operation,
 as expressed in the pre and post conditions */
+#[verifier::spinoff_prover]
 proof fn lemma_mod_breakdown(x: int, y: int, z: int)
     requires
         0 <= x,
@@ -1944,15 +1986,14 @@ proof fn lemma_mod_breakdown(x: int, y: int, z: int)
     }
 }
 
-// proof fn lemma_mod_breakdown_auto()
-//     ensures forall x: int, y: int, z: int {:trigger x % (y * z)}
-//             :: 0 <= x && 0 < y && 0 < z ==> y * z > 0 && x % (y * z) == y * ((x / y) % z) + x % y
-// {
-//     forall x: int, y: int, z: int | 0 <= x && 0 < y && 0 < z
-//     ensures y * z > 0 && x % (y * z) == y * ((x / y) % z) + x % y
-//     {
-//     lemma_mod_breakdown(x, y, z);
-//     }
-// }
+#[verifier::spinoff_prover]
+proof fn lemma_mod_breakdown_auto()
+    ensures forall |x: int, y: int, z: int| 0 <= x && 0 < y && 0 < z ==> y * z > 0 && #[trigger](x % (y * z)) == y * ((x / y) % z) + x % y,
+{
+    assert forall |x: int, y: int, z: int| 0 <= x && 0 < y && 0 < z implies y * z > 0 && #[trigger](x % (y * z)) == y * ((x / y) % z) + x % y by
+    {
+        lemma_mod_breakdown(x, y, z);
+    }
+}
 
 }
