@@ -1,10 +1,9 @@
+// TODO: play around with integer ring
 
 /** Declares some helper lemmas about multiply, for internal use */
 
 /* WARNING: Think three times before adding to this file, as nonlinear
 verification is highly unstable! */
-
-/* no need for spinoff_prover because it's implied by nonlinear_arith */
 
 // may be try to use singular?
 use vstd::prelude::*;
@@ -56,26 +55,5 @@ pub proof fn lemma_mul_strict_inequality(x: int, y: int, z: int)
     ensures
         x * z < y * z
 {}
-
-// TODO
-// failed to play around with integer rings
-
-// spec fn dist1 (x: int, y: int, m:int) -> bool
-// {
-//   (x-y) % m == 0
-// }
-
-// spec fn mod_dist2 (x: int, y: int, z:int, m:int) -> bool
-// {
-//   (x*z - y*z) % m == 0
-// }
-
-// #[verifier(integer_ring)]
-// // #[verifier(nonlinear)]
-// proof fn simple_modulo(x: int, y: int, z:int, m:int)
-//   requires ( (x - y) % m == 0 )
-//   ensures  ( (x * z - y * z) % m == 0 )
-// {
-// }
 
 }

@@ -179,7 +179,6 @@ pub proof fn lemma_mod_add_denominator(n: int, x: int)
     lemma_fundamental_div_mod(x, n);
     lemma_fundamental_div_mod(x + n, n);
     let zp = (x + n) / n - x / n - 1;
-    // DISCUSS: VERY UNSTABLE
     // assert (n * zp == n * (((x + n) / n - x / n) - 1));
     assert (n * zp == n * ((x + n) / n - x / n) - n) by {
         assert( n * (((x + n) / n - x / n) - 1) == n * ((x + n) / n - x / n) - n) by {
@@ -190,7 +189,6 @@ pub proof fn lemma_mod_add_denominator(n: int, x: int)
 
 
     assert(0 == n * zp + ((x + n) % n) - (x % n)) by { 
-        // UNCOMMENT THIS PART
         // assert (n * zp == n * (((x + n) / n - x / n) - 1));
         // assert (n * zp == n * ((x + n) / n - x / n) - n) by {
         //     assert( n * (((x + n) / n - x / n) - 1) == n * ((x + n) / n - x / n) - n) by {
@@ -254,8 +252,8 @@ pub proof fn lemma_mod_below_denominator(n: int, x: int)
         lemma_mod_range(x, n);
     }
 }
-// Hayley and Jay L chose to make the forall x be a formal parameter
-// /// proves the basics of the modulus operation
+
+/// proves the basics of the modulus operation
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mod_basics_auto(n: int)
     requires n > 0
@@ -292,7 +290,6 @@ pub proof fn lemma_mod_basics_auto(n: int)
 }
 
 /// proves the quotient remainder theorem
-// dafny has vcs_split_on_every_assert
 #[verifier(spinoff_prover)]
 pub proof fn lemma_quotient_and_remainder(x: int, q: int, r: int, n: int)
     requires 
@@ -323,7 +320,6 @@ pub proof fn lemma_quotient_and_remainder(x: int, q: int, r: int, n: int)
     }
 }
 
-// TODO: split condition failure, also does not work if local variable z is eliminated by replacing
 /// automates the modulus operator process
 #[verifier(spinoff_prover)]
 pub open spec fn mod_auto(n: int) -> bool
@@ -347,20 +343,7 @@ pub open spec fn mod_auto(n: int) -> bool
 pub proof fn lemma_mod_auto(n: int)
     requires n > 0
     ensures 
-        // puting mul_auto() here causes a split postcondition failure
-        (n % n == 0 && (-n) % n == 0),
-        (forall |x: int| #[trigger]((x % n) % n) == x % n),
-        (forall |x: int| 0 <= x < n <==> #[trigger](x % n) == x),
-        // the following two cannot be verified, even when assuming them
-        (forall |x: int, y: int|
-            {let z = (x % n) + (y % n);
-            (  (0 <= z < n && #[trigger]((x + y) % n) == z)
-                || (n <= z < n + n && #[trigger]((x + y) % n) == z - n))}),
-        (forall |x: int, y: int|
-        {let z = (x % n) - (y % n);
-        (  (0 <= z < n && #[trigger]((x - y) % n) == z)
-            || (-n <= z < 0  && #[trigger]((x - y) % n) == z + n))}),
-        
+        mod_auto(n)        
 {
     assert ((-n) % n == 0) by { lemma_mod_basics_auto(n); };
 
@@ -452,7 +435,6 @@ pub proof fn lemma_mod_auto(n: int)
     }
 }
 
-// yay!! no need for communicating!!! this is a very promising case
 /// performs auto induction for modulus
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mod_induction_auto(n: int, x: int, f: FnSpec(int) -> bool)

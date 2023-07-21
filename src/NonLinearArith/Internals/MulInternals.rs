@@ -51,9 +51,6 @@ pub open spec fn mul (a: int, b: int) -> int
 }
 
 /// performs induction on multiplication
-/* TODO */
-/* HOW TO LET THE ADD/add COMMUNICATE */
-/* NEED REVIEW */
 #[verifier(spinoff_prover)]
 pub proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     requires 

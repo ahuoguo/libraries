@@ -1,4 +1,14 @@
 // TODO: Might separate Div and Mod as two files
+// I think maybe being in the same module does make it significantly slower
+// when using --verify-module
+
+// experience: some lemmas will break when introducing one new auto lemma
+// but will work by going to make its original form when introduing new
+// ones. I ended up deciding importing the last 30ish auto lemma at once
+// (with only syntax checking and it somewhat worked fine)
+
+// TODO: try integer_ring feature?
+// should work well when there are only equalities in pre/post-condition
 
 use vstd::prelude::*;
 #[allow(unused_imports)]
@@ -1526,6 +1536,7 @@ proof fn lemma_mod_neg_neg(x: int, d: int)
 // {:timeLimitMultiplier 5} from dafny
 // this proof breaks a lot when introducing new auto lemma
 // this proof verifies for a long time
+// now it verifies for 2-4s ish
 #[verifier::spinoff_prover]
 proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
     requires 
@@ -1588,6 +1599,7 @@ proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
         lemma_mul_induction(g);
         assert(g(q));
     };
+    // the original dafny proof
     // lemma_div_auto(d);
     // lemma_mul_induction_auto(q, |u: int| u == (u * d + r) / d);
     // lemma_mul_induction_auto(q, |u: int| r == (u * d + r) % d);
@@ -1642,7 +1654,6 @@ proof fn lemma_mod_pos_bound_auto()
     }
 }
 
-// TODO: verifies for a long time when spinoff prover is used
 #[verifier::spinoff_prover]
 proof fn lemma_mul_mod_noop_left(x: int, y: int, m: int)
     requires 0 < m
@@ -1662,7 +1673,6 @@ proof fn lemma_mul_mod_noop_left_auto()
     }
 }
 
-// TODO: verifies for a long time when spinoff prover is used
 #[verifier::spinoff_prover]
 proof fn lemma_mul_mod_noop_right(x: int, y: int, m: int)
     requires 0 < m
@@ -1755,6 +1765,7 @@ proof fn lemma_mod_equivalence_auto()
 //     x % m == y % m <==> (x - y) % m == 0 // same as x % n == y % n, but easier to do induction on x - y than x and y separately
 // }
 
+// TODO: even introducing this fact will break proofs
 // #[verifier::opaque]
 // pub closed spec fn is_mod_equivalent(x: int, y: int, m: int) -> bool
 // {
@@ -1910,13 +1921,23 @@ proof fn lemma_part_bound2(x: int, y: int, z: int)
     assert((x % y) % (y * z) == x % y);
 }
 
-// TODO: bug
+// // TODO: bug
+// // TO BE DISCUSSED
+// // Even introducing this fact breaks proof here and there
 // #[verifier::spinoff_prover]
 // proof fn lemma_part_bound2_auto()
 //     // ensures forall |x: int, y: int, z: int| #![trigger (y * z), (x % y)] (0 <= x && 0 < y && 0 < z) ==> (y * z > 0 && (x % y) % (y * z) < y),
-//     ensures forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> ((#[trigger](y * z) > 0) && ((#[trigger](x % y)) % (y * z) < y))
+//     // ensures forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> ((#[trigger](y * z) > 0) && ((#[trigger](x % y)) % (y * z) < y))
+//     ensures 
+//         forall |y: int, z: int| (0 < y && 0 < z) ==> #[trigger](y * z) > 0,
+//         forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](x % y) % #[trigger](y * z) < y),
+
+    
 // {
-//     assume(forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](y * z) > 0 && (#[trigger](x % y)) % (y * z) < y));
+//     assume(forall |y: int, z: int| (0 < y && 0 < z) ==> #[trigger](y * z) > 0);
+//     assume(forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](x % y) % #[trigger](y * z) < y));
+
+//     // assume(forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](y * z) > 0 && (#[trigger](x % y)) % (y * z) < y));
 //     // assert forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) implies (#[trigger](y * z) > 0 && #[trigger](x % y) % (y * z) < y) by
 //     // {
 //     //     if 0 <= x && 0 < y && 0 < z {
@@ -1924,15 +1945,6 @@ proof fn lemma_part_bound2(x: int, y: int, z: int)
 //     //     }
 //     //     lemma_part_bound2(x, y, z);
 //     // }
-// }
-//     ensures forall x: int, y: int, z: int {:trigger y * z, x % y}
-//             :: 0 <= x && 0 < y && 0 < z ==> y * z > 0 && (x % y) % (y * z) < y
-// {
-//     forall x: int, y: int, z: int | 0 <= x && 0 < y && 0 < z
-//     ensures y * z > 0 && (x % y) % (y * z) < y
-//     {
-//     lemma_part_bound2(x, y, z);
-//     }
 // }
 
 /* ensures the validity of an expanded form of the modulus operation,

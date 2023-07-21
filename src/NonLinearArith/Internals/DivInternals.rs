@@ -15,17 +15,11 @@ use crate::NonLinearArith::Internals::DivInternalsNonlinear;
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::MulInternals;
 
-// TODO: discuss decrases, and opaque (the original dafny code has {:opaque} attribute)
-// https://github.com/verus-lang/verus/blob/581d927b0cf8bafe4d00311eee7df1ac321d01c0/source/docs/manual/syntax.md?plain=1#L21
 /// Performs division recursively with positive denominator.
 #[verifier(opaque)]
 pub open spec fn div_pos(x: int, d: int) -> int
     recommends d > 0
-    // original dafny termination looks like this:
     decreases (if x < 0 {d - x} else {x}) when d > 0
-    // but cannot prove termination
-    // the following can prove termination (but only looked at one branch?)
-    // decreases d - x when x < 0 && d > 0
 {
     if x < 0 
     {
@@ -38,7 +32,6 @@ pub open spec fn div_pos(x: int, d: int) -> int
     }
 }
 
-// TODO: original dafny code has {:opaque} attribute
 /// Performs division recursively.
 #[verifier(opaque)]
 pub open spec fn div_recursive(x: int, d: int) -> int
@@ -92,23 +85,12 @@ pub open spec fn div_auto(n: int) -> bool
             || (-n <= z < 0  && ((x - y) / n) == x / n - y / n - 1))})
 }
 
-// /// Ensures that div_auto is true 
+/// Ensures that div_auto is true 
 #[verifier(spinoff_prover)]
 pub proof fn lemma_div_auto(n: int)
     requires n > 0
     ensures
-        div_auto(n) // the split condition failure disappears
-        // mod_auto(n),
-        // (n / n == -((-n) / n) == 1),
-        // forall |x: int| 0 <= x < n <==> #[trigger](x / n) == 0,
-        // (forall |x: int, y: int|
-        //  {let z = (x % n) + (y % n);
-        //  (  (0 <= z < n && #[trigger]((x + y) / n) == x / n + y / n)
-        //      || (n <= z < n + n && #[trigger]((x + y) / n) == x / n + y / n + 1))}),
-        // (forall |x: int, y: int|
-        // {let z = (x % n) - (y % n);
-        // (  (0 <= z < n && #[trigger]((x - y) / n) == x / n - y / n)
-        //     || (-n <= z < 0  && #[trigger]((x - y) / n) == x / n - y / n - 1))})
+        div_auto(n)
 {
     lemma_mod_auto(n);
     lemma_div_basics(n);
