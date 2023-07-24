@@ -1,4 +1,4 @@
-//! Lemmas for power of 2.
+//! Lemmas for powerz of 2.
 
 use vstd::prelude::*;
 
