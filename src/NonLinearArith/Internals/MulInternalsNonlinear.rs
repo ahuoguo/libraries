@@ -1,5 +1,3 @@
-// TODO: play around with integer ring
-
 /** Declares some helper lemmas about multiply, for internal use */
 
 /* WARNING: Think three times before adding to this file, as nonlinear

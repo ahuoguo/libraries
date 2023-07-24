@@ -15,7 +15,6 @@ use crate::NonLinearArith::Internals::ModInternalsNonlinear::{lemma_fundamental_
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::DivInternalsNonlinear;
 
-// TODO: similar to div_pos in DivInternals
 /// Performs modulus recursively
 #[verifier(opaque)]
 pub open spec fn mod_recursive(x: int, d: int) -> int
@@ -106,45 +105,12 @@ pub proof fn lemma_div_add_denominator(n: int, x: int)
     lemma_fundamental_div_mod(x + n, n);
 
     let zp = (x + n) / n - x / n - 1;
-    // assert(n * zp == ((x + n) / n) * n - (x / n) * n - n) by { 
-    //     lemma_mul_auto(); // OBSERVE
-    //     // lemma_mul_is_distributive_auto();
-    //     // assert(n * zp == n * ((x + n) / n - x / n - 1));
-    //     // assert(n * zp == n * ((x + n) / n - x / n) - n);
-    //     // assert(n * zp == n * ((x + n) / n - x / n) - n) by { lemma_mul_is_distributive(n, (x + n) / n - x / n, 1)}; // OBSERVE
-    //     // assert (n * zp == n * ((x + n) / n) - n * (x / n) - n);
-    // };
-
     assert (0 == n * zp + ((x + n) % n) - (x % n)) by {
 
-        // assert((x + n) - n * ((x + n) / n)== (x + n) % n) by { 
-        //     lemma_fundamental_div_mod(x + n, n); 
-        // };
-
-        // assert(n * zp == ((x + n) / n) * n - (x / n) * n - n);
-
-        // assert(x - n * (x / n) == x % n) by { 
-        //     lemma_fundamental_div_mod(x, n); 
-        //     assert(x == n * (x / n) + (x % n)); 
-        // };
-
-        // assert(((x + n) / n) * n - n * ((x + n) / n) - (x / n) * n + (x + n)  - n - (x - n * (x / n)) == 0) by { lemma_mul_auto(); };
-
-        // assert((n * ((x + n) / n) - n * (x / n) - n) + (x + n) - n * ((x + n) / n) - (x - n * (x / n)) == 0);
-        
-        // assert((n * ((x + n) / n) - n * (x / n) - n) + (x + n) - n * ((x + n) / n) - (x % n) == 0 );
-
-        // assert (n * zp == ((x + n) / n) * n - (x / n) * n - n);
-        // assert (n * zp == (n * ((x + n) / n) - (x / n) * n) - n);
-        // lemma_mul_is_commutative_auto();
-        // assert (n * zp == (n * ((x + n) / n) - n * (x / n) - n));
-        // assert((n * zp) + (x + n) - n * ((x + n) / n) - (x % n) == 0 );
-        
         lemma_mul_auto() 
     };
     if (zp > 0) { lemma_mul_inequality(1, zp, n); }
     if (zp < 0) { lemma_mul_inequality(zp, -1, n); }
-    
 }
 
 #[verifier::spinoff_prover]
@@ -179,7 +145,6 @@ pub proof fn lemma_mod_add_denominator(n: int, x: int)
     lemma_fundamental_div_mod(x, n);
     lemma_fundamental_div_mod(x + n, n);
     let zp = (x + n) / n - x / n - 1;
-    // assert (n * zp == n * (((x + n) / n - x / n) - 1));
     assert (n * zp == n * ((x + n) / n - x / n) - n) by {
         assert( n * (((x + n) / n - x / n) - 1) == n * ((x + n) / n - x / n) - n) by {
             lemma_mul_is_distributive_auto();
@@ -189,13 +154,6 @@ pub proof fn lemma_mod_add_denominator(n: int, x: int)
 
 
     assert(0 == n * zp + ((x + n) % n) - (x % n)) by { 
-        // assert (n * zp == n * (((x + n) / n - x / n) - 1));
-        // assert (n * zp == n * ((x + n) / n - x / n) - n) by {
-        //     assert( n * (((x + n) / n - x / n) - 1) == n * ((x + n) / n - x / n) - n) by {
-        //         lemma_mul_is_distributive_auto();
-        //         assert(n * (((x + n) / n - x / n) - 1) == n * ((x + n) / n - x / n) - n * 1);
-        //     };
-        //     };
         assert (n * zp == n * ((x + n) / n) - n * (x / n) - n) by {
             lemma_mul_is_distributive_auto();
             assert(n * ((x + n) / n - x / n) == n * ((x + n) / n) - n * (x / n));
@@ -223,13 +181,6 @@ pub proof fn lemma_mod_sub_denominator(n: int, x: int)
     }
 
     assert(0 == n * zm + ((x - n) % n) - (x % n)) by { 
-        // assert (n * zm == n * (((x - n) / n - x / n) + 1));
-        // // lemma_mul_is_distributive_auto();
-        // assert (n * zm == n * ((x - n) / n - x / n) + n) by {
-        //     lemma_mul_is_distributive_auto();
-
-        // }
-        // lemma_mul_is_distributive_auto();
         assert (n * zm == n * ((x - n) / n) - n * (x / n) + n) by {
             lemma_mul_is_distributive_auto();
             assert(n * ((x - n) / n - x / n) == n * ((x - n) / n) - n * (x / n));
