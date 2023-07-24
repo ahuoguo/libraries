@@ -419,7 +419,7 @@ pub proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
 // // {:timeLimitMultiplier 5}
 // // TO DO
 #[verifier::spinoff_prover]
-proof fn lemma_fundamental_div_mod_converse_auto()
+pub proof fn lemma_fundamental_div_mod_converse_auto()
     ensures 
         // forall |x: int, d: int, q: int, r: int| d != 0 && 0 <= r < d && x == #[trigger](q * d + r) ==> q == (x / d) && r == #[trigger](x % d),
         forall |x: int, d: int, q: int, r: int| d != 0 && 0 <= r < d && x == #[trigger](q * d + r) ==> q == #[trigger](x / d),
@@ -583,24 +583,21 @@ pub proof fn lemma_mod_equivalence_auto()
 //     x % m == y % m <==> (x - y) % m == 0 // same as x % n == y % n, but easier to do induction on x - y than x and y separately
 // }
 
+///  true if x%n and y%n are equal
 #[verifier::opaque]
 pub closed spec fn is_mod_equivalent(x: int, y: int, m: int) -> bool
 {
     x % m == y % m <==> (x - y) % m == 0
 }
 
-// having a function name is_mod_equialent is just too risky
-// I change the following two proofs by replacing is_mod_equivalent
 /// if x % m == y % m, then (x * z) % m == (y * z) % m.
 #[verifier::spinoff_prover]
 pub proof fn lemma_mod_mul_equivalent(x: int, y: int, z: int, m: int)
     requires
         m > 0,
         is_mod_equivalent(x, y, m),
-        x % m == y % m <==> (x - y) % m == 0,
     ensures
         is_mod_equivalent(x * z, y * z, m),
-        (x * z) % m == (y * z) % m <==> (x * z - y * z) % m == 0
 {
     reveal(is_mod_equivalent);
     lemma_mul_mod_noop_left(x, z, m);
@@ -610,7 +607,7 @@ pub proof fn lemma_mod_mul_equivalent(x: int, y: int, z: int, m: int)
 }
 
 #[verifier::spinoff_prover]
-proof fn lemma_mod_mul_equivalent_auto()
+pub proof fn lemma_mod_mul_equivalent_auto()
     ensures forall |x: int, y: int, z: int, m: int|  m > 0 && ( x % m == y % m <==> (x - y) % m == 0) ==> #[trigger]is_mod_equivalent(x * z, y * z, m),
 {
     reveal(is_mod_equivalent);
@@ -710,8 +707,6 @@ pub proof fn lemma_mod_mod(x: int, a: int, b: int)
 pub proof fn lemma_mod_mod_auto()
     ensures forall |x: int, a: int, b: int| #![trigger (a * b), (x % a)](0 < a && 0 < b) ==> ((0 < a * b) && ((x % (a * b)) % a == (x % a))),
 {
-    // assert(true); // OBSERVE??????
-    // no longer necessary after splitting files
     assert forall |x: int, a: int, b: int| 0 < a && 0 < b implies 0 < #[trigger](a * b) && ((x % (a * b)) % a == #[trigger](x % a)) by
     {
         lemma_mod_mod(x, a, b);
@@ -742,9 +737,8 @@ pub proof fn lemma_part_bound2(x: int, y: int, z: int)
 
 // // TODO: bug
 // // TO BE DISCUSSED
-// // Even introducing this fact breaks proof here and there
 #[verifier::spinoff_prover]
-proof fn lemma_part_bound2_auto()
+pub proof fn lemma_part_bound2_auto()
     // ensures  forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](y * z) > 0 && #[trigger](x % y) % (y * z) < y),
     // ensures forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> ((#[trigger](y * z) > 0) && ((#[trigger](x % y)) % (y * z) < y))
     ensures 
@@ -777,8 +771,8 @@ proof fn lemma_part_bound2_auto()
 
 }
 
-/* ensures the validity of an expanded form of the modulus operation,
-as expressed in the pre and post conditions */
+/// ensures the validity of an expanded form of the modulus operation,
+/// as expressed in the pre and post conditions
 #[verifier::spinoff_prover]
 pub proof fn lemma_mod_breakdown(x: int, y: int, z: int)
     requires

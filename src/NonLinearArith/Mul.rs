@@ -58,7 +58,6 @@ pub proof fn lemma_mul_basics(x: int)
         1 * x == x,
 {}
 
-// expreimental
 #[verifier::spinoff_prover]
 pub proof fn lemma_mul_basics_auto()
     ensures 
@@ -563,7 +562,7 @@ pub proof fn lemma_mul_increases_auto()
     }
 }
 
-/* multiplying two positive numbers will result in a positive product */
+/// multiplying two positive numbers will result in a positive product
 #[verifier::spinoff_prover]
 pub proof fn lemma_mul_nonnegative(x: int, y: int)
     requires 
