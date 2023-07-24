@@ -1,3 +1,5 @@
+//! Lemma for Exponentials
+
 use vstd::prelude::*;
 use vstd::calc_macro::*;
 

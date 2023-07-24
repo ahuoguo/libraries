@@ -1,3 +1,4 @@
+//! Lemma for modulus operation
 
 use vstd::prelude::*;
 #[allow(unused_imports)]

@@ -1,4 +1,6 @@
-// TODO: Might separate Div and Mod as two files
+// DEPRECATED
+
+// This file has been separated to Div.rs and Modulus.rs
 // I think maybe being in the same module does make it significantly slower
 // when using --verify-module
 

@@ -1,3 +1,5 @@
+//! Lemmas for power of 2.
+
 use vstd::prelude::*;
 
 verus! {

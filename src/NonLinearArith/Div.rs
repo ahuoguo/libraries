@@ -1,3 +1,4 @@
+//! Lemmas for division.
 
 use vstd::prelude::*;
 #[allow(unused_imports)]
