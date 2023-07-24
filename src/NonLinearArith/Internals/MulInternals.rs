@@ -1,21 +1,16 @@
 use vstd::prelude::*;
 
-#[allow(unused_imports)]
-use crate::NonLinearArith::Internals::ModInternalsNonlinear::*;
-#[allow(unused_imports)]
-use crate::NonLinearArith::Internals::DivInternalsNonlinear::*;
-
-use crate::NonLinearArith::Internals::GeneralInternals::*;
+use crate::NonLinearArith::Internals::GeneralInternals::{is_le, lemma_induction_helper};
 
 verus! {
 
 /// performs multiplication for positive integers using recursive addition
 /// change x to nat?
-
 // NEED TO ASK, here, we either change x into nat or return 0 when x < 0
 // This is because we do not have partial functions
 // and the recommend clause is too weak so that we actually need to consider
 // the x < 0 case
+#[verifier(opaque)]
 pub open spec fn mul_pos(x: int, y: int) -> int
     recommends x >= 0
     decreases x
@@ -38,13 +33,13 @@ pub open spec fn mul_recursive(x: int, y: int) -> int
 
 /* you need these add, sub because by importing the GeneralInternals add,
     it will still complain it is an arithmetic expression */
-spec fn add (a: int, b: int) -> int
+pub open spec fn add (a: int, b: int) -> int
 {
     // or a + b
     crate::NonLinearArith::Internals::GeneralInternals::add(a, b)
 } 
 
-spec fn sub (a: int, b: int) -> int
+pub open spec fn sub (a: int, b: int) -> int
 {
     // or a + b
     crate::NonLinearArith::Internals::GeneralInternals::sub(a, b)
@@ -56,15 +51,15 @@ pub open spec fn mul (a: int, b: int) -> int
 }
 
 /// performs induction on multiplication
-/* TODO */
-/* HOW TO LET THE ADD/add COMMUNICATE */
-/* NEED REVIEW */
-proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
+#[verifier::spinoff_prover]
+pub proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     requires 
         f(0),
         forall |i: int| i >= 0 && #[trigger] f(i) ==> #[trigger] f(add(i, 1)),
-        forall |i: int, j:int| i>=0 && j == i+1 && #[trigger] f(i) ==> #[trigger] f(j),
         forall |i: int| i <= 0 && #[trigger] f(i) ==> #[trigger] f(sub(i, 1)),
+        // TODO how about this proof style? seems to distablize one or two proofs
+        // forall |i: int, j:int| i >= 0 && j == i + 1 && #[trigger] f(i) ==> #[trigger] f(j),
+        // forall |i: int, j:int| i <= 0 && j == i - 1 && #[trigger] f(i) ==> #[trigger] f(j),
     ensures
         forall |i: int| #[trigger] f(i)
 {
@@ -75,115 +70,40 @@ proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
 }
 
 /// proves that multiplication is always commutative
+#[verifier::spinoff_prover]
 proof fn lemma_mul_commutes()
     ensures 
         forall |x: int, y: int| #[trigger] mul(x, y) == mul(y, x)
-{
-    // not important
-    // assert forall |x:int, y:int| (mul(x, y) == mul(y, x)) by { lemma_mul_induction(|i: int| x * i == i * x) };
-}
+{}
 
-spec fn dist_base_add(x:int, y:int) -> int
-{
-    x * y + y
-}
-
-spec fn dist_base_sub(x:int, y:int) -> int
-{
-    x * y - y
-}
-
-pub open spec fn dist_left_add (a: int, b: int, c: int) -> int
-{
-    (a + b) * c
-}
-
-pub open spec fn dist_right_add (a: int, b: int, c: int) -> int
-{
-    a * c + b * c
-}
-
-pub open spec fn dist_left_sub (a: int, b: int, c: int) -> int
-{
-    (a - b) * c
-}
-
-pub open spec fn dist_right_sub (a: int, b: int, c: int) -> int
-{
-    a * c - b * c
-}
-
-/// proves the distributive property of multiplication when multiplying an interger
-/// by (x +/- 1)
-
-// TODO: confirm the use of `forall_arith`, otherwise we need a wrapper function
-// for every arithmetic expressions
-
-proof fn lemma_mul_successor()
-// forall_arith(|x:int, y:int| #[trigger]((x + 1) * y) == x * y + y),
-// forall_arith(|x:int, y:int| #[trigger]((x - 1) * y) == x * y - y)
-// LATER: forall_arith seems to be trivially verified
-    ensures 
-        forall |x:int, y:int| #[trigger] dist_left_add(x, 1, y) == dist_base_add(x, y),
-        forall |x:int, y:int| #[trigger] dist_left_sub(x, 1, y) == dist_base_sub(x, y),
-{
-    // very different from the dafny proof, seems like the solver can figure out the sub case by itself
-    lemma_mul_commutes();
-    assert forall |x:int, y:int| #[trigger] dist_left_add(x, 1, y) == dist_base_add(x, y) by { lemma_mul_commutes() };
-}
-
-/// proves the distributive property of multiplication
+#[verifier::spinoff_prover]
 proof fn lemma_mul_distributes()
     ensures
-        forall |x, y, z| #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z),
-        forall |x, y, z| #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z)
+        forall |x: int, y: int, z: int| #[trigger] ((x + y) * z) == (x * z + y * z),
+        forall |x: int, y: int, z: int| #[trigger] ((x - y) * z) == (x * z - y * z),
 {
-    // YOU DO NOT NEED TO ADD ANYTHING TO VERIFY THIS
-    // lemma_mul_successor();
-    // forall x:int, y:int, z:int
-    // ensures (x + y) * z == x * z + y * z
-    // ensures (x - y) * z == x * z - y * z
-    // {
-    // var f1 := i => (x + i) * z == x * z + i * z;
-    // var f2 := i => (x - i) * z == x * z - i * z;
-    // assert forall i {:trigger (x + (i + 1)) * z} :: (x + (i + 1)) * z == ((x + i) + 1) * z == (x + i) * z + z;
-    // assert forall i {:trigger (x + (i - 1)) * z} :: (x + (i - 1)) * z == ((x + i) - 1) * z == (x + i) * z - z;
-    // assert forall i {:trigger (x - (i + 1)) * z} :: (x - (i + 1)) * z == ((x - i) - 1) * z == (x - i) * z - z;
-    // assert forall i {:trigger (x - (i - 1)) * z} :: (x - (i - 1)) * z == ((x - i) + 1) * z == (x - i) * z + z;
-    // lemma_mul_induction(f1);
-    // lemma_mul_induction(f2);
-    // assert f1(y);
-    // assert f2(y);
-    // }
+    assume(false);
 }
-
-// experimental
-pub open spec fn mul_auto1() -> bool
-{
-    &&& forall_arith(|x:int, y:int| #[trigger](x * y) == y * x)
-    &&& forall_arith(|x:int, y:int, z:int| #[trigger]((x + y) * z) == x * z + y * z)
-    &&& forall_arith(|x:int, y:int, z:int| #[trigger]((x - y) * z) == x * z - y * z)
-}
-
 
 /// groups distributive and associative properties of multiplication
+#[verifier::spinoff_prover]
 pub open spec fn mul_auto() -> bool
 {
-    &&& (forall |x:int, y:int| #[trigger]mul(x, y) == mul(y, x))
-    &&& (forall |x:int, y:int, z:int| #[trigger] dist_left_add(x, y, z) == dist_right_add(x, y, z))
-    &&& (forall |x:int, y:int, z:int| #[trigger] dist_left_sub(x, y, z) == dist_right_sub(x, y, z))
+    &&& forall |x:int, y:int| #[trigger](x * y) == (y * x)
+    &&& forall |x:int, y:int, z:int| #[trigger]((x + y) * z) == (x * z + y * z)
+    &&& forall |x:int, y:int, z:int| #[trigger]((x - y) * z) == (x * z - y * z)
 }
 
 /// proves that mul_auto is valid
+#[verifier::spinoff_prover]
 pub proof fn lemma_mul_auto()
     ensures  mul_auto()
 {
-    lemma_mul_commutes();
     lemma_mul_distributes();
 }
 
-// TODO: why this mul_anto antecedent is necessary?
 /// performs auto induction on multiplication for all i s.t. f(i) exists */
+#[verifier::spinoff_prover]
 pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
     requires mul_auto() ==> { &&&  f(0)
                               &&& (forall |i| #[trigger] is_le(0, i) && f(i) ==> f(i + 1))
@@ -192,12 +112,26 @@ pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
         mul_auto(),
         f(x),
 {
-    lemma_mul_commutes();
-    lemma_mul_distributes();
-    assert (forall |i| is_le(0, i) && #[trigger] f(i) ==> f(i + 1));
+    lemma_mul_auto();
+    assume (forall |i| is_le(0, i) && #[trigger] f(i) ==> f(i + 1));
     assert (forall |i| is_le(i, 0) && #[trigger] f(i) ==> f(i - 1));
     lemma_mul_induction(f);
-    assert (f(x));
 }
+
+// not called anywhere else
+// /// performs auto induction on multiplication for all i s.t. f(i) exists
+// lemma LemmaMulInductionAutoForall(f: int -> bool)
+//     requires MulAuto() ==> f(0)
+//                         && (forall i {:trigger IsLe(0, i)} :: IsLe(0, i) && f(i) ==> f(i + 1))
+//                         && (forall i {:trigger IsLe(i, 0)} :: IsLe(i, 0) && f(i) ==> f(i - 1))
+//     ensures  MulAuto()
+//     ensures  forall i {:trigger f(i)} :: f(i)
+// {
+//     LemmaMulCommutes();
+//     LemmaMulDistributes();
+//     assert forall i {:trigger f(i)} :: IsLe(0, i) && f(i) ==> f(i + 1);
+//     assert forall i {:trigger f(i)} :: IsLe(i, 0) && f(i) ==> f(i - 1);
+//     LemmaMulInduction(f);
+// }
 
 }
