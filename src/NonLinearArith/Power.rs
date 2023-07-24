@@ -2,8 +2,12 @@ use vstd::prelude::*;
 use vstd::calc_macro::*;
 
 verus! {
+// #[allow(unused_imports)]
+// use crate::NonLinearArith::DivMod::{lemma_mul_mod_noop_general, lemma_mod_properties_auto, lemma_fundamental_div_mod, lemma_mod_multiples_basic ,lemma_div_by_multiple};
 #[allow(unused_imports)]
-use crate::NonLinearArith::DivMod::{lemma_mul_mod_noop_general, lemma_mod_properties_auto, lemma_fundamental_div_mod, lemma_mod_multiples_basic ,lemma_div_by_multiple};
+use crate::NonLinearArith::Div::*;
+#[allow(unused_imports)]
+use crate::NonLinearArith::Modulus::*;
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::GeneralInternals::{is_le};
 #[allow(unused_imports)]
@@ -23,14 +27,14 @@ pub open spec fn pow(b: int, e: nat) -> int
 }
 
 /// A number raised to the power of 0 equals
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 pub proof fn lemma_pow0(b: int)
     ensures pow(b, 0) == 1
 {
     reveal(pow);
 }
 
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 pub proof fn lemma_pow0_auto()
     ensures forall |b: int| #[trigger]pow(b, 0 as nat) == 1
 {
@@ -38,7 +42,7 @@ pub proof fn lemma_pow0_auto()
 }
 
 /// A number raised to the power of 1 equals the number itself.
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 pub proof fn lemma_pow1(b: int)
     ensures pow(b, 1) == b
 {
@@ -54,7 +58,7 @@ pub proof fn lemma_pow1(b: int)
     }
 }
 
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow1_auto()
     ensures 
         forall |b: int| #[trigger]pow(b, 1) == b,
@@ -67,7 +71,7 @@ proof fn lemma_pow1_auto()
 }
 
 /// 0 raised to a positive power equals 0.
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 pub proof fn lemma0_pow(e: nat)
     requires e > 0
     ensures pow(0, e) == 0
@@ -80,7 +84,7 @@ pub proof fn lemma0_pow(e: nat)
     }
 }
 
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma0_pow_auto()
     ensures forall |e: nat| e > 0 ==> #[trigger]pow(0, e) == 0
 {
@@ -93,7 +97,7 @@ proof fn lemma0_pow_auto()
 }
 
 /// 1 raised to any power equals 1.
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 pub proof fn lemma1_pow(e: nat)
     ensures pow(1, e) == 1
     decreases e
@@ -105,7 +109,7 @@ pub proof fn lemma1_pow(e: nat)
     }
 }
 
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma1_pow_auto()
     ensures forall |e: nat| e > 0 ==> #[trigger]pow(1, e) == 1
 {
@@ -118,7 +122,7 @@ proof fn lemma1_pow_auto()
 }
 
 /// Squaring a number is equal to raising it to the power of 2.
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 pub proof fn lemma_square_is_pow2(x: int)
 ensures pow(x, 2) == x * x
 {
@@ -132,7 +136,7 @@ ensures pow(x, 2) == x * x
     assert(x as int * pow(x as int, 1) == x * (x as int * pow(x as int, 0)));
 }
 
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_square_is_pow2_auto()
     ensures forall |x: int| x > 0 ==> #[trigger]pow(x, 2) == x * x,
 {
@@ -145,7 +149,7 @@ proof fn lemma_square_is_pow2_auto()
 }
 
 /// A positive number raised to any power is positive.
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 pub proof fn lemma_pow_positive(b: int, e: nat)
     requires b > 0
     ensures 0 < pow(b, e)
@@ -158,7 +162,7 @@ pub proof fn lemma_pow_positive(b: int, e: nat)
     lemma_mul_induction_auto(e as int, |u: int| 0 <= u ==> 0 < pow(b, u as nat));
 }
 
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow_positive_auto()
     ensures 
         forall |b: int, e: nat| b > 0 ==> 0 < #[trigger] pow(b, e)
@@ -171,7 +175,7 @@ proof fn lemma_pow_positive_auto()
 }
 
 /// Add exponents when multiplying powers with the same base.
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow_adds(b: int, e1: nat, e2: nat)
     ensures pow(b, e1 + e2) == pow(b, e1) * pow(b, e2),
     decreases e1
@@ -202,7 +206,7 @@ proof fn lemma_pow_adds(b: int, e1: nat, e2: nat)
     }
 }
 
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow_adds_auto()
     ensures forall |x: int, y: nat, z: nat| #[trigger] pow(x, y + z) == pow(x, y) * pow(x, z),
 {
@@ -212,7 +216,7 @@ proof fn lemma_pow_adds_auto()
     }
 }
 
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow_sub_add_cancel(b: int, e1: nat, e2: nat)
     requires e1 >= e2
     ensures pow(b, (e1 - e2) as nat) * pow(b, e2) == pow(b, e1)
@@ -232,7 +236,7 @@ proof fn lemma_pow_sub_add_cancel_auto()
 }
 
 /// Subtract exponents when dividing powers.
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow_subtracts(b: int, e1: nat, e2: nat)
     requires 
         b > 0,
@@ -267,7 +271,7 @@ ensures
 }
 
 /// Multiply exponents when finding the power of a power.
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow_multiplies(a: int, b: nat, c: nat)
     ensures 
         0 <= b * c,
@@ -332,7 +336,7 @@ proof fn lemma_pow_multiplies_auto()
 }
 
 /// Distribute the power to factors of a product.
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow_distributes(a: int, b: int, e: nat)
     ensures 
         pow(a * b, e) == pow(a, e) * pow(b, e)
@@ -359,7 +363,7 @@ proof fn lemma_pow_distributes(a: int, b: int, e: nat)
     }
 }
 
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow_distributes_auto()
     ensures forall |x: int, y: nat, z: nat| #[trigger]pow(x * y, z) == pow(x, z) * pow(y as int, z),
 {
@@ -371,7 +375,7 @@ proof fn lemma_pow_distributes_auto()
 }
 
 /// Group properties of powers
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 pub proof fn lemma_pow_auto()
     ensures 
         forall |x: int| pow(x, 0) == 1,
@@ -401,7 +405,7 @@ pub proof fn lemma_pow_auto()
 /// A positive number raised to a power strictly increases as the power
 /// strictly increases.
 // TODO: quite longer than dafny
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow_strictly_increases(b: nat, e1: nat, e2: nat)
     requires 
         1 < b,
@@ -508,7 +512,7 @@ proof fn lemma_pow_strictly_increases_converse(b: nat, e1: nat, e2: nat)
     }
 }
 
-// seems like automatic trigger selection works well
+// seems like automatic trigger selection works well in this case
 #[verifier::spinoff_prover]
 proof fn lemma_pow_strictly_increases_converse_auto()
     ensures
@@ -522,7 +526,7 @@ proof fn lemma_pow_strictly_increases_converse_auto()
 }
 
 /// A power increases as a positive number raised to the power increases.
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_pow_increases_converse(b: nat, e1: nat, e2: nat)
     requires 
         1 < b,

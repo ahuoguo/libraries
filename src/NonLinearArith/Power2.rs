@@ -22,6 +22,7 @@ pub open spec fn pow2(e: nat) -> nat
     pow(2, e) as nat
 }
 
+#[verifier::spinoff_prover]
 pub proof fn lemma_pow2_pos(e: nat)
     ensures pow2(e) > 0
 {
@@ -29,10 +30,10 @@ pub proof fn lemma_pow2_pos(e: nat)
     lemma_pow_positive(2, e);
 }
 
+#[verifier::spinoff_prover]
 pub proof fn lemma_pow2_pos_auto()
     ensures forall |e: nat| #[trigger]pow2(e) > 0
 {
-    reveal(pow2);
     assert forall |e: nat| #[trigger]pow2(e) > 0 by
     {
         lemma_pow2_pos(e);
@@ -40,6 +41,7 @@ pub proof fn lemma_pow2_pos_auto()
 }
 
 /// pow2() is equivalent to Pow() with base 2.
+#[verifier::spinoff_prover]
 pub proof fn lemma_pow2(e: nat)
     ensures pow2(e) == pow(2, e) as int
     decreases e
@@ -47,16 +49,14 @@ pub proof fn lemma_pow2(e: nat)
     reveal(pow);
     reveal(pow2);
     if e != 0 {
-    lemma_pow2((e - 1) as nat);
+        lemma_pow2((e - 1) as nat);
     }
 }
 
+#[verifier::spinoff_prover]
 pub proof fn lemma_pow2_auto()
     ensures forall |e: nat| #[trigger]pow2(e) == pow(2, e)
 {
-    reveal(pow);
-    reveal(pow2);
-
     assert forall |e: nat| #[trigger]pow2(e) == pow(2, e) by
     {
     lemma_pow2(e);
@@ -69,33 +69,11 @@ pub proof fn lemma_pow2_mask_div2(e: nat)
     requires 0 < e
     ensures (pow2(e) - 1) / 2 == pow2((e - 1) as nat) - 1
 {
-    reveal(pow2);
-
-    lemma_pow_auto();
     let f = |e: int| 0 < e ==> (pow2(e as nat) - 1) / 2 == pow2((e - 1) as nat) - 1;
     assert forall |i: int|  #[trigger]is_le(0, i) && f(i) implies f(i + 1) by {
-        if (i == 0) {
-            assert( (pow2(1 as nat) - 1) / 2 == pow2((1 - 1) as nat) - 1 ) by {
-                // the following is needed under spinoff_prover
-                assert(pow2(0nat) - 1 == 0) by {
-                    reveal(pow2);
-                };
-                assert((pow2(1 as nat) - 1) / 2 == 0) by {
-                    reveal(pow2);
-                }
-            };
-        } else {
-            assert(i >= 1);
-            let lhs = (pow2((i + 1) as nat) - 1) / 2;
-            let rhs = pow2((i + 1 - 1) as nat) - 1;
-            assert(lhs == rhs) by {
-                lemma_pow_auto();
-                lemma_pow2_auto();
-            };
-            assert(f(i + 1));
-        }
+        lemma_pow_auto();
+        lemma_pow2_auto();
     };
-    // assert(forall |i: int| #[trigger]is_le(i, 0) && f(i) ==> f(i - 1));
     lemma_mul_induction_auto(e as int, f);
 }
 

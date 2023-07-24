@@ -8,7 +8,7 @@ pub open spec fn Mod (x: int, y: int) -> int
 }
 
 /* the remainder 0 divided by an integer is 0 */
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_mod_of_zero_is_zero(m:int)
     requires (0 as int) < m
     ensures   0 as int % m == 0 as int
@@ -22,7 +22,7 @@ pub proof fn lemma_fundamental_div_mod(x:int, d:int)
 {}
 
 /* the remained of 0 divided by any integer is always 0 */
-#[verifier(spinoff_prover)]
+#[verifier::spinoff_prover]
 proof fn lemma_0_mod_any()
     ensures forall |m: int| m > 0 ==> #[trigger] Mod(0, m) == 0
 {}

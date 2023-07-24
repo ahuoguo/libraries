@@ -17,7 +17,6 @@ use crate::NonLinearArith::Internals::ModInternalsNonlinear as ModINL;
 use crate::NonLinearArith::Internals::MulInternals::{lemma_mul_induction_auto, lemma_mul_auto, mul_auto, lemma_mul_induction};
 #[allow(unused_imports)]
 use crate::NonLinearArith::Mul::*;
-// use crate::NonLinearArith::Mul::{lemma_mul_strictly_positive_auto, lemma_mul_is_associative_auto, lemma_mul_is_distributive_auto, lemma_mul_is_commutative_auto, lemma_mul_strict_inequality_converse_auto, lemma_mul_inequality_auto, lemma_mul_increases_auto};
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::GeneralInternals::{is_le};
 #[allow(unused_imports)]
@@ -52,7 +51,7 @@ pub proof fn lemma_div_is_div_recursive_auto()
 }
 
 /// the quotient of an integer divided by itself is 1
-#[verifier::spinoff_prover]
+#[verifier::spinoff_prover] 
 pub proof fn lemma_div_by_self(d: int)
     requires d != 0
     ensures d / d == 1
@@ -170,7 +169,7 @@ pub proof fn lemma_div_is_ordered_by_denominator(x: int, y: int, z: int)
         lemma_div_is_ordered(x - z, x - y, y);
         lemma_div_is_ordered_by_denominator(x - z, y, z);
     }
-
+  
 }
 
 #[verifier::spinoff_prover]
@@ -523,15 +522,8 @@ pub proof fn lemma_breakdown_auto()
 {
     assert forall |x: int, y: int, z: int|(0 <= x && 0 < y && 0 < z) implies 0 < #[trigger](y * z) && #[trigger](x % (y * z)) == #[trigger](y * ((x / y) % z) + x % y) by
     {
-        // TO BE DISCUSSED
         lemma_breakdown(x, y, z);
-        // OBSERVE: this is weird
-        if (0 <= x && 0 < y && 0 < z) {
-            assert(0 < z);
-            lemma_breakdown(x, y, z);
-        }
     }
-    // assert(forall |x: int, y: int, z: int|(0 <= x && 0 < y && 0 < z) ==> 0 < #[trigger](y * z) && #[trigger](x % (y * z)) == #[trigger](y * ((x / y) % z) + x % y));
 }
 
 #[verifier::spinoff_prover]
@@ -881,7 +873,6 @@ pub proof fn lemma_div_multiples_vanish_quotient(x: int, a: int, d: int)
 pub proof fn lemma_div_multiples_vanish_quotient_auto()
     ensures forall |x: int, a: int, d: int| #![trigger (a / d), (x * a), (x * d)] 0 < x && 0 <= a && 0 < d ==> 0 < x * d && a / d == (x * a) / (x * d)
 {
-    // assert(true); // OBSERVE?????????
     assert forall |x: int, a: int, d: int| 0 < x && 0 <= a && 0 < d implies 0 < #[trigger](x * d) && #[trigger](a / d) == (#[trigger](x * a) / #[trigger](x * d)) by
     {
         if (0 < x && 0 <= a && 0 < d) {
@@ -931,9 +922,6 @@ pub proof fn lemma_div_multiples_vanish_fancy(x: int, b: int, d: int)
     
     lemma_mul_auto();
     lemma_mul_induction(f);
-
-    // OBSERVE: the original code uses the auto lemma, which cause the rlimit to complain
-    // lemma_mul_induction_auto(x, f);
     assert(f(x));
 }
 

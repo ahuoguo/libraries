@@ -376,13 +376,11 @@ pub proof fn lemma_mod_adds_auto()
 }
 
 // {:vcs_split_on_every_assert}
-// this proof times out a lot
 #[verifier::spinoff_prover]
 pub proof fn lemma_mod_neg_neg(x: int, d: int)
     requires 0 < d
     ensures x % d == (x * (1 - d)) % d
 {
-    assert(true);
     assert ((x - x * d) % d == x % d) by {
         let f = |i: int| (x - i * d) % d == x % d;
         lemma_mul_auto();
@@ -400,12 +398,8 @@ pub proof fn lemma_mod_neg_neg(x: int, d: int)
     lemma_mul_auto();
 }
 
-
+// this proof behaves well in separate file
 /// proves the validity of the quotient and remainder
-// {:timeLimitMultiplier 5} from dafny
-// this proof breaks a lot when introducing new auto lemma
-// this proof verifies for a long time
-// now it verifies for 2-4s ish
 #[verifier::spinoff_prover]
 pub proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
     requires 
@@ -416,64 +410,10 @@ pub proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
         q == x / d,
         r == x % d
 {
-    // TODO: shorten this?
-    // TO BE DISCUSSED
-    // OBSERVE
-    // making mul_auto in the larger context will exceed rlimit
-    lemma_div_auto(d);
     lemma_mul_auto();
-    let f = |u: int| u == (u * d + r) / d;
-    assert(f(q)) by {
-        assert
-        forall |i: int| i >= 0 && #[trigger] f(i) implies #[trigger] f(crate::NonLinearArith::Internals::MulInternals::add(i, 1))
-        by {
-            lemma_div_auto(d);
-            // lemma_mul_auto();
-            assert(i * d + r + d == (i + 1) * d + r) by {
-                lemma_mul_auto();
-            };
-        };
-        assert
-            forall |i: int| i <= 0 && #[trigger] f(i) implies #[trigger] f(crate::NonLinearArith::Internals::MulInternals::sub(i, 1))
-         by {
-            lemma_div_auto(d);
-            lemma_mul_auto();
-        };
-        assert(f(0)) by {
-            assert(0 == (0 * d + r) / d) by {
-                lemma_mul_by_zero_is_zero_auto();
-                crate::NonLinearArith::Internals::DivInternals::lemma_div_basics(d);
-            };
-        };
-        lemma_mul_induction(f);
-        assert(f(q));
-    }
-    let g = |u: int| r == (u * d + r) % d;
-    assert(g(q)) by {
-        lemma_div_auto(d);
-        assert
-        forall |i: int| i >= 0 && #[trigger] g(i) implies #[trigger] g(crate::NonLinearArith::Internals::MulInternals::add(i, 1))
-        by {
-            lemma_div_auto(d);
-            lemma_mul_auto();
-        };
-        assert
-            forall |i: int| i <= 0 && #[trigger] g(i) implies #[trigger] g(crate::NonLinearArith::Internals::MulInternals::sub(i, 1))
-         by {
-            lemma_div_auto(d);
-            lemma_mul_auto();
-        }
-        assert(g(0)) by {
-            lemma_div_auto(d);
-            lemma_mul_auto();
-        };
-        lemma_mul_induction(g);
-        assert(g(q));
-    };
-    // the original dafny proof
-    // lemma_div_auto(d);
-    // lemma_mul_induction_auto(q, |u: int| u == (u * d + r) / d);
-    // lemma_mul_induction_auto(q, |u: int| r == (u * d + r) % d);
+    lemma_div_auto(d);
+    lemma_mul_induction_auto(q, |u: int| u == (u * d + r) / d);
+    lemma_mul_induction_auto(q, |u: int| r == (u * d + r) % d);
 }
 
 // // {:timeLimitMultiplier 5}
@@ -572,7 +512,6 @@ pub proof fn lemma_mul_mod_noop_right_auto()
 }
 
 /// combines previous no-op mod lemmas into a general, overarching lemma
-// TODO: verifies for a long time when spinoff prover is used
 #[verifier::spinoff_prover]
 pub proof fn lemma_mul_mod_noop_general(x: int, y: int, m: int)
     requires 0 < m
@@ -657,13 +596,13 @@ pub closed spec fn is_mod_equivalent(x: int, y: int, m: int) -> bool
 pub proof fn lemma_mod_mul_equivalent(x: int, y: int, z: int, m: int)
     requires
         m > 0,
-        // is_mod_equivalent(x, y, m),
+        is_mod_equivalent(x, y, m),
         x % m == y % m <==> (x - y) % m == 0,
     ensures
-        // is_mod_equivalent(x * z, y * z, m)
+        is_mod_equivalent(x * z, y * z, m),
         (x * z) % m == (y * z) % m <==> (x * z - y * z) % m == 0
 {
-    // reveal(is_mod_equivalent);
+    reveal(is_mod_equivalent);
     lemma_mul_mod_noop_left(x, z, m);
     lemma_mul_mod_noop_left(y, z, m);
     lemma_mod_equivalence(x, y, m);
