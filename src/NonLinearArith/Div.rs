@@ -457,10 +457,8 @@ pub proof fn lemma_breakdown(x: int, y: int, z: int)
     lemma_div_pos_is_pos(x, y);
     assert(0 <= x / y);
 
-    // TODO: the following code is kinda buggy because it does
-    // not encode the "<" info
     calc! {
-    (<=)
+    (<)
     (y * (x / y)) % (y * z) + (x % y) % (y * z);
     (<=)    { lemma_part_bound1(x, y, z); }
     y * (z - 1) + (x % y) % (y * z);
@@ -473,15 +471,6 @@ pub proof fn lemma_breakdown(x: int, y: int, z: int)
     (==) {}
     y * z;
     }
-
-    // translated the calc proof above
-    assert((y * (x / y)) % (y * z) + (x % y) % (y * z) < y * z) by {
-        lemma_part_bound1(x, y, z);
-        lemma_part_bound2(x, y, z);
-        lemma_mul_basics_auto();
-        lemma_mul_is_distributive_auto();
-    };
-
 
     calc! {
     (==)
