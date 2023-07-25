@@ -22,13 +22,13 @@ pub proof fn lemma_mul_nonzero(x: int, y: int)
 {}
 
 /* multiplication is associative */
-#[verifier(nonlinear)]
+#[verifier(integer_ring)]
 pub proof fn lemma_mul_is_associative(x: int, y: int, z: int)
     ensures x * (y * z) == (x * y) * z
 {}
 
 /* multiplication is distributive */
-#[verifier(nonlinear)]
+#[verifier(integer_ring)]
 pub proof fn lemma_mul_is_distributive_add(x: int, y: int, z: int)
     ensures x * (y + z) == x * y + x * z
 {}

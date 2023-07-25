@@ -70,13 +70,6 @@ pub proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     assert forall |i: int| #[trigger] f(i) by { lemma_induction_helper(1, f, i) };
 }
 
-/// proves that multiplication is always commutative
-#[verifier::spinoff_prover]
-proof fn lemma_mul_commutes()
-    ensures 
-        forall |x: int, y: int| #[trigger] mul(x, y) == mul(y, x)
-{}
-
 /// proves the distributive property of multiplication when multiplying an interger
 /// by (x +/- 1)
 #[verifier::spinoff_prover]
@@ -98,6 +91,19 @@ proof fn lemma_mul_successor()
     }
 }
 
+#[verifier(spinoff_prover)]
+#[verifier(integer_ring)]
+proof fn lemma_mul_distributes_add(x: int, y: int, z: int)
+    ensures
+        ((x + y) * z) == (x * z + y * z),
+{}
+#[verifier(spinoff_prover)]
+#[verifier(integer_ring)]
+proof fn lemma_mul_distributes_sub(x: int, y: int, z: int)
+    ensures
+        ((x - y) * z) == (x * z - y * z),
+{}
+
 /// proves the distributive property of multiplication
 #[verifier(spinoff_prover)]
 proof fn lemma_mul_distributes()
@@ -105,41 +111,13 @@ proof fn lemma_mul_distributes()
     forall |x: int, y: int, z: int| #[trigger]((x + y) * z) == (x * z + y * z),
     forall |x: int, y: int, z: int| #[trigger]((x - y) * z) == (x * z - y * z),
 {
-    lemma_mul_successor();
-
-    assert forall |x:int, y:int, z:int| #[trigger]((x + y) * z) == (x * z + y * z)
-        by
-    {
-        let f1 = |i: int| ((x + i) * z) == (x * z + i * z);
-        assert(f1(0));
-        assert forall |i: int| i >= 0 && #[trigger] f1(i) implies #[trigger]f1(add(i, 1)) by {
-            assert(  (x + (i + 1)) * z == ((x + i) + 1) * z == (x + i) * z + z);
-
-        };
-        assert forall |i: int| i <= 0 && #[trigger] f1(i) implies #[trigger]f1(sub(i, 1)) by {
-            assert((x + (i - 1)) * z == ((x + i) - 1) * z == (x + i) * z - z);
-        };
-        lemma_mul_induction(f1);
-        assert(f1(y));
-
-
+    assert forall |x: int, y: int, z: int| #[trigger]((x + y) * z) == (x * z + y * z) by {
+        lemma_mul_distributes_add(x, y, z);
     }
 
-    assert forall |x:int, y:int, z:int| #[trigger]((x - y) * z) == (x * z - y * z) by {
-        let f2 = |i: int| ((x - i) * z) == (x * z - i * z);
-        assert(f2(0));
-        assert forall |i: int| i >= 0 && #[trigger] f2(i) implies #[trigger]f2(add(i, 1)) by {
-            assert(  (x - (i + 1)) * z == ((x - i) - 1) * z == (x - i) * z - z);
-
-        };
-        assert forall |i: int| i <= 0 && #[trigger] f2(i) implies #[trigger]f2(sub(i, 1)) by {
-            assert((x - (i - 1)) * z == ((x - i) + 1) * z == (x - i) * z + z);
-        };
-
-        lemma_mul_induction(f2);
-        assert(f2(y));
+    assert forall |x: int, y: int, z: int| #[trigger]((x - y) * z) == (x * z - y * z) by {
+        lemma_mul_distributes_sub(x, y, z);
     }
-
 }
 
 /// groups distributive and associative properties of multiplication
