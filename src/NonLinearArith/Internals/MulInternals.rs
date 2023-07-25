@@ -85,7 +85,6 @@ proof fn lemma_mul_successor()
         forall |x: int, y: int| #[trigger] ((x + 1) * y) == x * y + y,
         forall |x: int, y: int| #[trigger] ((x - 1) * y) == x * y - y,
 {
-    lemma_mul_commutes();
     assert forall |x:int, y:int| #[trigger]((x + 1) * y) == x * y + y by {
         MulINL::lemma_mul_is_distributive_add(y, x, 1);
     }
