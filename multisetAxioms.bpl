@@ -151,11 +151,15 @@ function MultiSet#FromSeq<T>(Seq T): MultiSet T uses {
 }
 // conversion produces a good map.
 axiom (forall<T> s: Seq T :: { MultiSet#FromSeq(s) } $IsGoodMultiSet(MultiSet#FromSeq(s)) );
+
 // cardinality axiom
+// done (to_multiset_len)
 axiom (forall<T> s: Seq T ::
   { MultiSet#Card(MultiSet#FromSeq(s)) }
     MultiSet#Card(MultiSet#FromSeq(s)) == Seq#Length(s));
+
 // building axiom
+// done (to_multiset_build)
 axiom (forall<T> s: Seq T, v: T ::
   { MultiSet#FromSeq(Seq#Build(s, v)) }
     MultiSet#FromSeq(Seq#Build(s, v)) == MultiSet#UnionOne(MultiSet#FromSeq(s), v)
