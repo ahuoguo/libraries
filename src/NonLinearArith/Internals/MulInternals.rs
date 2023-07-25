@@ -1,6 +1,7 @@
 use vstd::prelude::*;
 
 use crate::NonLinearArith::Internals::GeneralInternals::{is_le, lemma_induction_helper};
+use crate::NonLinearArith::Internals::MulInternalsNonlinear as MulINL;
 
 verus! {
 
@@ -76,13 +77,70 @@ proof fn lemma_mul_commutes()
         forall |x: int, y: int| #[trigger] mul(x, y) == mul(y, x)
 {}
 
+/// proves the distributive property of multiplication when multiplying an interger
+/// by (x +/- 1)
 #[verifier::spinoff_prover]
+proof fn lemma_mul_successor()
+    ensures 
+        forall |x: int, y: int| #[trigger] ((x + 1) * y) == x * y + y,
+        forall |x: int, y: int| #[trigger] ((x - 1) * y) == x * y - y,
+{
+    lemma_mul_commutes();
+    assert forall |x:int, y:int| #[trigger]((x + 1) * y) == x * y + y by {
+        MulINL::lemma_mul_is_distributive_add(y, x, 1);
+    }
+    
+    assert forall |x:int, y:int| #[trigger]((x - 1) * y) == x * y - y by {
+        assert((x - 1) * y  == y * (x - 1));
+        MulINL::lemma_mul_is_distributive_add(y, x, -1);
+        assert(y * (x - 1) == y * x + y * -1);
+        assert(-1 * y == -y);
+        assert(x * y + (-1 * y) == x * y - y);
+    }
+}
+
+/// proves the distributive property of multiplication
+#[verifier(spinoff_prover)]
 proof fn lemma_mul_distributes()
     ensures
-        forall |x: int, y: int, z: int| #[trigger] ((x + y) * z) == (x * z + y * z),
-        forall |x: int, y: int, z: int| #[trigger] ((x - y) * z) == (x * z - y * z),
+    forall |x: int, y: int, z: int| #[trigger]((x + y) * z) == (x * z + y * z),
+    forall |x: int, y: int, z: int| #[trigger]((x - y) * z) == (x * z - y * z),
 {
-    assume(false);
+    lemma_mul_successor();
+
+    assert forall |x:int, y:int, z:int| #[trigger]((x + y) * z) == (x * z + y * z)
+        by
+    {
+        let f1 = |i: int| ((x + i) * z) == (x * z + i * z);
+        assert(f1(0));
+        assert forall |i: int| i >= 0 && #[trigger] f1(i) implies #[trigger]f1(add(i, 1)) by {
+            assert(  (x + (i + 1)) * z == ((x + i) + 1) * z == (x + i) * z + z);
+
+        };
+        assert forall |i: int| i <= 0 && #[trigger] f1(i) implies #[trigger]f1(sub(i, 1)) by {
+            assert((x + (i - 1)) * z == ((x + i) - 1) * z == (x + i) * z - z);
+        };
+        lemma_mul_induction(f1);
+        assert(f1(y));
+
+
+    }
+
+    assert forall |x:int, y:int, z:int| #[trigger]((x - y) * z) == (x * z - y * z) by {
+        let f2 = |i: int| ((x - i) * z) == (x * z - i * z);
+        assert(f2(0));
+        assert forall |i: int| i >= 0 && #[trigger] f2(i) implies #[trigger]f2(add(i, 1)) by {
+            assert(  (x - (i + 1)) * z == ((x - i) - 1) * z == (x - i) * z - z);
+
+        };
+        assert forall |i: int| i <= 0 && #[trigger] f2(i) implies #[trigger]f2(sub(i, 1)) by {
+            assert((x - (i - 1)) * z == ((x - i) + 1) * z == (x - i) * z + z);
+        };
+
+        lemma_mul_induction(f2);
+        assert(f2(y));
+    }
+
 }
 
 /// groups distributive and associative properties of multiplication
@@ -113,7 +171,7 @@ pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
         f(x),
 {
     lemma_mul_auto();
-    assume (forall |i| is_le(0, i) && #[trigger] f(i) ==> f(i + 1));
+    assert (forall |i| is_le(0, i) && #[trigger] f(i) ==> f(i + 1));
     assert (forall |i| is_le(i, 0) && #[trigger] f(i) ==> f(i - 1));
     lemma_mul_induction(f);
 }

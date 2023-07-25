@@ -399,7 +399,6 @@ pub proof fn lemma_mod_induction_auto(n: int, x: int, f: FnSpec(int) -> bool)
         f(x)
 {
     lemma_mod_auto(n);
-    assume(forall |i: int| is_le(0, i) && i < n ==> f(i));
     assert(forall |i: int| is_le(0, i) && #[trigger]f(i) ==> #[trigger]f(add(i, n)));
     assert(forall |i: int| is_le(i + 1, n) && #[trigger]f(i) ==> #[trigger]f(sub(i, n)));
     assert forall |i: int| 0 <= i < n ==> #[trigger]f(i) by {
