@@ -174,9 +174,6 @@ pub proof fn lemma_mul_equality_auto()
         x == y implies #[trigger](x * z) == #[trigger](y * z)
     by
     { lemma_mul_equality(x, y, z); } 
-    // assert forall |x: int, y: int, z: int| x == y ==> #[trigger](x * z) == #[trigger](y * z)
-    // by
-    // { if x == y { lemma_mul_equality(x, y, z); } }
 }
 
 /// two integers that are multiplied by a positive number will maintain their numerical order
@@ -267,12 +264,8 @@ pub proof fn lemma_mul_strict_upper_bound(x: int, XBound: int, y: int, YBound: i
     ensures 
     x * y <= (XBound - 1) * (YBound - 1)
 {
-    // DIFFERENT FROM DAFNY
     lemma_mul_inequality(x, XBound - 1, y);
-    assert(x * y <= (XBound - 1) * y);  // OBSERVE
     lemma_mul_inequality(y, YBound - 1, XBound - 1);
-    assert( y * (XBound - 1) <= (YBound - 1) * (XBound - 1)); // OBSERVE
-    lemma_mul_is_commutative((XBound - 1), y)
 }
 
 #[verifier::spinoff_prover]
@@ -295,17 +288,7 @@ pub proof fn lemma_mul_left_inequality(x: int, y: int, z: int)
         y <= z ==> x * y <= x * z,
         y < z ==> x * y < x * z
 {
-    // UNSTABLE
-    // I need to add this line after adding `lemma_mul_strict_inequality_converse`
-    let f = |u: int| u > 0 ==> y <= z ==> u * y <= u * z;
-    // assert (mul_auto() ==> { &&&  f(0)
-    //                          &&& (forall |i| #[trigger] is_le(0, i) && f(i) ==> f(i + 1))
-    //                          &&& (forall |i| #[trigger] is_le(i, 0) && f(i) ==> f(i - 1))}); // OBSERVE?
     lemma_mul_induction_auto(x, |u: int| u > 0 ==> y <= z ==> u * y <= u * z);
-    // let f = |u: int| u > 0 ==> y < z ==> u * y < u * z;
-    // assert (mul_auto() ==> { &&&  f(0)
-    //                          &&& (forall |i| #[trigger] is_le(0, i) && f(i) ==> f(i + 1))
-    //                          &&& (forall |i| #[trigger] is_le(i, 0) && f(i) ==> f(i - 1))}); // OBSERVE
     lemma_mul_induction_auto(x, |u: int| u > 0 ==> y < z ==> u * y < u * z);
 }
 
@@ -330,16 +313,10 @@ pub proof fn lemma_mul_equality_converse(m: int, x: int, y: int)
     ensures 
         x == y
 {
-    if m > 0 {
         lemma_mul_induction_auto(m, |u| x > y && 0 < u ==> x * u > y * u);
-        // assert (x * m == y * m) by { lemma_mul_is_commutative(x, m); lemma_mul_is_commutative(y, m);};
         lemma_mul_induction_auto(m, |u: int| x < y && 0 < u ==> x * u < y * u);
-    }
-    if m < 0 {
         lemma_mul_induction_auto(m, |u: int| x > y && 0 > u ==> x * u < y * u);
-        // assert (x * m == y * m) by { lemma_mul_is_commutative(x, m); lemma_mul_is_commutative(y, m);};
         lemma_mul_induction_auto(m, |u: int| x < y && 0 > u ==> x * u > y * u);
-    }
 }
 
 /// if any two seperate integers are each multiplied by a common integer and the products are equal, the 
@@ -371,10 +348,10 @@ pub proof fn lemma_mul_inequality_converse(x: int, y: int, z: int)
 pub proof fn lemma_mul_inequality_converse_auto()
     ensures forall |x: int, y: int, z: int| #[trigger](x * z) <= #[trigger](y * z) && z > 0 ==> x <= y,
 {
-    assert forall |x: int, y: int, z: int | #[trigger](x * z) <= #[trigger](y * z) && z > 0 ==> x <= y
+    assert forall |x: int, y: int, z: int | #[trigger](x * z) <= #[trigger](y * z) && z > 0 implies x <= y
     by
     {
-        if x * z <= y * z && z > 0 { lemma_mul_inequality_converse(x, y, z); }
+        lemma_mul_inequality_converse(x, y, z);
     }
 }
 
