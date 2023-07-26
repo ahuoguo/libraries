@@ -39,35 +39,35 @@ pub proof fn lemma_mod_is_mod_recursive(x: int, m: int)
 {
     reveal(mod_recursive);
     if x < 0 {
-    calc! {
-        (==)
-        mod_recursive(x, m); {}
-        mod_recursive(x + m, m);
-        { lemma_mod_is_mod_recursive(x + m, m); }
-        (x + m) % m;
-        { lemma_add_mod_noop(x, m, m); }
-        ((x % m) + (m % m)) % m;
-        { lemma_mod_basics_auto(); }
-        (x % m) % m;
-        { lemma_mod_basics_auto(); }
-        x % m;
-    }
+        calc! {
+            (==)
+            mod_recursive(x, m); {}
+            mod_recursive(x + m, m);
+            { lemma_mod_is_mod_recursive(x + m, m); }
+            (x + m) % m;
+            { lemma_add_mod_noop(x, m, m); }
+            ((x % m) + (m % m)) % m;
+            { lemma_mod_basics_auto(); }
+            (x % m) % m;
+            { lemma_mod_basics_auto(); }
+            x % m;
+        }
     } else if x < m {
-    lemma_small_mod(x as nat, m as nat);
+        lemma_small_mod(x as nat, m as nat);
     } else {
-    calc! {
-        (==)
-        mod_recursive(x, m); {}
-        mod_recursive(x - m, m);
-        { lemma_mod_is_mod_recursive(x - m, m); }
-        (x - m) % m;
-        { lemma_sub_mod_noop(x, m, m); }
-        ((x % m) - (m % m)) % m;
-        { lemma_mod_basics_auto(); }
-        (x % m) % m;
-        { lemma_mod_basics_auto(); }
-        x % m;
-    }
+        calc! {
+            (==)
+            mod_recursive(x, m); {}
+            mod_recursive(x - m, m);
+            { lemma_mod_is_mod_recursive(x - m, m); }
+            (x - m) % m;
+            { lemma_sub_mod_noop(x, m, m); }
+            ((x % m) - (m % m)) % m;
+            { lemma_mod_basics_auto(); }
+            (x % m) % m;
+            { lemma_mod_basics_auto(); }
+            x % m;
+        }
     }
 }
 
@@ -147,12 +147,6 @@ pub proof fn lemma_mod_is_zero(x: nat, m: nat)
     if (x < m) {
         lemma_small_mod(x, m);
     }
-    // calc ==> {
-    // x < m;
-    // { lemma_small_mod(x, m); }
-    // x % m == x;
-    // false;
-    // }
 }
 
 #[verifier::spinoff_prover]
@@ -176,7 +170,6 @@ pub proof fn lemma_mod_multiples_basic(x: int, m: int)
     let f = |u: int| (u * m) % m == 0;
     lemma_mul_induction(f);
     assert(f(x));
-    // lemma_mul_induction_auto(x, |u: int| (u * m) % m == 0);
 }
 
 #[verifier::spinoff_prover]
@@ -237,10 +230,8 @@ pub proof fn lemma_mod_multiples_vanish(a: int, b: int, m: int)
     ensures (m * a + b) % m == b % m
     decreases (if a > 0 { a } else { -a })
 {
-    // assert(true);
     lemma_mod_auto(m);
     lemma_mul_auto();
-    // lemma_mul_induction_auto(a, |u: int| (m * u + b) % m == b % m);
     let f = |u: int| (m * u + b) % m == b % m;
     lemma_mul_induction(f);
     assert(f(a));
@@ -393,13 +384,10 @@ pub proof fn lemma_mod_neg_neg(x: int, d: int)
         };
         lemma_mul_induction(f);
         assert(f(x));
-        // lemma_mul_induction_auto(x, f);
     }
-    // lemma_mod_auto(d);
     lemma_mul_auto();
 }
 
-// this proof behaves well in separate file
 /// proves the validity of the quotient and remainder
 #[verifier::spinoff_prover]
 pub proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
@@ -417,8 +405,8 @@ pub proof fn lemma_fundamental_div_mod_converse(x: int, d: int, q: int, r: int)
     lemma_mul_induction_auto(q, |u: int| r == (u * d + r) % d);
 }
 
-// // {:timeLimitMultiplier 5}
-// // TO DO
+// {:timeLimitMultiplier 5}
+// TO DO, but when conjuncting
 #[verifier::spinoff_prover]
 pub proof fn lemma_fundamental_div_mod_converse_auto()
     ensures 
@@ -438,18 +426,7 @@ pub proof fn lemma_fundamental_div_mod_converse_auto()
     assert forall |x: int, d: int, q: int, r: int| d != 0 && 0 <= r < d && x == #[trigger](q * d + r) implies r == #[trigger](x % d) by {
         lemma_fundamental_div_mod_converse(x, d, q, r);
     };
-
-    // assume(forall |x: int, d: int, q: int, r: int| d != 0 && 0 <= r < d && x == #[trigger](q * d + r) ==> q == (x / d) && r == #[trigger](x % d));
 }
-//     ensures forall x: int, d: int, q: int, r: int {:trigger q * d + r, x % d}
-//             :: d != 0 && 0 <= r < d && x == q * d + r ==> q == x / d && r == x % d
-// {
-//     forall x: int, d: int, q: int, r: int | d != 0 && 0 <= r < d && x == q * d + r
-//     ensures q == x / d && r == x % d
-//     {
-//     lemma_fundamental_div_mod_converse(x, d, q, r);
-//     }
-// }
 
 
 /// the remainder of any natural number x divided by a positive integer m is always less than m
@@ -617,16 +594,6 @@ pub proof fn lemma_mod_mul_equivalent_auto()
         lemma_mod_mul_equivalent(x, y, z, m);
     }
 }
-//     ensures forall x: int, y: int, z: int, m: int
-//             {:trigger is_mod_equivalent(x * z, y * z, m)}
-//             :: m > 0 && is_mod_equivalent(x, y, m) ==> is_mod_equivalent(x * z, y * z, m)
-// {
-//     forall x: int, y: int, z: int, m: int | m > 0 && is_mod_equivalent(x, y, m)
-//     ensures is_mod_equivalent(x * z, y * z, m)
-//     {
-//     lemma_mod_mul_equivalent(x, y, z, m);
-//     }
-// }
 
 /// the remainder can increase with a larger divisor
 #[verifier::spinoff_prover]
@@ -736,12 +703,8 @@ pub proof fn lemma_part_bound2(x: int, y: int, z: int)
     assert((x % y) % (y * z) == x % y);
 }
 
-// // TODO: bug
-// // TO BE DISCUSSED
 #[verifier::spinoff_prover]
 pub proof fn lemma_part_bound2_auto()
-    // ensures  forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](y * z) > 0 && #[trigger](x % y) % (y * z) < y),
-    // ensures forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> ((#[trigger](y * z) > 0) && ((#[trigger](x % y)) % (y * z) < y))
     ensures 
         forall |y: int, z: int| (0 < y && 0 < z) ==> #[trigger](y * z) > 0,
         forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](x % y) % #[trigger](y * z) < y),    
@@ -754,22 +717,6 @@ pub proof fn lemma_part_bound2_auto()
     {
         lemma_part_bound2(x, y, z);
     };
-
-    // conjunting them will turn into a mess
-    // // assume(forall |y: int, z: int| (0 < y && 0 < z) ==> #[trigger](y * z) > 0);
-    // // assume(forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](x % y) % #[trigger](y * z) < y));
-    // // assume(forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](y * z) > 0 && (#[trigger](x % y)) % (y * z) < y));
-    // assert forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](y * z) > 0 && #[trigger](x % y) % (y * z) < y) by
-    // {
-    //     if (0 <= x && 0 < y && 0 < z) {
-    //         lemma_part_bound2(x, y, z);
-    //         assert(y * z > 0 && (x % y) % (y * z) < y);
-    //     } else {
-    //     }
-    //     // lemma_part_bound2(x, y, z);
-    //     // assert(forall |x: int, y: int, z: int| (0 <= x && 0 < y && 0 < z) ==> (#[trigger](y * z) > 0 && #[trigger](x % y) % #[trigger](y * z) < y));
-    // }
-
 }
 
 /// ensures the validity of an expanded form of the modulus operation,
@@ -788,7 +735,6 @@ pub proof fn lemma_mod_breakdown(x: int, y: int, z: int)
     lemma_div_pos_is_pos(x, y);
     assert(0 <= x / y);
 
-    // translated the calc proof in lemma_breakdown
     assert((y * (x / y)) % (y * z) + (x % y) % (y * z) < y * z) by {
         lemma_part_bound1(x, y, z);
         lemma_part_bound2(x, y, z);

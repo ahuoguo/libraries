@@ -1,8 +1,5 @@
 use vstd::prelude::*;
 
-// what is the difference between dafny include and import?
-// seems like include is not needed
-
 verus! {
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::GeneralInternals::{is_le};
@@ -204,8 +201,6 @@ pub proof fn lemma_div_induction_auto(n: int, x: int, f: FnSpec(int) -> bool)
             assert(is_le(0, i) && i < n);
         };
     };
-    // assert(forall |i: int| i >= 0 && #[trigger]f(i) ==> #[trigger]f(add(i, n)));
-    // assert(forall |i: int| i < n && #[trigger]f(i) ==> #[trigger]f(sub(i, n)));
     assert forall |i: int| i >= 0 && #[trigger]f(i) ==> #[trigger]f(crate::NonLinearArith::Internals::ModInternals::add(i, n)) by {
         assert(crate::NonLinearArith::Internals::ModInternals::add(i, n) == add(i, n));
     }; // OBSERVE COMMUNICATION
