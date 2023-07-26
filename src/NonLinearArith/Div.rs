@@ -30,7 +30,7 @@ use crate::NonLinearArith::Modulus::*;
  *****************************************************************************/
 
 /// the common syntax of division gives the same quotient as performing division through recursion
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_is_div_recursive(x: int, d: int)
     requires 0 < d
     ensures div_recursive(x, d) == x / d
@@ -40,7 +40,7 @@ pub proof fn lemma_div_is_div_recursive(x: int, d: int)
     lemma_div_induction_auto(d, x, |u: int| div_recursive(u, d) == u / d);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_is_div_recursive_auto()
     ensures forall |x: int, d: int| d > 0 ==> div_recursive(x, d) == #[trigger](x / d)
 {
@@ -52,7 +52,7 @@ pub proof fn lemma_div_is_div_recursive_auto()
 }
 
 /// the quotient of an integer divided by itself is 1
-#[verifier::spinoff_prover] 
+// #[verifier::spinoff_prover] 
 pub proof fn lemma_div_by_self(d: int)
     requires d != 0
     ensures d / d == 1
@@ -61,7 +61,7 @@ pub proof fn lemma_div_by_self(d: int)
 }
 
 /// zero divided by an integer besides 0 is 0
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_of0(d: int)
     requires d != 0
     ensures 0 as int  / d == 0
@@ -71,7 +71,7 @@ pub proof fn lemma_div_of0(d: int)
 
 /// ensures the basic propoerties of division: 0 divided by any integer is 0; any integer 
 /// divided by 1 is itself; any integer divided by itself is 1
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_basics(x: int)
     ensures 
         x != 0 as int ==> 0 as int / x == 0,
@@ -84,7 +84,7 @@ pub proof fn lemma_div_basics(x: int)
     }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_basics_auto()
     ensures
         forall |x: int| x != 0 ==> #[trigger](0int / x) == 0,
@@ -106,7 +106,7 @@ pub proof fn lemma_div_basics_auto()
 
 /// if a dividend is a whole number and the divisor is a natural number and their
 /// quotient is 0, this implies that the dividend is smaller than the divisor
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_small_div_converse_auto()
     ensures forall |x: int, d:int| 0 <= x && 0 < d && #[trigger](x / d) == 0 ==> x < d,
 {
@@ -116,7 +116,7 @@ pub proof fn lemma_small_div_converse_auto()
     }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_non_zero(x: int, d: int)
     requires x >= d > 0
     ensures x / d > 0
@@ -127,7 +127,7 @@ pub proof fn lemma_div_non_zero(x: int, d: int)
     }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_non_zero_auto()
     ensures forall |x: int, d: int| x >= d > 0 ==> #[trigger] (x / d) > 0
 {
@@ -146,7 +146,7 @@ spec fn div (x:int, y: int) -> int
 /// given two fractions with the same numerator, the order of numbers is determined by 
 /// the denominators. However, if the numerator is 0, the fractions are equal regardless of 
 /// the denominators' values
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_is_ordered_by_denominator(x: int, y: int, z: int)
     requires 
         0 <= x,
@@ -173,7 +173,7 @@ pub proof fn lemma_div_is_ordered_by_denominator(x: int, y: int, z: int)
   
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_is_ordered_by_denominator_auto()
     ensures forall |x: int, y: int, z: int| 0 <= x && 1 <= y <= z ==> #[trigger](x / y) >= #[trigger](x / z)
 {
@@ -185,7 +185,7 @@ pub proof fn lemma_div_is_ordered_by_denominator_auto()
 
 /// given two fractions with the same numerator, the order of numbers is strictly determined by 
 /// the denominators.
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_is_strictly_ordered_by_denominator(x: int, d: int)
     requires 
         0 < x, 
@@ -197,7 +197,7 @@ pub proof fn lemma_div_is_strictly_ordered_by_denominator(x: int, d: int)
     lemma_div_induction_auto(d, x, |u: int| 0 < u ==> u / d < u);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_is_strictly_ordered_by_denominator_auto()
     ensures forall |x: int, d: int|  0 < x && 1 < d ==> #[trigger](x / d) < x,
 {
@@ -209,7 +209,7 @@ pub proof fn lemma_div_is_strictly_ordered_by_denominator_auto()
 
 /// Rounding is different when multiplying the sum of two integers by a fraction d/d vs. 
 /// first multiplying each integer by d/d and then adding the quotients
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_dividing_sums(a: int, b: int, d: int, r: int)
     requires 
         0 < d,
@@ -232,7 +232,7 @@ pub proof fn lemma_dividing_sums(a: int, b: int, d: int, r: int)
     // }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_dividing_sums_auto()
     ensures forall |a: int, b: int, d: int, r: int| 
     #![trigger (d * ((a + b) / d) - r), (d * (a / d) + d * (b / d))] 
@@ -249,7 +249,7 @@ pub proof fn lemma_dividing_sums_auto()
 
 /// dividing a whole number by a natural number will result in a quotient that is 
 /// greater than or equal to 0
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_pos_is_pos(x: int, d: int)
     requires 
         0 <= x,
@@ -268,7 +268,7 @@ pub proof fn lemma_div_pos_is_pos(x: int, d: int)
     lemma_div_induction_auto(d, x, |u: int| 0 <= u ==> u / d >= 0);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_pos_is_pos_auto()
     ensures
         forall |x: int, d: int|  0 <= x && 0 < d ==> 0 <= #[trigger](x / d)
@@ -281,7 +281,7 @@ pub proof fn lemma_div_pos_is_pos_auto()
 
 /// dividing an integer and then adding 1 to the quotient is the same as adding 
 /// the divisor and the integer, and then dividing that sum by the divisor
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_plus_one(x: int, d: int)
     requires 0 < d
     ensures 1 + x / d == (d + x) / d
@@ -289,7 +289,7 @@ pub proof fn lemma_div_plus_one(x: int, d: int)
     lemma_div_auto(d);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_plus_one_auto()
     ensures
         forall |x: int, d: int| #![trigger (1 + x / d), ((d + x) / d)] 0 < d ==> 1 + (x / d) == (d + x) / d,
@@ -308,7 +308,7 @@ pub proof fn lemma_div_plus_one_auto()
 
 /// dividing an integer and then subtracting 1 from the quotient is the same as subtracting 
 /// the divisor from the integer, and then dividing that difference by the divisor
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_minus_one(x: int, d: int)
     requires 0 < d
     ensures -1 + x / d == (-d + x) / d
@@ -316,7 +316,7 @@ pub proof fn lemma_div_minus_one(x: int, d: int)
     lemma_div_auto(d);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_minus_one_auto()
     ensures forall |x: int, d: int| #![trigger (-1 + x / d), ((-d + x) / d)] 
         0 < d ==> -1 + x / d == (-d + x) / d,
@@ -328,7 +328,7 @@ pub proof fn lemma_div_minus_one_auto()
 }
 
 /// dividing a smaller integer by a larger integer results in a quotient of 0
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_basic_div(d: int)
     requires 0 < d
     ensures forall |x: int| 0 <= x < d ==> #[trigger](x / d) == 0
@@ -336,7 +336,7 @@ pub proof fn lemma_basic_div(d: int)
     lemma_div_auto(d);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_basic_div_auto()
     ensures forall |x: int, d: int| 0 <= x < d ==> #[trigger](x / d) == 0
 {
@@ -347,7 +347,7 @@ pub proof fn lemma_basic_div_auto()
 }
 
 /// numerical order is preserved when dividing two seperate integers by a common positive divisor
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_is_ordered(x: int, y: int, z: int)
     requires 
         x <= y,
@@ -375,7 +375,7 @@ pub proof fn lemma_div_is_ordered(x: int, y: int, z: int)
     lemma_div_induction_auto(z, x - y, |xy: int| xy <= 0 ==> (xy + y) / z <= y / z);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_is_ordered_auto()
     ensures forall |x: int, y: int, z: int| x <= y && 0 < z ==> #[trigger](x / z) <= #[trigger](y / z)
 {
@@ -387,7 +387,7 @@ pub proof fn lemma_div_is_ordered_auto()
 
 /* dividing an integer by 2 or more results in a quotient that is smaller than the 
 original dividend */
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_decreases(x: int, d: int)
     requires 
         0 < x,
@@ -398,7 +398,7 @@ pub proof fn lemma_div_decreases(x: int, d: int)
     lemma_div_induction_auto(d, x, |u: int| 0 < u ==> u / d < u);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_decreases_auto()
     ensures 
         forall |x: int, d: int| 0 < x && 1 < d ==> #[trigger](x / d) < x,
@@ -411,7 +411,7 @@ pub proof fn lemma_div_decreases_auto()
 
 /// dividing an integer by 1 or more results in a quotient that is less than or equal to 
 /// the original dividend
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_nonincreasing(x: int, d: int)
     requires 
         0 <= x,
@@ -432,7 +432,7 @@ proof fn lemma_div_nonincreasing_auto()
 }
 
 /// a natural number x divided by a larger natural number gives a remainder equal to x
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_small_mod(x: nat, m: nat)
     requires 
         x < m,
@@ -443,7 +443,7 @@ pub proof fn lemma_small_mod(x: nat, m: nat)
     ModINL::lemma_small_mod(x, m);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_breakdown(x: int, y: int, z: int)
     requires 
         0 <= x,
@@ -500,7 +500,7 @@ pub proof fn lemma_breakdown(x: int, y: int, z: int)
 }
 
 // unstable
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_breakdown_auto()
     ensures 
         forall |x: int, y: int, z: int| #![trigger (y * z), (x % (y * z)), (y * ((x / y) % z) + x % y)] 0 <= x && 0 < y && 0 < z ==> 0 < y * z && x % (y * z) == y * ((x / y) % z) + x % y,
@@ -516,7 +516,7 @@ pub proof fn lemma_breakdown_auto()
     }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_remainder_upper(x: int, d: int)
     requires 
         0 <= x,
@@ -528,7 +528,7 @@ pub proof fn lemma_remainder_upper(x: int, d: int)
     lemma_div_induction_auto(d, x, |u: int| 0 <= u ==> u - d < u / d * d);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_remainder_upper_auto()
     ensures forall |x: int, d: int| #![trigger (x - d), (x / d * d)] 0 <= x && 0 < d ==> (x - d) < (x / d * d)
 {
@@ -538,7 +538,7 @@ pub proof fn lemma_remainder_upper_auto()
     }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_remainder_lower(x: int, d: int)
     requires 
         0 <= x,
@@ -550,7 +550,7 @@ pub proof fn lemma_remainder_lower(x: int, d: int)
     lemma_div_induction_auto(d, x, |u: int| 0 <= u ==> u >= u / d * d);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_remainder_lower_auto()
     ensures
         forall |x: int, d: int| 0 <= x && 0 < d ==> x >= #[trigger](x / d * d)
@@ -562,7 +562,7 @@ pub proof fn lemma_remainder_lower_auto()
 }
 
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_remainder(x: int, d: int)
     requires 
         0 <= x,
@@ -574,7 +574,7 @@ pub proof fn lemma_remainder(x: int, d: int)
     lemma_div_induction_auto(d, x,|u: int| 0 <= u - u / d * d < d);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_remainder_auto()
     ensures 
         forall |x: int, d: int| 0 <= x && 0 < d ==> 0 <= #[trigger](x - (x / d * d)) < d,
@@ -586,7 +586,7 @@ pub proof fn lemma_remainder_auto()
 }
 
 /// describes fundamental of the modulus operator
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_fundamental_div_mod(x: int, d: int)
     requires d != 0
     ensures x == d * (x / d) + (x % d)
@@ -594,7 +594,7 @@ pub proof fn lemma_fundamental_div_mod(x: int, d: int)
     ModINL::lemma_fundamental_div_mod(x, d);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_fundamental_div_mod_auto()
     ensures forall |x: int, d: int| d != 0 ==> x == #[trigger](d * (x / d) + (x % d))
 {
@@ -608,7 +608,7 @@ pub proof fn lemma_fundamental_div_mod_auto()
 // I changed the input from nat to int (compared to the dafny library)
 /// dividing a fraction by a divisor is equivalent to multiplying the fraction's 
 /// denominator with the divisor
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_denominator(x: int, c: int, d: int)
     requires 
         0 <= x,
@@ -699,7 +699,7 @@ pub proof fn lemma_div_denominator(x: int, c: int, d: int)
     }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_denominator_auto()
     ensures
         forall |c: int, d: int| 0 < c && 0 < d ==> #[trigger](c * d) != 0,
@@ -714,7 +714,7 @@ pub proof fn lemma_div_denominator_auto()
 
 /// multiplying an integer by a fraction is equivalent to multiplying the integer by the
 /// fraction's numerator
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mul_hoist_inequality(x: int, y: int, z: int)
     requires 
         0 <= x,
@@ -751,7 +751,7 @@ pub proof fn lemma_mul_hoist_inequality(x: int, y: int, z: int)
     // }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mul_hoist_inequality_auto()
     ensures
         forall |x: int, y: int, z: int| #![trigger (x * (y / z)), ((x * y) / z)] 0 <= x && 0 < z ==> (x * (y / z)) <= ((x * y) / z),
@@ -762,7 +762,7 @@ pub proof fn lemma_mul_hoist_inequality_auto()
     }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_indistinguishable_quotients(a: int, b: int, d: int)
     requires
         0 < d,
@@ -772,7 +772,7 @@ pub proof fn lemma_indistinguishable_quotients(a: int, b: int, d: int)
     lemma_div_induction_auto(d, a - b, |ab: int| {let u = ab + b; 0 <= u - u % d <= b < u + d - u % d ==> u / d == b / d});
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_indistinguishable_quotients_auto()
     ensures
         forall |a: int, b: int, d: int| #![trigger (a / d), (b / d)] 0 < d && 0 <= a - a % d <= b < a + d - a % d ==> (a / d) == (b / d)
@@ -784,7 +784,7 @@ pub proof fn lemma_indistinguishable_quotients_auto()
 }
 
 /// common factors from the dividend and divisor of a modulus operation can be factored out
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_truncate_middle(x: int, b: int, c: int)
     requires 
         0 <= x,
@@ -824,7 +824,7 @@ pub proof fn lemma_truncate_middle(x: int, b: int, c: int)
     // }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_truncate_middle_auto()
     ensures forall |x: int, b: int, c: int| #![trigger (b * (x % c))] 0 <= x && 0 < b && 0 < c && 0 < b * c ==> (b * x) % (b * c) == b * (x % c)
 {
@@ -835,7 +835,7 @@ pub proof fn lemma_truncate_middle_auto()
 }
 
 /// multiplying the numerator and denominator by an integer does not change the quotient
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_multiples_vanish_quotient(x: int, a: int, d: int)
     requires
         0 < x,
@@ -859,7 +859,7 @@ pub proof fn lemma_div_multiples_vanish_quotient(x: int, a: int, d: int)
     }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_multiples_vanish_quotient_auto()
     ensures forall |x: int, a: int, d: int| #![trigger (a / d), (x * a), (x * d)] 0 < x && 0 <= a && 0 < d ==> 0 < x * d && a / d == (x * a) / (x * d)
 {
@@ -874,7 +874,7 @@ pub proof fn lemma_div_multiples_vanish_quotient_auto()
 
 /// rounds down when adding an integer r to the dividend a that is smaller than the divisor d, and then
 /// multiplying by d
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_round_down(a: int, r: int, d: int)
     requires
         0 < d,
@@ -887,7 +887,7 @@ pub proof fn lemma_round_down(a: int, r: int, d: int)
     lemma_div_induction_auto(d, a, |u: int| u % d == 0 ==> u == d * ((u + r) / d));
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_round_down_auto()
     ensures forall |a: int, r: int, d: int| #![trigger (d * ((a + r) / d))] 0 < d && a % d == 0 && 0 <= r < d ==> a == d * ((a + r) / d),
 {
@@ -899,7 +899,7 @@ pub proof fn lemma_round_down_auto()
 
 // TO BE DISCUSSED
 /// this is the same as writing x + (b/d) == x when b is less than d; this is true because (b/d) == 0
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_multiples_vanish_fancy(x: int, b: int, d: int)
     requires 
         0 < d,
@@ -915,7 +915,7 @@ pub proof fn lemma_div_multiples_vanish_fancy(x: int, b: int, d: int)
     assert(f(x));
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_multiples_vanish_fancy_auto()
     ensures forall |x: int, b: int, d: int| #![trigger (d * x + b) / d] 0 < d && 0 <= b < d ==> (d * x + b) / d == x,
 {
@@ -926,7 +926,7 @@ pub proof fn lemma_div_multiples_vanish_fancy_auto()
 }
 
 /// multiplying an integer by a common numerator and denominator results in the original integer
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_multiples_vanish(x: int, d: int)
     requires 0 < d
     ensures (d * x) / d == x
@@ -934,7 +934,7 @@ pub proof fn lemma_div_multiples_vanish(x: int, d: int)
     lemma_div_multiples_vanish_fancy(x, 0, d);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_multiples_vanish_auto()
     ensures forall |x: int, d: int| #![trigger (d * x) / d] 0 < d ==> (d * x) / d == x,
 {
@@ -945,7 +945,7 @@ pub proof fn lemma_div_multiples_vanish_auto()
 }
 
 /// multiplying a whole number by a common numerator and denominator results in the original integer
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_by_multiple(b: int, d: int)
     requires
         0 <= b,
@@ -957,7 +957,7 @@ pub proof fn lemma_div_by_multiple(b: int, d: int)
     lemma_mul_auto(); // commutativity
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_by_multiple_auto()
     ensures forall |b: int, d: int| #![trigger ((b * d) / d)] 0 <= b && 0 < d ==> (b * d) / d == b,
 {
@@ -969,7 +969,7 @@ pub proof fn lemma_div_by_multiple_auto()
 
 /// a dividend y that is a positive multiple of the divisor z will always yield a greater quotient 
 /// than a dividend x that is less than y
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_by_multiple_is_strongly_ordered(x: int, y: int, m: int, z: int)
     requires
         x < y,
@@ -982,7 +982,7 @@ pub proof fn lemma_div_by_multiple_is_strongly_ordered(x: int, y: int, m: int, z
     lemma_div_induction_auto(z, y - x, |yx: int| {let u = yx + x; x < u && u % z == 0 ==> x / z < u / z});
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_by_multiple_is_strongly_ordered_auto()
     ensures forall |x: int, y: int, m: int, z: int| #![trigger x / z, m * z, y / z] x < y && y == m * z && 0 < z ==> x / z < y / z,
 {
@@ -994,7 +994,7 @@ pub proof fn lemma_div_by_multiple_is_strongly_ordered_auto()
 
 /// if an integer a is less than or equal to the product of two other integers b and c, then the 
 /// quotient of a/b will be less than or equal to c
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_multiply_divide_le(a: int, b: int, c: int)
     requires
         0 < b,
@@ -1019,7 +1019,7 @@ proof fn lemma_multiply_divide_le_auto()
 /// if an integer a is less than the product of two other integers b and c, then the quotient 
 /// of a/b will be less than c
 // got disproved at some point
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_multiply_divide_lt(a: int, b: int, c: int)
     requires 
         0 < b,
@@ -1034,7 +1034,7 @@ pub proof fn lemma_multiply_divide_lt(a: int, b: int, c: int)
     lemma_div_multiples_vanish(c, b);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_multiply_divide_lt_auto()
     ensures forall |a: int, b: int, c: int| #![trigger a / b, b * c] 0 < b && a < b * c ==> a / b < c,
 {
@@ -1045,7 +1045,7 @@ pub proof fn lemma_multiply_divide_lt_auto()
 }
 
 /// expresses the equality of giving fractions common denominators and then adding them together
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_hoist_over_denominator(x: int, j: int, d: nat)
     requires 0 < d
     ensures x / d as int + j == (x + j * d) / d as int
@@ -1062,7 +1062,7 @@ pub proof fn lemma_hoist_over_denominator(x: int, j: int, d: nat)
     assert(f(j));
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_hoist_over_denominator_auto()
     ensures forall |x: int, j: int, d: nat| #![trigger x / d as int + j] 0 < d ==> x / d as int + j == (x + j * d) / d as int,
 {
@@ -1080,7 +1080,7 @@ pub proof fn lemma_hoist_over_denominator_auto()
 //     }
 // }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_part_bound1(a: int, b: int, c: int)
     requires 
         0 <= a,

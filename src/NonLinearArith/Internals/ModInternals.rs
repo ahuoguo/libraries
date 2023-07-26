@@ -41,7 +41,7 @@ pub open spec fn sub (x: int, y: int) -> int
 }
 
 /// performs induction on modulus
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_induction_forall(n: int, f: FnSpec(int) -> bool)
     requires 
         n > 0,
@@ -71,7 +71,7 @@ pub proof fn lemma_mod_induction_forall(n: int, f: FnSpec(int) -> bool)
 // same as dafny
 /// given an integer x and divisor n, the remainder of x%n is equivalent to the remainder of (x+m)%n
 /// where m is a multiple of n
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_induction_forall2(n: int, f:FnSpec(int, int)->bool)
     requires
         n > 0,
@@ -96,7 +96,7 @@ pub proof fn lemma_mod_induction_forall2(n: int, f:FnSpec(int, int)->bool)
 }
 
 // same as dafny now
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_add_denominator(n: int, x: int)
     requires n > 0
     ensures (x + n) / n == x / n + 1
@@ -113,7 +113,7 @@ pub proof fn lemma_div_add_denominator(n: int, x: int)
     if (zp < 0) { lemma_mul_inequality(zp, -1, n); }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_sub_denominator(n: int, x: int)
     requires n > 0
     ensures (x - n) / n == x / n - 1
@@ -137,7 +137,7 @@ pub proof fn lemma_div_sub_denominator(n: int, x: int)
     if (zm < 0) { lemma_mul_inequality(zm, -1, n); }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_add_denominator(n: int, x: int)
     requires n > 0
     ensures (x + n) % n == x % n
@@ -166,7 +166,7 @@ pub proof fn lemma_mod_add_denominator(n: int, x: int)
     if (zp < 0) { lemma_mul_inequality(zp, -1, n); }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_sub_denominator(n: int, x: int)
     requires n > 0
     ensures (x - n) % n == x % n
@@ -192,7 +192,7 @@ pub proof fn lemma_mod_sub_denominator(n: int, x: int)
     if (zm < 0) { lemma_mul_inequality(zm, -1, n); }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_below_denominator(n: int, x: int)
     requires n > 0
     ensures 0 <= x < n <==> x % n == x
@@ -205,7 +205,7 @@ pub proof fn lemma_mod_below_denominator(n: int, x: int)
 }
 
 /// proves the basics of the modulus operation
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_basics_auto(n: int)
     requires n > 0
     ensures  
@@ -241,7 +241,7 @@ pub proof fn lemma_mod_basics_auto(n: int)
 }
 
 /// proves the quotient remainder theorem
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_quotient_and_remainder(x: int, q: int, r: int, n: int)
     requires 
         n > 0,
@@ -272,7 +272,7 @@ pub proof fn lemma_quotient_and_remainder(x: int, q: int, r: int, n: int)
 }
 
 /// automates the modulus operator process
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub open spec fn mod_auto(n: int) -> bool
     recommends n > 0,
 {
@@ -290,7 +290,7 @@ pub open spec fn mod_auto(n: int) -> bool
 }
 
 /// ensures that mod_auto is true
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_auto(n: int)
     requires n > 0
     ensures 
@@ -387,7 +387,7 @@ pub proof fn lemma_mod_auto(n: int)
 }
 
 /// performs auto induction for modulus
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_induction_auto(n: int, x: int, f: FnSpec(int) -> bool)
     requires 
         n > 0,

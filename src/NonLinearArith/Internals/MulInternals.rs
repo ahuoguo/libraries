@@ -52,7 +52,7 @@ pub open spec fn mul (a: int, b: int) -> int
 }
 
 /// performs induction on multiplication
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     requires 
         f(0),
@@ -71,7 +71,7 @@ pub proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
 }
 
 /// proves that multiplication is always commutative
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 proof fn lemma_mul_commutes()
     ensures 
         forall |x: int, y: int| #[trigger] mul(x, y) == mul(y, x)
@@ -79,7 +79,7 @@ proof fn lemma_mul_commutes()
 
 /// proves the distributive property of multiplication when multiplying an interger
 /// by (x +/- 1)
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 proof fn lemma_mul_successor()
     ensures 
         forall |x: int, y: int| #[trigger] ((x + 1) * y) == x * y + y,
@@ -143,7 +143,7 @@ proof fn lemma_mul_distributes()
 }
 
 /// groups distributive and associative properties of multiplication
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub open spec fn mul_auto() -> bool
 {
     &&& forall |x:int, y:int| #[trigger](x * y) == (y * x)
@@ -152,7 +152,7 @@ pub open spec fn mul_auto() -> bool
 }
 
 /// proves that mul_auto is valid
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mul_auto()
     ensures  mul_auto()
 {
@@ -160,7 +160,7 @@ pub proof fn lemma_mul_auto()
 }
 
 /// performs auto induction on multiplication for all i s.t. f(i) exists */
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
     requires mul_auto() ==> { &&&  f(0)
                               &&& (forall |i| #[trigger] is_le(0, i) && f(i) ==> f(i + 1))

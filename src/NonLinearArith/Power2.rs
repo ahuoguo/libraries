@@ -24,7 +24,7 @@ pub open spec fn pow2(e: nat) -> nat
     pow(2, e) as nat
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_pow2_pos(e: nat)
     ensures pow2(e) > 0
 {
@@ -32,7 +32,7 @@ pub proof fn lemma_pow2_pos(e: nat)
     lemma_pow_positive(2, e);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_pow2_pos_auto()
     ensures forall |e: nat| #[trigger]pow2(e) > 0
 {
@@ -43,7 +43,7 @@ pub proof fn lemma_pow2_pos_auto()
 }
 
 /// pow2() is equivalent to Pow() with base 2.
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_pow2(e: nat)
     ensures pow2(e) == pow(2, e) as int
     decreases e
@@ -55,7 +55,7 @@ pub proof fn lemma_pow2(e: nat)
     }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_pow2_auto()
     ensures forall |e: nat| #[trigger]pow2(e) == pow(2, e)
 {
@@ -66,7 +66,7 @@ pub proof fn lemma_pow2_auto()
 }
 
 /// (2^e - 1) / 2 = 2^(e - 1) - 1
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_pow2_mask_div2(e: nat)
     requires 0 < e
     ensures (pow2(e) - 1) / 2 == pow2((e - 1) as nat) - 1
@@ -79,7 +79,7 @@ pub proof fn lemma_pow2_mask_div2(e: nat)
     lemma_mul_induction_auto(e as int, f);
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_pow2_mask_div2_auto()
     ensures 
         forall |e: nat| #![trigger pow2(e)] 0 < e ==> (pow2(e) - 1) / 2 == pow2((e - 1) as nat) - 1
@@ -91,7 +91,7 @@ pub proof fn lemma_pow2_mask_div2_auto()
     }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma2_to64()
     ensures 
         pow2(0) == 0x1,

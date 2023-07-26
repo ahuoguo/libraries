@@ -46,7 +46,7 @@ pub open spec fn div_recursive(x: int, d: int) -> int
 }
 
 /// Proves the basics of the division operation
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_basics(n: int)
     requires n > 0
     ensures  
@@ -68,7 +68,7 @@ pub proof fn lemma_div_basics(n: int)
 /// Automates the division operator process. Contains the identity property, a
 /// fact about when quotients are zero, and facts about adding and subtracting
 /// integers over a common denominator.
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub open spec fn div_auto(n: int) -> bool
     recommends n > 0
 {
@@ -183,7 +183,7 @@ spec fn sub(x: int, y: int) -> int
 }
 
 /// Performs auto induction for division 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_induction_auto(n: int, x: int, f: FnSpec(int) -> bool)
     requires
         n > 0,
