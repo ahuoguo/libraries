@@ -1,5 +1,9 @@
 // currently needs to be run with the verus on vstd_augmenting branch
 
+//！ Little endian interpretation of a sequence of numbers with a given base. The
+//！ first element of a sequence is the least significant position; the last
+//！ element is the most significant position.
+
 use vstd::prelude::*;
 #[allow(unused_imports)]
 use vstd::seq_lib::*;
@@ -18,13 +22,15 @@ use vstd::calc_macro::*;
 
 verus! {
 
-// function Base(): nat
-//     ensures Base() > 1
+// dafny:
+// function BASE(): nat
+// ensures BASE() > 1    
 
 // current solution, every function has a base: int parameter, and add requires
 // clause to for base > 1
 
-// type uint = i: int | 0 <= i < Base()
+// dafny:
+// type uint = i: int | 0 <= i < BASE()
 
 // I also only see the way is that reqruies every element in the sequence to
 // be smaller than base
@@ -55,38 +61,14 @@ pub open spec(checked) fn to_nat_right(xs: Seq<int>, base: int) -> int
         (to_nat_right(xs.drop_first(), base) * base + xs.first())
     }
 }
-// function {:opaque} to_nat_right(xs: Seq<int>, base: int): nat
+// dafny
+// function {:opaque} ToNatRight(xs: seq<uint>): nat
 // {
-// if |xs| == 0 then 0
-// else
-//     lemma_mul_nonnegative_auto();
-//     to_nat_right(xs.drop_first()) * base + xs.first()
+//   if |xs| == 0 then 0
+//   else
+//     LemmaMulNonnegativeAuto();
+//     ToNatRight(DropFirst(xs)) * BASE() + First(xs)
 // }
-
-#[verifier::recommends_by]
-pub proof fn lemma_to_nat_right_rec(xs: Seq<int>, base: int)
-    // requires
-    //     xs.len() > 0,
-    //     base > 1,
-    //     forall |x: int| xs.contains(x) ==> 0 <= x < base,
-    // ensures
-    //     forall |x: int| xs.drop_first().contains(x) ==> 0 <= x < base,
-{
-    assert forall |x: int| ((forall |x: int| xs.contains(x) ==> 0 <= x < base) && xs.len() > 0 && xs.drop_first().contains(x)) implies 0 <= x < base by {
-        assert(xs.contains(x));
-        assert(0 <= x < base);
-    }
-}
-
-
-#[verifier::recommends_by]
-pub proof fn lemma_to_nat_left_rec(xs: Seq<int>, base: int)
-{
-    assert forall |x: int| ((forall |x: int| xs.contains(x) ==> 0 <= x < base) && xs.len() > 0 && xs.drop_last().contains(x)) implies 0 <= x < base by {
-        assert(xs.contains(x));
-        assert(0 <= x < base);
-    }
-}
 
 /// Converts a sequence to a nat beginning with the most significant position.
 #[verifier::opaque]
@@ -105,6 +87,23 @@ pub open spec(checked) fn to_nat_left(xs: Seq<int>, base: int) -> int
     }
 }
 
+#[verifier::recommends_by]
+pub proof fn lemma_to_nat_right_rec(xs: Seq<int>, base: int)
+{
+    assert forall |x: int| ((forall |x: int| xs.contains(x) ==> 0 <= x < base) && xs.len() > 0 && xs.drop_first().contains(x)) implies 0 <= x < base by {
+        assert(xs.contains(x));
+        assert(0 <= x < base);
+    }
+}
+
+#[verifier::recommends_by]
+pub proof fn lemma_to_nat_left_rec(xs: Seq<int>, base: int)
+{
+    assert forall |x: int| ((forall |x: int| xs.contains(x) ==> 0 <= x < base) && xs.len() > 0 && xs.drop_last().contains(x)) implies 0 <= x < base by {
+        assert(xs.contains(x));
+        assert(0 <= x < base);
+    }
+}
 
 /// Given the same sequence, to_nat_right and to_nat_left return the same nat.
 // {:vcs_split_on_every_assert}
@@ -224,6 +223,7 @@ pub proof fn lemma_to_nat_left_eqto_nat_right(xs: Seq<int>, base: int)
     }
 }
 
+// TODO: when refactorign, probably generalize this
 // pub proof fn lemma_to_nat_left_helper(xs: Seq<int>, base: int)
 // {
 //     assert forall |x: int| ((forall |x: int| xs.contains(x) ==> 0 <= x < base) && xs.len() > 0 && xs.drop_last().contains(x)) implies 0 <= x < base by {
@@ -232,17 +232,52 @@ pub proof fn lemma_to_nat_left_eqto_nat_right(xs: Seq<int>, base: int)
 //     }
 // }
 
-// TODO: this auto lemma distableizes things
-// #[verifier::spinoff_prover]
-// pub proof fn lemma_to_nat_left_eqto_nat_right_auto()
-//     ensures forall |xs: Seq<int>, base: int| base > 1 && (forall |x: int| xs.contains(x) ==> 0 <= x < base) ==> #[trigger]to_nat_right(xs, base) == to_nat_left(xs, base)
-// {
-//     reveal(to_nat_right);
-//     reveal(to_nat_left);
-//     assert forall |xs: Seq<int>, base: int| base > 1 && (forall |x: int| xs.contains(x) ==> 0 <= x < base) implies to_nat_right(xs, base) == to_nat_left(xs, base) by {
-//         lemma_to_nat_left_eqto_nat_right(xs, base);
-//     }
-// }
+// TODO: this auto lemma distableizes stuff sometimes
+#[verifier::spinoff_prover]
+pub proof fn lemma_to_nat_left_eqto_nat_right_auto()
+    ensures forall |xs: Seq<int>, base: int| base > 1 && (forall |x: int| xs.contains(x) ==> 0 <= x < base) ==> #[trigger]to_nat_right(xs, base) == to_nat_left(xs, base)
+{
+    reveal(to_nat_right);
+    reveal(to_nat_left);
+    assert forall |xs: Seq<int>, base: int| base > 1 && (forall |x: int| xs.contains(x) ==> 0 <= x < base) implies to_nat_right(xs, base) == to_nat_left(xs, base) by {
+        lemma_to_nat_left_eqto_nat_right(xs, base);
+    }
+}
+// added, prove to_nat_left is greater than 0
+#[verifier::spinoff_prover]
+pub proof fn lemma_to_nat_basics(xs: Seq<int>, base: int)
+    requires
+        base > 1,
+        forall |x: int| xs.contains(x) ==> 0 <= x < base,
+    ensures 
+        to_nat_left(xs, base) >= 0
+    decreases
+        xs.len()
+{
+    reveal(to_nat_left);
+    if xs.len() == 0 {
+        // assert(to_nat_left(xs, base) >= 0);
+    } else {
+        assert forall |x: int| xs.drop_last().contains(x) implies 0 <= x < base by {
+            assert(xs.contains(x));
+            assert(0 <= x < base);
+        }
+        assert(to_nat_left(xs, base) == (to_nat_left(xs.drop_last(), base) + xs.last() * pow(base, (xs.len() - 1) as nat)));
+        lemma_to_nat_basics(xs.drop_last(), base);
+        assert(to_nat_left(xs.drop_last(), base) >= 0);
+        lemma_pow_positive_auto();
+        assert(pow(base, (xs.len() - 1) as nat) >= 0);
+        assert(xs.last() >= 0) by {
+            assert(xs.contains(xs.last()));
+            assert(0 <= xs.last() < base);
+        };
+        lemma_mul_strictly_positive_auto();
+        assert(xs.last() * pow(base, (xs.len() - 1) as nat) >= 0);
+
+        assert(to_nat_left(xs, base) >= 0);
+    }
+}
+
 
 /// The nat representation of a sequence of length 1 is its first (and only)
 /// position.
@@ -496,17 +531,17 @@ pub proof fn lemma_seq_msw_inequality(xs: Seq<int>, ys: Seq<int>, base: int)
         assert(ys.contains(x));
         assert(0 <= x < base);
     }
-
     reveal(to_nat_left);
+    lemma_to_nat_left_eqto_nat_right_auto();
     let len1 = (xs.len() - 1) as nat;
 
     assert(to_nat_right(xs, base) == to_nat_left(xs, base)) by {
-        lemma_to_nat_left_eqto_nat_right(xs, base);
+        // lemma_to_nat_left_eqto_nat_right(xs, base);
     };
 
     assert(to_nat_left(xs, base) < pow(base, len1) + xs.last() * pow(base, len1)) by {
-        assert( to_nat_left(xs, base) == to_nat_left(xs.drop_last(), base) + xs.last() * pow(base, len1));
-        lemma_to_nat_left_eqto_nat_right(xs.drop_last(), base);
+        // assert( to_nat_left(xs, base) == to_nat_left(xs.drop_last(), base) + xs.last() * pow(base, len1));
+        // lemma_to_nat_left_eqto_nat_right(xs.drop_last(), base);
         lemma_seq_nat_bound(xs.drop_last(), base);
     }
 
@@ -514,20 +549,26 @@ pub proof fn lemma_seq_msw_inequality(xs: Seq<int>, ys: Seq<int>, base: int)
         lemma_mul_is_distributive_auto();
     };
 
-    assert((1 + xs.last()) * pow(base, len1) < to_nat_left(ys, base)) by {
+    assert((1 + xs.last()) * pow(base, len1) <= to_nat_left(ys, base)) by {
         assert(to_nat_left(ys, base) == 
-        to_nat_left(ys.drop_last(), base) + ys.last() * pow(base, (ys.len() - 1) as nat));
+               to_nat_left(ys.drop_last(), base) + ys.last() * pow(base, (ys.len() - 1) as nat));
         assert( len1 == (ys.len() - 1) as nat);
         assert(xs.last() < ys.last());
-        assume(pow(base, len1) < to_nat_left(ys.drop_last(), base));
+        assert(1 + xs.last() <= ys.last());
         lemma_pow_positive_auto(); 
-        // lemma_seq_nat_bound(ys.drop_first(), base);
         lemma_mul_inequality_auto();
-        
+        assert((1 + xs.last()) * pow(base, len1) <= ys.last() * pow(base, len1));    
+        assert(ys.last() * pow(base, len1) == ys.last() * pow(base, (ys.len() - 1) as nat));
+        assume(0 <= to_nat_left(ys.drop_last(), base));
+        assert(ys.last() * pow(base, (ys.len() - 1) as nat) <= ys.last() * pow(base, (ys.len() - 1) as nat) + to_nat_left(ys.drop_last(), base));
+        // lemma_seq_nat_bound(ys.drop_first(), base);
+
+        // assert((pow(base, len1) <= to_nat_left(ys.drop_last(), base)));
+        // assume(pow(base, len1) < to_nat_left(ys.drop_last(), base));
     }
 
     assert(to_nat_left(ys, base) == to_nat_right(ys, base)) by {
-        lemma_to_nat_left_eqto_nat_right(ys, base);
+        // lemma_to_nat_left_eqto_nat_right(ys, base);
     }
 
     // calc! { (<)
@@ -657,36 +698,127 @@ pub proof fn lemma_seq_prefix_neq(xs: Seq<int>, ys: Seq<int>, i: int, base: int)
     }
 }
 
-// /* If two sequences of the same length are not equal, their nat
-// representations are not equal. */
-// pub proof fn lemma_seq_neq(xs: Seq<int>, ys: Seq<int>)
-// requires |xs| == |ys|
-// requires xs != ys
-// ensures to_nat_right(xs, base) != to_nat_right(ys, base)
-// {
-// ghost var i: nat, n: nat := 0, |xs|;
+pub open spec(checked) fn pick_first_ineq_index(xs: Seq<int>, ys: Seq<int>, i: int) -> (res: int)
+    recommends
+        xs.len() == ys.len(),
+        0 <= i < xs.len(),
+        0 <= i < ys.len(),
+        exists |j: int| 0 <= j < xs.len() && xs[j] != ys[j],
+        xs.subrange(0, i) == ys.subrange(0, i),
+    decreases 
+        xs.len() - i
+{
+    
+    recommends_by(pick_first_ineq_index_rec);
+    if i < xs.len() {
+        if xs[i] != ys[i] {
+            i
+        } else {
+            let _ = spec_affirm(i + 1 < xs.len());
+            let _ = spec_affirm(i + 1 < ys.len());
+            pick_first_ineq_index(xs, ys, i + 1)
+        }
+    } else {
+        i
+    }
 
-// while i < n
-//     invariant 0 <= i < n
-//     invariant xs.subrange(0, i) == ys.subrange(0, i)
-// {
-//     if xs[i] != ys[i] {
-//     break;
-//     }
-//     i := i + 1;
-// }
-// assert to_nat_left(xs.subrange(0, i)) == to_nat_left(ys.subrange(0, i));
+    // while i < n
+    //     invariant 
+    //         0 <= i < n,
+    //         xs.subrange(0, i) == ys.subrange(0, i)
+    // {
+    //     if xs[i] != ys[i] {
+    //     break;
+    //     }
+    //     i = i + 1;
+    // }
+    // i
 
-// reveal to_nat_left();
-// assert xs.subrange(0, i+1).subrange(0, i) == xs.subrange(0, i);
-// assert ys.subrange(0, i+1).subrange(0, i) == ys.subrange(0, i);
-// lemma_pow_positive_auto();
-// lemma_mul_strict_inequality_auto();
-// assert to_nat_left(xs.subrange(0, i+1)) != to_nat_left(ys.subrange(0, i+1));
-// lemma_to_nat_left_eqto_nat_right_auto();
+}
 
-// lemma_seq_prefix_neq(xs, ys, i+1);
-// }
+#[verifier::recommends_by]
+pub proof fn pick_first_ineq_index_rec(xs: Seq<int>, ys: Seq<int>, i: int)
+{
+    if {
+    &&& i < xs.len() && xs[i] == ys[i]
+    &&& xs.len() == ys.len()
+    &&& 0 <= i < xs.len()
+    &&& 0 <= i < ys.len()
+    &&& exists |j: int| 0 <= j < xs.len() && xs[j] != ys[j]
+    &&& xs.subrange(0, i) == ys.subrange(0, i)
+    }
+    {
+        // proof sketch, if the current 
+        assume(false);
+    }
+}
+
+pub proof fn lemma_pick_first_ineq_index(xs: Seq<int>, ys: Seq<int>)
+    ensures
+            // it would be nice to have let i = pick_first_ineq_index(xs, ys, 0) here
+            xs.subrange(0, pick_first_ineq_index(xs, ys, 0)) == ys.subrange(0, pick_first_ineq_index(xs, ys, 0)),
+            xs[pick_first_ineq_index(xs, ys, 0)] != ys[pick_first_ineq_index(xs, ys, 0)],
+            0 <= pick_first_ineq_index(xs, ys, 0) < xs.len(),
+            0 <= pick_first_ineq_index(xs, ys, 0) < ys.len(),
+{
+    assume(false);
+}
+
+/// If two sequences of the same length are not equal, their nat
+/// representations are not equal.
+pub proof fn lemma_seq_neq(xs: Seq<int>, ys: Seq<int>, base: int)
+    requires 
+        xs.len() == ys.len(),
+        !(xs =~= ys),
+        forall |a: int| #[trigger](xs.contains(a)) ==> 0 <= a < base,
+        forall |a: int| #[trigger](ys.contains(a)) ==> 0 <= a < base,
+        base > 1,
+    ensures 
+        to_nat_right(xs, base) != to_nat_right(ys, base)
+{
+    assert(exists |j: int| 0 <= j < xs.len() && xs[j] != ys[j]);
+    assert(xs.subrange(0, 0) =~= ys.subrange(0, 0));
+    let i = pick_first_ineq_index(xs, ys, 0);
+    lemma_pick_first_ineq_index(xs, ys);
+    
+    assert(0 <= i < xs.len());
+    assert(0 <= i < ys.len());
+    assert(xs.subrange(0, pick_first_ineq_index(xs, ys, 0)) == ys.subrange(0, pick_first_ineq_index(xs, ys, 0)));
+
+
+    assert forall |x: int| xs.subrange(0, i).contains(x) implies 0 <= x < base by {
+        assert(xs.contains(x));
+        assert(0 <= x < base);
+    }
+
+    assert forall |x: int| ys.subrange(0, i).contains(x) implies 0 <= x < base by {
+        assert(ys.contains(x));
+        assert(0 <= x < base);
+    }
+
+    assert forall |x: int| #[trigger](xs.subrange(0, i + 1).contains(x)) implies 0 <= x < base by {
+        assert(xs.contains(x));
+        assert(0 <= x < base);
+    }
+
+    // xs.subrange(0, i+1).subrange(0, i)
+    assert forall |x: int| #[trigger](ys.subrange(0, i + 1).contains(x)) implies 0 <= x < base by {
+        assert(ys.contains(x));
+        assert(0 <= x < base);
+    }
+
+    assert(to_nat_left(xs.subrange(0, i), base) == to_nat_left(ys.subrange(0, i), base));
+
+    reveal(to_nat_left);
+    assert(xs.subrange(0, i+1).subrange(0, i) =~= xs.subrange(0, i));
+    assert(ys.subrange(0, i+1).subrange(0, i) =~= ys.subrange(0, i));
+    lemma_pow_positive_auto();
+    lemma_mul_strict_inequality_auto();
+    assert(to_nat_left(xs.subrange(0, i+1), base) != to_nat_left(ys.subrange(0, i+1), base));
+    lemma_to_nat_left_eqto_nat_right_auto();
+
+    lemma_seq_prefix_neq(xs, ys, i+1, base);
+}
 
 // /* If the nat representations of two sequences of the same length are equal
 // to each other, the sequences are the same. */
