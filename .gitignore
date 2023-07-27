@@ -3,3 +3,4 @@ Cargo.lock
 libraries.code-workspace
 .verus-log
 dafny-src/
+verus/
