@@ -1,19 +1,20 @@
 use vstd::prelude::*;
 
+
 verus! {
 
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::GeneralInternals::*;
+use crate::nonlinear_arith::internals::general_internals::*;
 #[allow(unused_imports)]
-use crate::NonLinearArith::Mul::*;
+use crate::nonlinear_arith::mul::*;
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::MulInternals::{lemma_mul_auto};
+use crate::nonlinear_arith::internals::mul_internals::{lemma_mul_auto};
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::MulInternalsNonlinear;
+use crate::nonlinear_arith::internals::mul_internals_nonlinear;
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::ModInternalsNonlinear::{lemma_fundamental_div_mod, lemma_mod_range, lemma_small_mod};
+use crate::nonlinear_arith::internals::mod_internals_nonlinear::{lemma_fundamental_div_mod, lemma_mod_range, lemma_small_mod};
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::DivInternalsNonlinear;
+use crate::nonlinear_arith::internals::div_internals_nonlinear;
 
 /// Performs modulus recursively
 #[verifier(opaque)]
@@ -41,7 +42,7 @@ pub open spec fn sub (x: int, y: int) -> int
 }
 
 /// performs induction on modulus
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_induction_forall(n: int, f: FnSpec(int) -> bool)
     requires 
         n > 0,
@@ -56,11 +57,11 @@ pub proof fn lemma_mod_induction_forall(n: int, f: FnSpec(int) -> bool)
         forall |i| #[trigger]f(i)
 {
     assert forall |i: int| #[trigger]f(i) by {
-        assert forall |i : int| i >= 0 && #[trigger] f(i) ==> #[trigger] f (crate::NonLinearArith::Internals::GeneralInternals::add(i, n)) by {
-            assert(crate::NonLinearArith::Internals::GeneralInternals::add(i, n) == add(i, n));
+        assert forall |i : int| i >= 0 && #[trigger] f(i) ==> #[trigger] f (crate::nonlinear_arith::internals::general_internals::add(i, n)) by {
+            assert(crate::nonlinear_arith::internals::general_internals::add(i, n) == add(i, n));
         };
-        assert forall |i : int| i < n  && #[trigger] f(i) ==> #[trigger] f (crate::NonLinearArith::Internals::GeneralInternals::sub(i, n)) by {
-            assert(crate::NonLinearArith::Internals::GeneralInternals::sub(i, n) == sub(i, n));
+        assert forall |i : int| i < n  && #[trigger] f(i) ==> #[trigger] f (crate::nonlinear_arith::internals::general_internals::sub(i, n)) by {
+            assert(crate::nonlinear_arith::internals::general_internals::sub(i, n) == sub(i, n));
         };
         lemma_induction_helper(n, f, i);
     };
@@ -69,7 +70,7 @@ pub proof fn lemma_mod_induction_forall(n: int, f: FnSpec(int) -> bool)
 // same as dafny
 /// given an integer x and divisor n, the remainder of x%n is equivalent to the remainder of (x+m)%n
 /// where m is a multiple of n
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_induction_forall2(n: int, f:FnSpec(int, int)->bool)
     requires
         n > 0,
@@ -94,7 +95,7 @@ pub proof fn lemma_mod_induction_forall2(n: int, f:FnSpec(int, int)->bool)
 }
 
 // same as dafny now
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_add_denominator(n: int, x: int)
     requires n > 0
     ensures (x + n) / n == x / n + 1
@@ -112,7 +113,7 @@ pub proof fn lemma_div_add_denominator(n: int, x: int)
 }
 
 // same as dafny now
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_sub_denominator(n: int, x: int)
     requires n > 0
     ensures (x - n) / n == x / n - 1
@@ -152,7 +153,7 @@ pub proof fn lemma_mod_add_denominator(n: int, x: int)
 }
 
 // slightly longer than dafny
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_sub_denominator(n: int, x: int)
     requires n > 0
     ensures (x - n) % n == x % n
@@ -168,7 +169,7 @@ pub proof fn lemma_mod_sub_denominator(n: int, x: int)
     if (zm < 0) { lemma_mul_inequality(zm, -1, n); }
 }
 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_below_denominator(n: int, x: int)
     requires n > 0
     ensures 0 <= x < n <==> x % n == x
@@ -181,7 +182,7 @@ pub proof fn lemma_mod_below_denominator(n: int, x: int)
 }
 
 /// proves the basics of the modulus operation
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_basics_auto(n: int)
     requires n > 0
     ensures  
@@ -217,7 +218,7 @@ pub proof fn lemma_mod_basics_auto(n: int)
 }
 
 /// proves the quotient remainder theorem
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_quotient_and_remainder(x: int, q: int, r: int, n: int)
     requires 
         n > 0,
@@ -231,7 +232,7 @@ pub proof fn lemma_quotient_and_remainder(x: int, q: int, r: int, n: int)
     lemma_mod_basics_auto(n);
 
     if q > 0 {
-        MulInternalsNonlinear::lemma_mul_is_distributive_add(n, q - 1, 1);
+        mul_internals_nonlinear::lemma_mul_is_distributive_add(n, q - 1, 1);
         lemma_mul_is_commutative_auto();
         assert(q * n + r == (q - 1) * n + n + r);
         lemma_quotient_and_remainder(x - n, q - 1, r, n);
@@ -243,13 +244,13 @@ pub proof fn lemma_quotient_and_remainder(x: int, q: int, r: int, n: int)
         lemma_quotient_and_remainder(x + n, q + 1, r, n);
     }
     else {
-        DivInternalsNonlinear::lemma_small_div();
+        div_internals_nonlinear::lemma_small_div();
         assert (r / n == 0);
     }
 }
 
 /// automates the modulus operator process
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub open spec fn mod_auto(n: int) -> bool
     recommends n > 0,
 {
@@ -267,7 +268,7 @@ pub open spec fn mod_auto(n: int) -> bool
 }
 
 /// ensures that mod_auto is true
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_auto(n: int)
     requires n > 0
     ensures mod_auto(n)        
@@ -319,7 +320,7 @@ pub proof fn lemma_mod_auto(n: int)
 }
 
 /// performs auto induction for modulus
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mod_induction_auto(n: int, x: int, f: FnSpec(int) -> bool)
     requires 
         n > 0,

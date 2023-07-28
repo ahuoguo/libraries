@@ -1,7 +1,7 @@
 use vstd::prelude::*;
 
-use crate::NonLinearArith::Internals::GeneralInternals::{is_le, lemma_induction_helper};
-use crate::NonLinearArith::Internals::MulInternalsNonlinear as MulINL;
+use crate::nonlinear_arith::internals::general_internals::{is_le, lemma_induction_helper};
+use crate::nonlinear_arith::internals::mul_internals_nonlinear as MulINL;
 
 verus! {
 
@@ -32,18 +32,18 @@ pub open spec fn mul_recursive(x: int, y: int) -> int
 }
 
 
-/* you need these add, sub because by importing the GeneralInternals add,
+/* you need these add, sub because by importing the general_internals add,
     it will still complain it is an arithmetic expression */
 pub open spec fn add (a: int, b: int) -> int
 {
     // or a + b
-    crate::NonLinearArith::Internals::GeneralInternals::add(a, b)
+    crate::nonlinear_arith::internals::general_internals::add(a, b)
 } 
 
 pub open spec fn sub (a: int, b: int) -> int
 {
     // or a + b
-    crate::NonLinearArith::Internals::GeneralInternals::sub(a, b)
+    crate::nonlinear_arith::internals::general_internals::sub(a, b)
 }
 
 pub open spec fn mul (a: int, b: int) -> int
@@ -52,7 +52,7 @@ pub open spec fn mul (a: int, b: int) -> int
 }
 
 /// performs induction on multiplication
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     requires 
         f(0),
@@ -64,14 +64,14 @@ pub proof fn lemma_mul_induction(f: FnSpec(int) -> bool)
     ensures
         forall |i: int| #[trigger] f(i)
 {
-    assert (forall |i: int| f(add(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::add(i, 1)));  // OBSERVE
-    assert (forall |i: int| f(sub(i, 1)) ==> #[trigger] f(crate::NonLinearArith::Internals::GeneralInternals::sub(i, 1)));   // OBSERVE
+    assert (forall |i: int| f(add(i, 1)) ==> #[trigger] f(crate::nonlinear_arith::internals::general_internals::add(i, 1)));  // OBSERVE
+    assert (forall |i: int| f(sub(i, 1)) ==> #[trigger] f(crate::nonlinear_arith::internals::general_internals::sub(i, 1)));   // OBSERVE
 
     assert forall |i: int| #[trigger] f(i) by { lemma_induction_helper(1, f, i) };
 }
 
 /// proves that multiplication is always commutative
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 proof fn lemma_mul_commutes()
     ensures 
         forall |x: int, y: int| #[trigger] mul(x, y) == mul(y, x)
@@ -79,7 +79,7 @@ proof fn lemma_mul_commutes()
 
 /// proves the distributive property of multiplication when multiplying an interger
 /// by (x +/- 1)
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 proof fn lemma_mul_successor()
     ensures 
         forall |x: int, y: int| #[trigger] ((x + 1) * y) == x * y + y,
@@ -143,7 +143,7 @@ proof fn lemma_mul_distributes()
 }
 
 /// groups distributive and associative properties of multiplication
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub open spec fn mul_auto() -> bool
 {
     &&& forall |x:int, y:int| #[trigger](x * y) == (y * x)
@@ -152,7 +152,7 @@ pub open spec fn mul_auto() -> bool
 }
 
 /// proves that mul_auto is valid
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mul_auto()
     ensures  mul_auto()
 {
@@ -160,7 +160,7 @@ pub proof fn lemma_mul_auto()
 }
 
 /// performs auto induction on multiplication for all i s.t. f(i) exists */
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_mul_induction_auto(x: int, f: FnSpec(int) -> bool)
     requires mul_auto() ==> { &&&  f(0)
                               &&& (forall |i| #[trigger] is_le(0, i) && f(i) ==> f(i + 1))

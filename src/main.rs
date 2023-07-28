@@ -3,8 +3,7 @@ use vstd::prelude::*;
 verus! {
 
 mod Math;
-mod NonLinearArith;
-// mod Collections;
+mod nonlinear_arith;
 
 fn main() {
     assert(Math::min(1, 2) == 1);

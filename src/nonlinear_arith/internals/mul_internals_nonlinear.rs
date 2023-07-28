@@ -6,6 +6,7 @@ verification is highly unstable! */
 // may be try to use singular?
 use vstd::prelude::*;
 
+
 verus! {
 
 /* multiplying two positive integers will result in a positive integer */
@@ -21,7 +22,7 @@ pub proof fn lemma_mul_nonzero(x: int, y: int)
     ensures x * y != 0 <==> x != 0 && y != 0
 {}
 
-/* multiplication is associative */
+/* multiplication is associative */ 
 #[verifier(nonlinear)]
 pub proof fn lemma_mul_is_associative(x: int, y: int, z: int)
     ensures x * (y * z) == (x * y) * z

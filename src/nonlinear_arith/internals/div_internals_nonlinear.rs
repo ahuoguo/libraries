@@ -2,6 +2,7 @@
 
 use vstd::prelude::*;
 
+
 verus! {
 
 /* zero divided by an integer besides 0 is 0 */

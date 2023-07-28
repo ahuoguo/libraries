@@ -1,16 +1,17 @@
 use vstd::prelude::*;
 
+
 verus! {
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::GeneralInternals::{is_le};
+use crate::nonlinear_arith::internals::general_internals::{is_le};
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::ModInternals::{lemma_mod_induction_forall, lemma_mod_induction_forall2, mod_auto, lemma_mod_auto, lemma_mod_basics_auto};
+use crate::nonlinear_arith::internals::mod_internals::{lemma_mod_induction_forall, lemma_mod_induction_forall2, mod_auto, lemma_mod_auto, lemma_mod_basics_auto};
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::ModInternalsNonlinear;
+use crate::nonlinear_arith::internals::mod_internals_nonlinear;
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::DivInternalsNonlinear;
+use crate::nonlinear_arith::internals::div_internals_nonlinear;
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::MulInternals;
+use crate::nonlinear_arith::internals::mul_internals;
 
 /// Performs division recursively with positive denominator.
 #[verifier(opaque)]
@@ -43,7 +44,7 @@ pub open spec fn div_recursive(x: int, d: int) -> int
 }
 
 /// Proves the basics of the division operation
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_basics(n: int)
     requires n > 0
     ensures  
@@ -54,18 +55,18 @@ pub proof fn lemma_div_basics(n: int)
 {
     lemma_mod_auto(n);
     lemma_mod_basics_auto(n);
-    DivInternalsNonlinear::lemma_small_div();
-    DivInternalsNonlinear::lemma_div_by_self(n);
+    div_internals_nonlinear::lemma_small_div();
+    div_internals_nonlinear::lemma_div_by_self(n);
     
     assert forall |x:int| 0 <= x < n <== #[trigger](x / n) == 0 by {
-        ModInternalsNonlinear::lemma_fundamental_div_mod(x, n);
+        mod_internals_nonlinear::lemma_fundamental_div_mod(x, n);
     }
 }
 
 /// Automates the division operator process. Contains the identity property, a
 /// fact about when quotients are zero, and facts about adding and subtracting
 /// integers over a common denominator.
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub open spec fn div_auto(n: int) -> bool
     recommends n > 0
 {
@@ -112,7 +113,7 @@ pub proof fn lemma_div_auto(n: int)
         // changing this from j + n to mod's addition speeds up the verification
         // otherwise you need higher rlimit
         // might be a good case for profilers
-        &&& ( j >= 0 && #[trigger]f(i, j) ==> f(i, crate::NonLinearArith::Internals::ModInternals::add(j, n)))
+        &&& ( j >= 0 && #[trigger]f(i, j) ==> f(i, crate::nonlinear_arith::internals::mod_internals::add(j, n)))
         &&& ( i < n  && f(i, j) ==> f(i - n, j))
         &&& ( j < n  && f(i, j) ==> f(i, j - n))
         &&& ( i >= 0 && f(i, j) ==> f(i + n, j))
@@ -180,7 +181,7 @@ spec fn sub(x: int, y: int) -> int
 }
 
 /// Performs auto induction for division 
-#[verifier::spinoff_prover]
+// #[verifier::spinoff_prover]
 pub proof fn lemma_div_induction_auto(n: int, x: int, f: FnSpec(int) -> bool)
     requires
         n > 0,
@@ -201,11 +202,11 @@ pub proof fn lemma_div_induction_auto(n: int, x: int, f: FnSpec(int) -> bool)
             assert(is_le(0, i) && i < n);
         };
     };
-    assert forall |i: int| i >= 0 && #[trigger]f(i) ==> #[trigger]f(crate::NonLinearArith::Internals::ModInternals::add(i, n)) by {
-        assert(crate::NonLinearArith::Internals::ModInternals::add(i, n) == add(i, n));
+    assert forall |i: int| i >= 0 && #[trigger]f(i) ==> #[trigger]f(crate::nonlinear_arith::internals::mod_internals::add(i, n)) by {
+        assert(crate::nonlinear_arith::internals::mod_internals::add(i, n) == add(i, n));
     }; // OBSERVE COMMUNICATION
-    assert forall |i: int| i < n && #[trigger]f(i) ==> #[trigger]f(crate::NonLinearArith::Internals::ModInternals::sub(i, n)) by {
-        assert(crate::NonLinearArith::Internals::ModInternals::sub(i, n) == sub(i, n));
+    assert forall |i: int| i < n && #[trigger]f(i) ==> #[trigger]f(crate::nonlinear_arith::internals::mod_internals::sub(i, n)) by {
+        assert(crate::nonlinear_arith::internals::mod_internals::sub(i, n) == sub(i, n));
     }; // OBSERVE COMMUNICATION
     lemma_mod_induction_forall(n, f);
     assert(f(x));
