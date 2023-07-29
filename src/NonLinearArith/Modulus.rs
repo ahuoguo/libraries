@@ -11,7 +11,7 @@ use crate::NonLinearArith::Internals::DivInternals::{div_recursive, lemma_div_in
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::DivInternalsNonlinear as DivINL;
 #[allow(unused_imports)]
-use crate::NonLinearArith::Internals::ModInternals::{lemma_mod_auto, mod_recursive};
+use crate::NonLinearArith::Internals::ModInternals::{lemma_mod_auto, mod_recursive, lemma_mod_basics_auto as lemma_mod_basics1_auto};
 #[allow(unused_imports)]
 use crate::NonLinearArith::Internals::ModInternalsNonlinear as ModINL;
 #[allow(unused_imports)]
@@ -106,12 +106,22 @@ pub proof fn lemma_mod_properties_auto()
         forall |m: int| m > 0 ==> #[trigger](m % m) == 0,
         forall |x: int, m: int| m > 0 ==> #[trigger]((x % m) % m) == x % m,
         forall |x: int, m: int| m > 0 ==> 0 <= #[trigger](x % m) < m,
+        forall |x: int, n: int| 0 <= x < n <==> (#[trigger](x % n) == x && n > 0),
 {
     lemma_mod_basics_auto();
 
     assert forall |x: int, m: int| m > 0 implies 0 <= #[trigger](x % m) < m by
     {
     lemma_mod_auto(m);
+    }
+
+    assert forall |x: int, n: int| 0 <= x < n implies #[trigger](x % n) == x by {
+        assert(n > 0);
+        lemma_mod_basics1_auto(n)
+    }
+
+    assert forall |x: int, n: int|  (#[trigger](x % n) == x && n > 0) implies  0 <= x < n  by {
+        lemma_mod_basics1_auto(n)
     }
 }
 
@@ -571,8 +581,8 @@ pub proof fn lemma_mod_equivalence_auto()
 // }
 
 ///  true if x%n and y%n are equal
-#[verifier::opaque]
-pub closed spec fn is_mod_equivalent(x: int, y: int, m: int) -> bool
+// #[verifier::opaque]
+pub open spec fn is_mod_equivalent(x: int, y: int, m: int) -> bool
 {
     x % m == y % m <==> (x - y) % m == 0
 }

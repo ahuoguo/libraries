@@ -4,7 +4,7 @@ verus! {
 
 mod Math;
 mod NonLinearArith;
-// mod Collections;
+mod NatSeq;
 
 fn main() {
     assert(Math::min(1, 2) == 1);
